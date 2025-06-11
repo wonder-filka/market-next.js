@@ -44,7 +44,7 @@ export function ProtectedHeader({ user }: { user: User }) {
     })
   }
   return (
-    <header className="flex min-w-screen justify-between items-center p-4 border-b">
+    <header className="flex min-w-screen justify-between items-center p-4">
       {/* Mobile menu */}
       <Sheet>
         <SheetTrigger className="md:hidden"><MenuIcon /></SheetTrigger>
@@ -53,11 +53,6 @@ export function ProtectedHeader({ user }: { user: User }) {
             <SheetTitle>2TradeIn</SheetTitle>
             <div className="grid gap-4 p-4">
               <Link href="/dashboard">{t('dashboard')}</Link>
-              <Link href="/services">{t('services')}</Link>
-              <Link href="/education">{t('education')}</Link>
-              <Link href="/news">{t('news')}</Link>
-              <Link href="/about">{t('about')}</Link>
-              <Link href="/reviews">{t('reviews')}</Link>
               <Link href="/contacts">{t('contacts')}</Link>
               <Link href="/faq">{t('faq')}</Link>
             </div>
@@ -73,31 +68,6 @@ export function ProtectedHeader({ user }: { user: User }) {
           <NavigationMenuItem>
             <NavigationMenuLink asChild>
               <Link href="/dashboard">{t('dashboard')}</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <Link href="/services">{t('services')}</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <Link href="/education">{t('education')}</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <Link href="/news">{t('news')}</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <Link href="/about">{t('about')}</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <Link href="/reviews">{t('reviews')}</Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
