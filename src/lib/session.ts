@@ -1,4 +1,5 @@
-import "server-only";
+'use server';
+
 import { JWTPayload, SignJWT, jwtVerify } from "jose";
 
 import { cookies } from "next/headers";
@@ -57,4 +58,9 @@ export async function updateSession() {
 		sameSite: "lax",
 		path: "/",
 	});
+}
+
+export async function deleteSession() {
+  const cookieStore = await cookies()
+  cookieStore.delete('session')
 }

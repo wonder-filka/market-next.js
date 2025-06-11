@@ -1,13 +1,16 @@
 'use client';
 
-import { SubmitHandler, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "@/components/ui/input";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { RegistrationSchema } from "@/lib/schemas";
-import { z } from "zod";
 import { useTransition } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { RegistrationSchema } from "@/lib/schemas";
 import { useI18n } from "@/locales/client";
+import { signup } from "../_actions";
+
+import { Input } from "@/components/ui/input";
+import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { FormErrorMessage } from "@/components/custom/FormErrorMessage";
 
@@ -28,9 +31,19 @@ export const RegistrationForm = () => {
         },
     })
 
-    const onSubmit: SubmitHandler<z.infer<typeof RegistrationSchema>> = data => {
-        startTransition(() => {
-            console.log('Form submitted:', data);
+    const onSubmit: SubmitHandler<z.infer<typeof RegistrationSchema>> = async data => {
+        startTransition(async () => {
+            try {
+                await signup(data);
+            } catch (error) {
+                console.error(error);
+                if (error === "userExists") {
+                    form.setError('email', {
+                        type: 'manual',
+                        message: t('userExists')
+                    });
+                }
+            }
         })
     }
 

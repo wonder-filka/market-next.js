@@ -25,9 +25,9 @@ export async function middleware(request: NextRequest) {
 	if (
 		!isProtectedRoute &&
 		session?.userId &&
-		!request.nextUrl.pathname.startsWith("/dashboard")
+		!request.nextUrl.pathname.startsWith("/profile")
 	) {
-		return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
+		return NextResponse.redirect(new URL("/profile", request.nextUrl));
 	}
 	return response;
 }

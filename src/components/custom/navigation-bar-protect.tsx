@@ -21,6 +21,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { MenuIcon } from "../images/MenuIcon";
+import { deleteSession } from "@/lib/session";
+import { redirect } from "next/navigation";
+import { useTransition } from "react";
 
 
 type User = {
@@ -32,6 +35,14 @@ type User = {
 
 export function ProtectedHeader({ user }: { user: User }) {
   const t = useI18n();
+  const [pending, startTransition] = useTransition()
+
+  async function logout() {
+    startTransition(async () => {
+      await deleteSession()
+      redirect('/login')
+    })
+  }
   return (
     <header className="flex min-w-screen justify-between items-center p-4 border-b">
       {/* Mobile menu */}
@@ -130,9 +141,15 @@ export function ProtectedHeader({ user }: { user: User }) {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <form action="/api/auth/logout" method="POST">
-                <button type="submit" className="w-full text-left">{t('logout')}</button>
-              </form>
+              <Button
+                type="submit"
+                className="w-full text-left"
+                onClick={logout}
+                disabled={pending}
+              >
+                {t('logout')}
+              </Button>
+
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
