@@ -1,5 +1,7 @@
 import { createI18nMiddleware } from "next-international/middleware";
-import { NextRequest } from "next/server";
+import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
+import { decrypt } from "./lib/session";
 
 const I18nMiddleware = createI18nMiddleware({
 	locales: ["ru", "en"],
@@ -7,8 +9,27 @@ const I18nMiddleware = createI18nMiddleware({
 	urlMappingStrategy: "rewrite",
 });
 
-export function middleware(request: NextRequest) {
-	return I18nMiddleware(request);
+const protectedRoutes = ["/ru/profile", "/en/profile", "/en/dashboard", "/ru/dashboard"];
+
+export async function middleware(request: NextRequest) {
+	const response = I18nMiddleware(request);
+
+	const path = request.nextUrl.pathname;
+	const isProtectedRoute = protectedRoutes.includes(path);
+	const cookie = (await cookies()).get("session")?.value;
+	const session = await decrypt(cookie);
+	if (isProtectedRoute && !session?.userId) {
+		return NextResponse.redirect(new URL("/", request.nextUrl));
+	}
+
+	if (
+		!isProtectedRoute &&
+		session?.userId &&
+		!request.nextUrl.pathname.startsWith("/dashboard")
+	) {
+		return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
+	}
+	return response;
 }
 
 export const config = {

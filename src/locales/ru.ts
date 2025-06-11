@@ -1,5 +1,32 @@
 export default {
-  'hello': 'Привет',
-  'hello.world': 'Привет мир!',
-  'welcome': 'Привет {name}!'
-} as const
+	home: "Главная",
+	services: "Услуги",
+	about: "О компании",
+	contacts: "Контакты",
+	login: "Войти",
+	profile: "Профиль",
+	dashboard: "Личный кабинет",
+	logout: "Выйти",
+	reviews: "Отзывы",
+	faq: "FAQ",
+	education: "Обучение",
+	news: "Новости",
+
+	firstName: "Имя",
+	lastName: "Фамилия",
+	email: "Email",
+	phone: "Телефон",
+	password: "Пароль",
+	register: "Зарегистрироваться",
+	required: "Обязательное поле",
+	minFirstName: "Имя должно быть не короче 2 символов",
+	minLastName: "Фамилия должна быть не короче 2 символов",
+	invalidEmail: "Некорректный email",
+	invalidPhone: "Некорректный номер телефона",
+	shortPassword: "Пароль слишком короткий",
+	longPassword: "Пароль слишком длинный",
+	userExists: "Такой email или телефон уже зарегистрирован",
+	success: "Вы успешно зарегистрированы!",
+	registerFormDescription:
+		"Пройдите быструю регистрацию и начните торговать или учиться уже сегодня",
+} as const;
