@@ -28,4 +28,5 @@ export default {
 	userExists: "This email or phone is already registered",
 	success: "You have successfully registered!",
 	registerFormDescription: "Register now to start trading or learning today",
+	incorrectCredentials: "Incorrect email or password",
 } as const;

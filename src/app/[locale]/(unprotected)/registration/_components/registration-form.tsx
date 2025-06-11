@@ -36,11 +36,10 @@ export const RegistrationForm = () => {
             try {
                 await signup(data);
             } catch (error) {
-                console.error(error);
-                if (error === "userExists") {
+                if (error instanceof Error && error.message === "userExists") {
                     form.setError('email', {
                         type: 'manual',
-                        message: t('userExists')
+                        message: "userExists", 
                     });
                 }
             }

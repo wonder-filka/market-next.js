@@ -1,54 +1,61 @@
-"use client";
+'use client'
 
-import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { createSession } from "@/lib/session";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useTransition } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoginSchema } from "@/lib/schemas";
+import { useI18n } from "@/locales/client";
 
-const formSchema = z.object({
-    email: z.string().email({ message: "Invalid email address." }),
-    password: z.string().min(1, {
-        message: "Password is required"
-    }).min(6, {
-        message: "Password must be more than 8 characters"
-    }).max(32, { message: "Password must be less than 32 characters" }),
-})
+import { Input } from "@/components/ui/input";
+import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { FormErrorMessage } from "@/components/custom/FormErrorMessage";
+import { login } from "../_actions";
 
 export const LoginForm = () => {
-    const router = useRouter();
-    const [error, setError] = useState<string | null>(null);
+    const [pending, startTransition] = useTransition();
+    const t = useI18n();
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema)
-    })
+    const form = useForm<z.infer<typeof LoginSchema>>({
+        resolver: zodResolver(LoginSchema),
+        defaultValues: {
+            email: '',
+            password: '',
+        },
+    });
 
-    async function onSubmit(values: z.infer<typeof formSchema>) {
-        try {
-            form.reset();
-            // await createSession(user.id)
-            router.push('/profile');
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
+    const onSubmit: SubmitHandler<z.infer<typeof LoginSchema>> = async data => {
+        startTransition(async () => {
+            try {
+                await login(data);
+            } catch (error) {
+                 if (error instanceof Error && error.message === "incorrectCredentials") {
+                    form.setError('email', {
+                        type: 'manual',
+                        message: "incorrectCredentials", 
+                    });
+                }
+            }
+        });
+    };
 
     return (
-        <Form {...form} >
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <Form {...form}>
+            <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
                 <FormField
                     control={form.control}
                     name="email"
                     render={({ field }) => (
                         <FormItem>
+                            <FormLabel>{t("email")}</FormLabel>
                             <FormControl>
-                                <Input placeholder="m@example.com" {...field} />
+                                <Input disabled={pending} type="email" placeholder={t("email")} {...field} />
                             </FormControl>
-                            <FormMessage />
+                            <FormErrorMessage
+                                error={form.formState.errors.email?.message}
+                                t={t}
+                            />
                         </FormItem>
                     )}
                 />
@@ -57,20 +64,20 @@ export const LoginForm = () => {
                     name="password"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>
-                                Password <span className="text-red-500">*</span>
-                            </FormLabel>
+                            <FormLabel>{t("password")}</FormLabel>
                             <FormControl>
-                                <Input type="password" {...field} placeholder="Password" />
+                                <Input disabled={pending} type="password" placeholder={t("password")} {...field} />
                             </FormControl>
-                            <FormMessage />
+                            <FormErrorMessage
+                                error={form.formState.errors.password?.message}
+                                t={t}
+                            />
                         </FormItem>
                     )}
                 />
-                {error && (
-                    <p className="text-red-500">{error}</p>
-                )}
-                <Button className="w-full" type="submit">Submit</Button>
+                <Button disabled={pending} type="submit" className="w-full mt-12">
+                    {t("login")}
+                </Button>
             </form>
         </Form>
     );

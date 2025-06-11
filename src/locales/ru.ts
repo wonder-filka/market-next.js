@@ -29,4 +29,6 @@ export default {
 	success: "Вы успешно зарегистрированы!",
 	registerFormDescription:
 		"Пройдите быструю регистрацию и начните торговать или учиться уже сегодня",
+
+	incorrectCredentials: "Неверный email или пароль",
 } as const;

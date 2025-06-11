@@ -7,3 +7,8 @@ export const RegistrationSchema = z.object({
 	phone: z.string().min(10, "invalidPhone"),
 	password: z.string().min(8, "shortPassword").max(32, "longPassword"),
 });
+
+export const LoginSchema = z.object({
+  email: z.string().email("invalidEmail"),
+  password: z.string().min(8, "shortPassword"),
+});
