@@ -10,8 +10,8 @@ import { useI18n } from "@/locales/client";
 import { Input } from "@/components/ui/input";
 import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { FormErrorMessage } from "@/components/custom/FormErrorMessage";
 import { login } from "../_actions";
+import { FormErrorMessage } from "@/components/custom/form-error-message";
 
 export const LoginForm = () => {
     const [pending, startTransition] = useTransition();
