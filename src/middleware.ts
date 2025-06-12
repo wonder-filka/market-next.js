@@ -9,7 +9,16 @@ const I18nMiddleware = createI18nMiddleware({
 	urlMappingStrategy: "rewrite",
 });
 
-const protectedRoutes = ["/ru/profile", "/en/profile", "/en/dashboard", "/ru/dashboard"];
+const protectedRoutes = [
+	"/ru/quotes",
+	"/en/quotes",
+	"/en/accounts",
+	"/ru/accounts",
+	"/en/portfolio",
+	"/ru/portfolio",
+	"/en/settings",
+	"/ru/settings",
+];
 
 export async function middleware(request: NextRequest) {
 	const response = I18nMiddleware(request);
@@ -25,9 +34,9 @@ export async function middleware(request: NextRequest) {
 	if (
 		!isProtectedRoute &&
 		session?.userId &&
-		!request.nextUrl.pathname.startsWith("/profile")
+		!request.nextUrl.pathname.startsWith("/quotes")
 	) {
-		return NextResponse.redirect(new URL("/profile", request.nextUrl));
+		return NextResponse.redirect(new URL("/quotes", request.nextUrl));
 	}
 	return response;
 }

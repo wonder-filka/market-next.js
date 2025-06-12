@@ -29,4 +29,12 @@ export default {
 	success: "You have successfully registered!",
 	registerFormDescription: "Register now to start trading or learning today",
 	incorrectCredentials: "Incorrect email or password",
+
+	  'sidebar.quotes': 'Quotes',
+  'sidebar.accounts': 'Accounts',
+  'sidebar.portfolio': 'Portfolio',
+  'sidebar.settings': 'Settings',
+  'sidebar.support': 'Support',
+  'sidebar.logout': 'Logout',
+  'sidebar.cabinet': 'Personal Cabinet',
 } as const;

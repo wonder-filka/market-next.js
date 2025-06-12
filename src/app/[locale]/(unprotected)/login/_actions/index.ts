@@ -27,5 +27,5 @@ export async function login(data: z.infer<typeof LoginSchema>) {
   }
 
   await createSession(user.id);
-  redirect("/profile");
+  redirect("/");
 }

@@ -34,5 +34,5 @@ export async function signup(data: z.infer<typeof RegistrationSchema>) {
 		},
 	});
 	await createSession(user.id);
-	redirect("/profile");
+	redirect("/");
 }

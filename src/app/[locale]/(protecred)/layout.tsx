@@ -1,11 +1,7 @@
 
-import { ProtectedHeader } from "@/components/custom/navigation-bar-protect";
 
-const user = {
-  name: "Ирина",
-  email: "iryna@example.com",
-  avatarUrl: "https://i.pravatar.cc/150?img=10"
-};
+import { AppSidebar } from "@/components/custom/app-sidebar";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 
 export default async function Layout({
@@ -14,9 +10,14 @@ export default async function Layout({
   children: React.ReactNode;
 }>) {
   return (
-    <div>
-       <ProtectedHeader user={user} />
-      {children}
-    </div>
+    <SidebarProvider defaultOpen={true}>
+      <AppSidebar />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 px-4">
+          <SidebarTrigger />
+        </header>
+        <main className="flex-1 p-4 pt-0">{children}</main>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

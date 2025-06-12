@@ -31,4 +31,12 @@ export default {
 		"Пройдите быструю регистрацию и начните торговать или учиться уже сегодня",
 
 	incorrectCredentials: "Неверный email или пароль",
+
+	  'sidebar.quotes': 'Котировки',
+  'sidebar.accounts': 'Счета',
+  'sidebar.portfolio': 'Портфель',
+  'sidebar.settings': 'Настройки',
+  'sidebar.support': 'Поддержка',
+  'sidebar.logout': 'Выйти',
+  'sidebar.cabinet': 'Личный кабинет',
 } as const;

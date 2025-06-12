@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import { I18nProviderClient } from "@/locales/client";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,16 +29,22 @@ export default async function RootLayout({
 
   const { locale } = await params
 
-  console.log("RootLayout locale:", locale);
   return (
-    <html lang="ru">
+    <html lang="ru" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <I18nProviderClient locale={locale}>
-          {children}
-        </I18nProviderClient>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <I18nProviderClient locale={locale}>
+            {children}
+          </I18nProviderClient>
 
+        </ThemeProvider>
       </body>
     </html>
   );
