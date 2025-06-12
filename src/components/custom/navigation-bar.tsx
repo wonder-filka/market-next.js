@@ -39,7 +39,7 @@ export function UnprotectedHeader() {
         </SheetContent>
       </Sheet>
       <Link href="/" className="hidden md:flex font-bold text-xl items-center">2TradeIn</Link>
-      <div className="absolute left-1/2  -translate-x-1/2" >
+      <div className="" >
         <NavigationMenu className="hidden md:flex flex-grow">
           <NavigationMenuList className="flex flex-wrap justify-center">
             <NavigationMenuItem>
