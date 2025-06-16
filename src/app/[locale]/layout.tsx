@@ -34,9 +34,16 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-          <I18nProviderClient locale={locale}>
+        <I18nProviderClient locale={locale}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
             {children}
-          </I18nProviderClient>
+          </ThemeProvider>
+        </I18nProviderClient>
       </body>
     </html>
   );
