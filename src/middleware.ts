@@ -34,9 +34,9 @@ export async function middleware(request: NextRequest) {
 	if (
 		!isProtectedRoute &&
 		session?.userId &&
-		!request.nextUrl.pathname.startsWith("/quotes")
+		!request.nextUrl.pathname.startsWith("/accounts")
 	) {
-		return NextResponse.redirect(new URL("/quotes", request.nextUrl));
+		return NextResponse.redirect(new URL("/accounts", request.nextUrl));
 	}
 	return response;
 }

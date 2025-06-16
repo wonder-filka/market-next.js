@@ -1,8 +1,14 @@
 
 
 import { AppSidebar } from "@/components/custom/app-sidebar";
+import { ProtectedHeader } from "@/components/custom/navigation-bar-protect";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
+const user = {
+  name: "Ирина",
+  email: "iryna@example.com",
+  avatarUrl: "https://i.pravatar.cc/150?img=10"
+};
 
 export default async function Layout({
   children,
@@ -11,11 +17,10 @@ export default async function Layout({
 }>) {
   return (
     <SidebarProvider defaultOpen={true}>
-      <AppSidebar />
+   
+      <AppSidebar className="hidden md:flex" />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 px-4">
-          <SidebarTrigger />
-        </header>
+           <ProtectedHeader user={user} />
         <main className="flex-1 p-4 pt-0">{children}</main>
       </SidebarInset>
     </SidebarProvider>

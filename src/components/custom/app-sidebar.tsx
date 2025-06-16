@@ -12,36 +12,14 @@ import {
   SidebarSeparator,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { Home, BarChart, Wallet, Settings, LogOut, Send } from "lucide-react"
+import { Home, BarChart, Wallet, Settings, LogOut, Send, FileCheck } from "lucide-react"
 import Link from "next/link"
 import { useI18n } from "@/locales/client"
 import { useTransition } from "react"
 import { deleteSession } from "@/lib/session"
 import { redirect } from "next/navigation"
+import { sidebarItems } from "@/lib/constants"
 
-const items = [
-  {
-    key: "sidebar.quotes",
-    url: "/quotes",
-    icon: BarChart,
-  },
-  {
-    key: "sidebar.accounts",
-    url: "/accounts",
-    icon: Wallet,
-  },
-  {
-    key: "sidebar.portfolio",
-    url: "/portfolio",
-    icon: Home,
-  },
-  {
-    key: "sidebar.settings",
-    url: "/settings",
-    icon: Settings,
-  },
-
-]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const t = useI18n();
@@ -76,7 +54,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu className="flex flex-col group-data-[collapsible=icon]:gap-4">
-            {items.map((item) => (
+            {sidebarItems.map((item) => (
               <SidebarMenuItem key={item.key} >
                 <SidebarMenuButton asChild size="lg"
                   className="[&>svg]:size-6 group-data-[collapsible=icon]:[&>svg]:ml-1">

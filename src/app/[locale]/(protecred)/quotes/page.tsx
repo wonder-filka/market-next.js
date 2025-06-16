@@ -1,9 +1,11 @@
 
-export default async function Page() {
+import { getI18n } from "@/locales/server";
 
+export default async function Page() {
+  const t = await getI18n()
   return (
     <div>
-      quotes
+      {t("sidebar.quotes")}
     </div>
   )
 }
