@@ -9,7 +9,7 @@ export function TopLosers() {
     .slice(0, 5)
 
   return (
-    <div className="p-4 border rounded-lg shadow-sm bg-white dark:bg-neutral-900">
+    <div className="p-4 border rounded-lg shadow-sm ">
       <h2 className="text-lg font-semibold mb-2">📉 Падающие рынки</h2>
       {losers.length === 0 ? (
         <div className="text-sm text-muted-foreground">Нет данных</div>
