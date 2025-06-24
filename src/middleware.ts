@@ -18,6 +18,8 @@ const protectedRoutes = [
 	"/ru/portfolio",
 	"/en/settings",
 	"/ru/settings",
+	"/en/dashboard",
+	"/ru/dashboard",
 ];
 
 export async function middleware(request: NextRequest) {

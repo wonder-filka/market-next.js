@@ -13,7 +13,7 @@ export const sidebarItems = [
   },
   {
     key: "sidebar.quotes",
-    url: "/quotes",
+    url: "/dashboard",
     icon: BarChart,
   },
   {

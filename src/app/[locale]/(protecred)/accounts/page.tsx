@@ -1,9 +1,7 @@
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { getI18n } from "@/locales/server";
-import { ArrowRight, MoreHorizontal, Plus, PlusIcon, TrendingUp, Wallet } from "lucide-react";
-import Link from "next/link";
+import { PlusIcon } from "lucide-react";
 import { AccountCard } from "./_components/account-card";
 import WalletInterface from "./_components/wallet-interface";
 
@@ -24,7 +22,6 @@ const accounts = [
     freeMargin: 200000,
     currency: "£"
   }
-  // ... или []
 ]
 
 export default async function Page() {

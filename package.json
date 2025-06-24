@@ -56,10 +56,13 @@
     "react-hook-form": "^7.58.0",
     "react-resizable-panels": "^3.0.3",
     "recharts": "^2.15.3",
+    "socket.io-client": "^4.8.1",
     "sonner": "^2.0.5",
     "tailwind-merge": "^3.3.1",
     "vaul": "^1.1.2",
-    "zod": "^3.25.64"
+    "yahoo-finance2": "^2.13.3",
+    "zod": "^3.25.64",
+    "zustand": "^5.0.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
