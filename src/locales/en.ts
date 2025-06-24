@@ -39,15 +39,95 @@ export default {
 	"sidebar.logout": "Logout",
 	"sidebar.cabinet": "Personal Cabinet",
 
+	accountsTitle: "Your trading accounts",
+	openAccount: "Open account",
+	noAccounts: "You have not opened any accounts yet.",
+	hedging: "Hedging",
+	demo: "Demo",
+	mt5: "MT5 Hedging Raw+",
+	accountBalance: "Account balance",
+	freeMargin: "Free margin",
+	deposit: "Deposit",
+	trade: "Trade",
 
-	 accountsTitle: "Your trading accounts",
-  openAccount: "Open account",
-  noAccounts: "You have not opened any accounts yet.",
-  hedging: "Hedging",
-  demo: "Demo",
-  mt5: "MT5 Hedging Raw+",
-  accountBalance: "Account balance",
-  freeMargin: "Free margin",
-  deposit: "Deposit",
-  trade: "Trade",
+	walletTitle: "Your Wallet",
+	walletBalance: "Wallet balance",
+	transactionHistory: "Transaction history",
+
+	// Wallet actions
+	withdrawFunds: "Withdraw Funds",
+	transferFunds: "Transfer",
+	depositFunds: "Deposit",
+
+	portfolioTitle: "Portfolio Overview",
+	balance: "Balance",
+	openPositions: "Open Positions",
+	totalInvested: "Total Invested",
+	currencyUSD: "USD",
+	pnlChartPlaceholder: "[PnL Chart Placeholder]",
+	buyAsset: "Buy Asset",
+	sellAsset: "Sell Asset",
+
+	tableId: "ID",
+	tableDate: "Date",
+	tableAsset: "Asset",
+	tableType: "Type",
+	tableQuantity: "Quantity",
+	tableEntry: "Entry Price",
+	tableCurrent: "Current Price",
+	tablePnL: "PnL",
+	tableStatus: "Status",
+
+	typeBuy: "Buy",
+	typeSell: "Sell",
+	statusActive: "Active",
+	statusClosed: "Closed",
+	statusLiquidated: "Liquidated",
+
+	dashboardGreeting: "Good afternoon",
+
+	// Category Panel
+	activeMarkets: "Actively Traded Markets",
+	mostPopularInCategory: "Most Popular in the Stocks Category",
+
+	// Top Gainers
+	topGainersTitle: "📈 Top Gaining Markets",
+	noGainersData: "No data available",
+
+	// Top Losers
+	topLosersTitle: "📉 Top Losing Markets",
+	noLosersData: "No data available",
+
+	// Volatile Table
+	mostVolatileTitle: "Most Volatile",
+	columnMarket: "Market",
+	columnVolatility: "Vol.",
+	columnSell: "Sell",
+	columnBuy: "Buy",
+	columnChange: "Change",
+	columnChangePercent: "%",
+
+	crypto: "Cryptocurrencies",
+	indices: "Indices",
+	forex: "Forex",
+	commodities: "Commodities",
+	stocks: "Stocks",
+
+	reportTitle: "Trading Report",
+	totalTrades: "Total Trades",
+	totalVolume: "Total Volume",
+	recentTrades: "Recent Trades",
+
+	tableTradeId: "ID",
+	tableTradeDate: "Date",
+	tableTradeAsset: "Asset",
+	tableTradeType: "Type",
+	tableTradeQuantity: "Quantity",
+	tableTradePrice: "Price/Unit",
+	tableTradeTotal: "Total",
+	tableTradeStatus: "Status",
+
+	statusCompleted: "Completed",
+	statusPending: "Pending",
+	statusCancelled: "Cancelled",
 } as const;

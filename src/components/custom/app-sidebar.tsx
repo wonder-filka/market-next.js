@@ -38,9 +38,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foregroun group-data-[collapsible=icon]:mt-2">
-              <Link href="/" className="text-2xl font-bold " hidden={state !== "collapsed"}>
+            <SidebarMenuButton 
+           >
+              <Link href="/"  hidden={state !== "collapsed"}>
                 2T
               </Link>
               <div className="grid flex-1 text-left leading-tight ">
@@ -53,14 +53,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarMenu className="flex flex-col group-data-[collapsible=icon]:gap-4">
+          <SidebarMenu >
             {sidebarItems.map((item) => (
               <SidebarMenuItem key={item.key} >
-                <SidebarMenuButton asChild size="lg"
-                  className="[&>svg]:size-6 group-data-[collapsible=icon]:[&>svg]:ml-1">
+                <SidebarMenuButton asChild 
+             >
                   <Link href={item.url} >
                     <item.icon />
-                    <span className="text-xl">{t(item.key as keyof typeof t)}</span>
+                    <span className="">{t(item.key as keyof typeof t)}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -71,16 +71,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter hidden={false}>
         <SidebarMenu >
           <SidebarMenuItem>
-            <SidebarMenuButton asChild size="lg" className="[&>svg]:size-6 group-data-[collapsible=icon]:[&>svg]:ml-1">
+            <SidebarMenuButton asChild   >
               <Link href="/support" >
                 <Send />
-                <span className="text-xl">{t('sidebar.support')}</span>
+                <span className="">{t('sidebar.support')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarSeparator />
           <SidebarMenuItem>
-            <SidebarMenuButton asChild onClick={logout} disabled={pending} size="lg" className="[&>svg]:size-6 group-data-[collapsible=icon]:[&>svg]:ml-1">
+            <SidebarMenuButton asChild onClick={logout} disabled={pending}  >
               <Link href="#" className="">
                 <LogOut />
                 <span className="text-xl">{t('sidebar.logout')}</span>

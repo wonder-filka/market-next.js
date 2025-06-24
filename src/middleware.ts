@@ -10,8 +10,8 @@ const I18nMiddleware = createI18nMiddleware({
 });
 
 const protectedRoutes = [
-	"/ru/quotes",
-	"/en/quotes",
+	"/ru/report",
+	"/en/report",
 	"/en/accounts",
 	"/ru/accounts",
 	"/en/portfolio",

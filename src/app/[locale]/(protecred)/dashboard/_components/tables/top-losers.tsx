@@ -2,8 +2,11 @@
 
 import { useQuoteStore } from "@/stores/chart-store"
 import { fakeQuotes } from "../../_actions/constants"
+import { useI18n } from "@/locales/client"
 
 export function TopLosers() {
+    const t = useI18n()
+
    const setSelectedQuote = useQuoteStore((state) => state.setSelectedQuote)
   const losers = fakeQuotes
     .filter(q => q.change !== null && q.change < -0.01)
@@ -12,9 +15,9 @@ export function TopLosers() {
 
   return (
     <div className="p-4 border rounded-lg shadow-sm ">
-      <h2 className="text-lg font-semibold mb-2">📉 Падающие рынки</h2>
+      <h2 className="text-lg font-semibold mb-2">{t("topLosersTitle")}</h2>
       {losers.length === 0 ? (
-        <div className="text-sm text-muted-foreground">Нет данных</div>
+        <div className="text-sm text-muted-foreground">{t("noLosersData")}</div>
       ) : (
         <ul className="space-y-1 text-sm">
           {losers.map((q) => (

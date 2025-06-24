@@ -5,11 +5,12 @@ import { Progress } from "@/components/ui/progress"
 import { cn } from "@/lib/utils"
 import { fakeQuotes } from "../../_actions/constants"
 import { useQuoteStore } from "@/stores/chart-store"
-
+import { useI18n } from "@/locales/client"
 
 
 export function VolatileTable() {
   const setSelectedQuote = useQuoteStore((state) => state.setSelectedQuote)
+    const t = useI18n()
   if (!fakeQuotes) {
     return (
       <div className="space-y-2">
@@ -33,16 +34,16 @@ export function VolatileTable() {
 
   return (
     <div className="border rounded-md p-4 bg-background space-y-4">
-      <h2 className="text-xl font-semibold">Высоковолатильные</h2>
+      <h2 className="text-xl font-semibold">{t("mostVolatileTitle")}</h2>
 
       <table className="w-full text-sm">
         <thead>
           <tr className="text-muted-foreground border-b">
-            <th className="text-left p-2">Рынок</th>
-            <th>Вол.</th>
-            <th>Продажа</th>
-            <th>Покупка</th>
-            <th>Изм.</th>
+            <th className="text-left p-2">{t("columnMarket")}</th>
+            <th>{t("columnVolatility")}.</th>
+            <th>{t("columnSell")}</th>
+            <th>{t("columnBuy")}</th>
+            <th>{t("columnChange")}.</th>
             <th>%</th>
           </tr>
         </thead>

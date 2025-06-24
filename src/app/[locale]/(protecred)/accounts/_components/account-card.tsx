@@ -1,8 +1,9 @@
 'use client'
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import { useI18n } from "@/locales/client"
+import { AccountItem } from "./account-item"
+import { PlusIcon } from "lucide-react"
 
 type Account = {
   id: string
@@ -13,33 +14,28 @@ type Account = {
   currency: string
 }
 
-export function AccountCard({ account }: { account: Account }) {
+export function AccountCard({ accounts }: { accounts: Account[] }) {
   const t = useI18n()
   return (
-    <Card>
-      <CardContent className="flex justify-between items-center">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold">#{account.id}</span>
-            <span className="text-sm text-muted-foreground">{t('hedging')}</span>
-          </div>
-          <span className="text-sm text-muted-foreground">{t('mt5')}</span>
+    <div className="flex flex-col gap-4 p-8">
+        <div className="flex justify-between">
+          <span className="text-2xl font-bold">{t("accountsTitle")}</span>
+          <Button variant="ghost">
+            <PlusIcon /> {t("openAccount")}
+          </Button>
         </div>
-        <div className="flex-1 flex justify-between md:justify-center gap-8">
-          <div className="text-center">
-            <p className="text-sm text-muted-foreground">{t('accountBalance')}</p>
-            <p className="text-2xl font-bold">{account.currency} {account.balance.toLocaleString()}</p>
+
+        {accounts.length > 0 ? (
+          <div className="flex flex-col gap-6">
+            {accounts.map((account) => (
+              <AccountItem key={account.id} account={account} />
+            ))}
           </div>
-          <div className="text-center">
-            <p className="text-sm text-muted-foreground">{t('freeMargin')}</p>
-            <p className="text-2xl font-bold">{account.currency} {account.freeMargin.toLocaleString()}</p>
+        ) : (
+          <div className="text-muted-foreground py-12 text-center">
+            {t("noAccounts")}
           </div>
-        </div>
-        <div className="flex gap-3">
-          <Button variant="outline">{t('deposit')}</Button>
-          <Button variant="default" >{t('trade')}</Button>
-        </div>
-      </CardContent>
-    </Card>
+        )}
+      </div>
   )
 }

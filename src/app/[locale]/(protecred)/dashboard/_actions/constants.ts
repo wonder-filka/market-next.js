@@ -1,11 +1,11 @@
-import { QuoteData } from "./types"
+import { QuoteData } from "@/lib/types"
 
 export const fakeCategories = [
-  { name: "Криптовалюты", value: 28 },
-  { name: "Индексы", value: 22 },
-  { name: "Форекс", value: 17 },
-  { name: "Сырьевые товары", value: 15 },
-  { name: "Акции", value: 18 },
+  { name: "crypto", value: 28 },
+  { name: "indices", value: 22 },
+  { name: "forex", value: 17 },
+  { name: "commodities", value: 15 },
+  { name: "stocks", value: 18 },
 ]
 
 export const popular = {
