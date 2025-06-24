@@ -1,4 +1,4 @@
-'use server';
+"use server";
 
 import { prisma } from "@/lib/db";
 import { normalizePhone } from "@/lib/helpers";
@@ -19,10 +19,12 @@ export async function signup(data: z.infer<typeof RegistrationSchema>) {
 			OR: [{ email: parsed.data.email }, { phone: normalizedPhone }],
 		},
 	});
-	if (existing) {
-		throw new Error("userExists");
+	if (existing?.email === parsed.data.email) {
+		throw new Error("emailExists");
 	}
-
+	if (existing?.phone === normalizedPhone) {
+		throw new Error("phoneExists");
+	}
 	const passwordHash = await bcrypt.hash(parsed.data.password, 10);
 	const user = await prisma.user.create({
 		data: {

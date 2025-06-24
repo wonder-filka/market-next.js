@@ -36,11 +36,18 @@ export const RegistrationForm = () => {
             try {
                 await signup(data);
             } catch (error) {
-                if (error instanceof Error && error.message === "userExists") {
-                    form.setError('email', {
-                        type: 'manual',
-                        message: "userExists", 
-                    });
+                if (error instanceof Error) {
+                    if (error.message === "emailExists") {
+                        form.setError("email", {
+                            type: "manual",
+                            message: "emailExists",
+                        });
+                    } else if (error.message === "phoneExists") {
+                        form.setError("phone", {
+                            type: "manual",
+                            message: "phoneExists",
+                        });
+                    }
                 }
             }
         })

@@ -1,8 +1,9 @@
-'use server';
+"use server";
 
 import { JWTPayload, SignJWT, jwtVerify } from "jose";
 
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
@@ -22,7 +23,7 @@ export async function decrypt(session: string | undefined = "") {
 		});
 		return payload;
 	} catch (error) {
-		return null
+		return null;
 	}
 }
 
@@ -33,11 +34,12 @@ export async function createSession(userId: string) {
 
 	cookieStore.set("session", session, {
 		httpOnly: true,
-		secure: process.env.NODE_ENV === "production", 
+		secure: process.env.NODE_ENV === "production",
 		expires: expiresAt,
 		sameSite: "lax",
 		path: "/",
 	});
+	redirect("/");
 }
 
 export async function updateSession() {
@@ -53,7 +55,7 @@ export async function updateSession() {
 	const cookieStore = await cookies();
 	cookieStore.set("session", session, {
 		httpOnly: true,
-		secure: process.env.NODE_ENV === "production", 
+		secure: process.env.NODE_ENV === "production",
 		expires: expires,
 		sameSite: "lax",
 		path: "/",
@@ -61,6 +63,7 @@ export async function updateSession() {
 }
 
 export async function deleteSession() {
-  const cookieStore = await cookies()
-  cookieStore.delete('session')
+	const cookieStore = await cookies();
+	cookieStore.delete("session");
+	redirect("/login");
 }
