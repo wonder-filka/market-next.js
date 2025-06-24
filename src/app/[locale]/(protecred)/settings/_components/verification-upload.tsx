@@ -63,9 +63,6 @@ export function VerificationForm() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-              <FormLabel>{t("verificationDocumentDescription")}</FormLabel>
-            </div>
             <FormField
               control={form.control}
               name="documentType"
@@ -79,9 +76,8 @@ export function VerificationForm() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectLabel>Password</SelectLabel>
                           {documentTypes.map((type) => (
-                            <SelectItem key={type.value} value={type.value}>  {t(type.label)}
+                            <SelectItem key={type.value} value={type.value}>  {t(type.value)}
                             </SelectItem>
 
                           ))}
