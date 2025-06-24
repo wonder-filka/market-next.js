@@ -131,4 +131,47 @@ export default {
 	statusCompleted: "Завершено",
 	statusPending: "В ожидании",
 	statusCancelled: "Отменено",
+
+	settingsTitle: "Настройки",
+	basicSettingsTitle: "Основные настройки",
+	verificationTitle: "Верификация",
+	fullName: "Полное имя",
+	language: "Язык",
+	timezone: "Часовой пояс",
+	saveChanges: "Сохранить изменения",
+	emailVerification: "Верификация Email",
+	verified: "Подтверждено",
+	verifyNow: "Подтвердить сейчас",
+
+	changePasswordTitle: "Смена пароля",
+	currentPassword: "Текущий пароль",
+	newPassword: "Новый пароль",
+	confirmPassword: "Подтвердите пароль",
+	saveNewPassword: "Сохранить новый пароль",
+	passwordChangeSuccess: "Пароль успешно изменен!",
+
+	basicSettings: "Основные настройки",
+	verificationDescription:
+		"Загрузите паспорт или удостоверение личности для подтверждения аккаунта.",
+
+	// Buttons
+	save: "Сохранить",
+	updatePassword: "Обновить пароль",
+	uploadFile: "Загрузить файл",
+	uploading: "Загрузка...",
+	verificationSubmit: "Отправить на проверку",
+
+	passwordMismatch: "Пароли не совпадают",
+
+	// Verification fields
+	document: "Документ",
+	upload: "Загрузить",
+	fileRequired: "Пожалуйста, загрузите файл",
+	verificationDocumentDescription: "Описание документа",
+	verificationUploadDocument: "Загрузка документа",
+	verificationDocumentType: "Тип документа",
+	passport: "Паспорт",
+	id_card: "Удостоверение личности",
+	driver_license: "Водительские права",
+	selectADocument: "Выберите документ",
 } as const;

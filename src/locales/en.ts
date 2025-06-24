@@ -130,4 +130,49 @@ export default {
 	statusCompleted: "Completed",
 	statusPending: "Pending",
 	statusCancelled: "Cancelled",
+
+	settingsTitle: "Settings",
+	basicSettingsTitle: "Basic Settings",
+	verificationTitle: "Verification",
+	fullName: "Full Name",
+	language: "Language",
+	timezone: "Timezone",
+	saveChanges: "Save Changes",
+	emailVerification: "Email Verification",
+	verified: "Verified",
+	verifyNow: "Verify Now",
+
+	basicSettings: "Basic Settings",
+	changePasswordTitle: "Change Password",
+
+	verificationDescription: "Upload your passport or ID to verify your account.",
+
+	currentPassword: "Current Password",
+	newPassword: "New Password",
+	confirmPassword: "Confirm New Password",
+	saveNewPassword: "Save New Password",
+	passwordChangeSuccess: "Password changed successfully!",
+
+	save: "Save",
+	updatePassword: "Update Password",
+	uploadFile: "Upload File",
+	uploading: "Uploading...",
+	verificationSubmit: "Submit for Review",
+
+	passwordMismatch: "Passwords do not match",
+
+	// Verification fields
+	document: "Document",
+	upload: "Upload",
+	fileRequired: "Please upload a file",
+	verificationDocumentDescription: "Document Description",
+	verificationUploadDocument: "Upload Document",
+
+  
+  verificationDocumentType: "Document Type",
+selectADocument: "Select a document",
+  passport: "Passport",
+  id_card: "ID Card",
+  driver_license: "Driver License",
+
 } as const;
