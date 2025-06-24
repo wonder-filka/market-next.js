@@ -1,18 +1,9 @@
+import { QuoteData } from '@/app/[locale]/(protecred)/dashboard/_actions/types'
 import { create } from 'zustand'
 
 export type QuoteHistoryPoint = {
   time: string
   price: number
-}
-
-export type QuoteData = {
-  name: string
-  symbol: string
-  price: number
-  change: number
-  sell: number
-  buy: number
-  history: QuoteHistoryPoint[]
 }
 
 type QuoteStore = {

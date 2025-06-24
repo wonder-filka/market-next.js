@@ -7,11 +7,8 @@ import { fakeQuotes } from "../../_actions/constants"
 import { useQuoteStore } from "@/stores/chart-store"
 
 
-type Props = {
-}
 
-
-export function VolatileTable({  }: Props) {
+export function VolatileTable() {
   const setSelectedQuote = useQuoteStore((state) => state.setSelectedQuote)
   if (!fakeQuotes) {
     return (
