@@ -12,6 +12,7 @@ import { SidebarTrigger } from "../ui/sidebar";
 import { useTransition } from "react";
 import { deleteSession } from "@/lib/session";
 import { redirect } from "next/navigation";
+import { UpdateUserBasicSettingsInput, UserBasicSettingsInput } from "@/lib/types";
 
 
 
@@ -26,7 +27,11 @@ function MenuIcon(props: any) {
     );
 }
 
-export function ProtectedHeader({ user }: { user: { name: string, avatarUrl?: string } }) {
+interface UserBasicSettingsProps {
+    data: UpdateUserBasicSettingsInput
+}
+
+export function ProtectedHeader({ data }: UserBasicSettingsProps) {
     const t = useI18n();
     const [pending, startTransition] = useTransition()
 
@@ -36,6 +41,8 @@ export function ProtectedHeader({ user }: { user: { name: string, avatarUrl?: st
             redirect('/login')
         })
     }
+
+    console.log(data)
     return (
         <header className="flex min-w-[80vw] justify-between items-center p-2 border-b">
             {/* Mobile menu */}
@@ -69,15 +76,14 @@ export function ProtectedHeader({ user }: { user: { name: string, avatarUrl?: st
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Avatar className="cursor-pointer">
-                            {user.avatarUrl ? (
-                                <AvatarImage src={user.avatarUrl} alt={user.name} />
-                            ) : (
-                                <AvatarFallback>{user.name[0]}</AvatarFallback>
-                            )}
+                            <AvatarFallback>
+                                {(data.firstName?.[0] || "").toUpperCase()}
+                                {(data.lastName?.[0] || "").toUpperCase()}
+                            </AvatarFallback>
                         </Avatar>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
+                        <DropdownMenuLabel>{data.firstName} {data.lastName}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
                             <Link href="/profile">{t('profile')}</Link>

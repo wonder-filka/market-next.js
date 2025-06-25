@@ -24,7 +24,7 @@ export default function PortfolioPage() {
   return (
     <div className="p-8 flex flex-col gap-8">
       <SummaryCards summary={accountSummary} />
-      <PnLChart />
+      {/* <PnLChart /> */}
       <ActionsPanel />
       <PositionsTable positions={positions} />
     </div>
