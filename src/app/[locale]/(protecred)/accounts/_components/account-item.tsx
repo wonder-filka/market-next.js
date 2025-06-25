@@ -17,9 +17,9 @@ export function AccountItem({ account }: { account: Account }) {
   const t = useI18n()
   return (
     <Card>
-      <CardContent className="flex justify-between items-center">
+      <CardContent className="flex justify-between items-start md:items-center flex-col md:flex-row gap-8">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-8">
             <span className="text-2xl font-bold">#{account.id}</span>
             <span className="text-sm text-muted-foreground">{t('hedging')}</span>
           </div>
@@ -35,7 +35,7 @@ export function AccountItem({ account }: { account: Account }) {
             <p className="text-2xl font-bold">{account.currency} {account.freeMargin.toLocaleString()}</p>
           </div>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-8">
           <Button variant="outline">{t('deposit')}</Button>
           <Button variant="default" >{t('trade')}</Button>
         </div>

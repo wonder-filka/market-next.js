@@ -22,14 +22,14 @@ export default function WalletInterface({ wallet }: WalletProps) {
         <Button variant="ghost">{t("transactionHistory")}</Button>
       </div>
       <Card>
-        <CardContent className="flex justify-between items-center">
+        <CardContent className="flex flex-col gap-8 md:flex-row justify-between items-center">
           <div>
             <p className="text-sm text-muted-foreground">{t("walletTitle")}</p>
             <p className="text-3xl font-bold">
               {wallet.currency}{wallet.balance.toLocaleString()}
             </p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-col gap-8 md:flex-row ">
             <Button variant="outline" className="flex items-center gap-2">
               <Download className="h-4 w-4" />
               {t("withdrawFunds")}
