@@ -2,6 +2,7 @@ import { SummaryCard } from "./_components/summary-card";
 import { formatCurrency } from "@/lib/helpers";
 import { TradesList } from "./_components/trades-list";
 import { Trade } from "@/lib/types";
+import { getI18n } from "@/locales/server";
 
 const fakeSummary = {
   totalTrades: 42,
@@ -63,7 +64,8 @@ const fakeTrades: Trade[] = [
 ];
 
 
-export default function Page() {
+export default async function  Page() {
+  const t = await getI18n()
   return (
     <div className="space-y-8 p-8">
       <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -73,7 +75,7 @@ export default function Page() {
       </section>
 
       <section>
-        <h2 className="text-lg font-semibold mb-4">Recent Trades</h2>
+        <h2 className="text-lg font-semibold mb-4">{t("recentTrades")}</h2>
         <TradesList data={fakeTrades} />
       </section>
     </div>

@@ -12,7 +12,7 @@ import {
   SidebarSeparator,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { Home, BarChart, Wallet, Settings, LogOut, Send, FileCheck } from "lucide-react"
+import { LogOut, Send } from "lucide-react"
 import Link from "next/link"
 import { useI18n } from "@/locales/client"
 import { useTransition } from "react"
@@ -83,7 +83,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuButton asChild onClick={logout} disabled={pending}  >
               <Link href="#" className="">
                 <LogOut />
-                <span className="text-xl">{t('sidebar.logout')}</span>
+                <span className="">{t('sidebar.logout')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
