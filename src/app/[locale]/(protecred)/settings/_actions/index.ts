@@ -5,6 +5,7 @@ import { UpdateUserBasicSettingsInput } from "@/lib/types";
 import { writeFile } from "fs/promises";
 import path from "path";
 import { promises as fs } from "fs";
+import bcrypt from "bcryptjs";
 
 /**
  * Updates the basic settings for a user.
@@ -100,4 +101,41 @@ export const verifyUser = async (
 			phone: true,
 		},
 	});
+};
+
+
+/**
+ * Changes the user's password.
+ * @param userId - The user's ID.
+ * @param currentPassword - The user's current password.
+ * @param newPassword - The new password to set.
+ * @returns True if password changed, otherwise throws error.
+ */
+export const changeUserPassword = async (
+	userId: string,
+	currentPassword: string,
+	newPassword: string
+) => {
+	const user = await prisma.user.findUnique({
+		where: { id: userId },
+		select: { passwordHash: true },
+	});
+
+	if (!user || !user.passwordHash) {
+		throw new Error("User not found");
+	}
+
+	const isMatch = await bcrypt.compare(currentPassword, user.passwordHash);
+	if (!isMatch) {
+		throw new Error("Current password is incorrect");
+	}
+
+	const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+	await prisma.user.update({
+		where: { id: userId },
+		data: { passwordHash: hashedPassword },
+	});
+
+	return true;
 };

@@ -175,5 +175,7 @@ export default {
 	id_card: "ID Card",
 	driver_license: "Driver License",
 	alreadyVerified: "Your account has already been verified. Thank you!",
-	"fileTooLarge": "The file is too large. Maximum size is 10MB."
+	fileTooLarge: "The file is too large. Maximum size is 10MB.",
+	basicSettingsUpdated: "Settings have been successfully saved.",
+	passwordUpdated: "Your password has been successfully updated.",
 } as const;

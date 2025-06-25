@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button"
 import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { FormErrorMessage } from "@/components/custom/form-error-message"
+import { changeUserPassword } from "../_actions"
+import { toast } from "sonner"
 
 const passwordSchema = z.object({
   currentPassword: z.string().min(6, "shortPassword"),
@@ -19,7 +21,11 @@ const passwordSchema = z.object({
 
 type PasswordFormValues = z.infer<typeof passwordSchema>
 
-export function ChangePasswordForm() {
+interface ChangePasswordProps {
+  userId: string
+}
+
+export function ChangePasswordForm({ userId }: ChangePasswordProps) {
   const t = useI18n()
   const [pending, startTransition] = useTransition()
 
@@ -33,8 +39,11 @@ export function ChangePasswordForm() {
 
   const onSubmit: SubmitHandler<PasswordFormValues> = async (values) => {
     startTransition(async () => {
-      // Replace with your password update logic
+      await changeUserPassword(userId, values.currentPassword, values.newPassword)
       console.log("Password update:", values)
+      toast.success(t("passwordUpdated"), {
+        style: { color: 'white', backgroundColor: 'green' },
+      })
     })
   }
 

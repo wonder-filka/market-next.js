@@ -176,5 +176,7 @@ export default {
 	driver_license: "Водительские права",
 	selectADocument: "Выберите документ",
 	alreadyVerified: "Ваш аккаунт уже подтверждён. Спасибо!",
-	"fileTooLarge": "Файл слишком большой. Максимальный размер — 10 МБ."
+	fileTooLarge: "Файл слишком большой. Максимальный размер — 10 МБ.",
+	basicSettingsUpdated: "Настройки успешно сохранены.",
+	passwordUpdated: "Пароль успешно обновлён.",
 } as const;
