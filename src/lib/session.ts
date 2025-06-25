@@ -67,3 +67,13 @@ export async function deleteSession() {
 	cookieStore.delete("session");
 	redirect("/login");
 }
+
+export async function getSessionUserId(): Promise<string | null> {
+	const session = (await cookies()).get("session")?.value
+	if (!session) return null
+
+	const payload = await decrypt(session)
+	if (!payload || typeof payload.userId !== "string") return null
+
+	return payload.userId
+}

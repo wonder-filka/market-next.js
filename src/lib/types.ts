@@ -18,3 +18,18 @@ export type Trade = {
   total: number;        // общая сумма сделки
   status: "Completed" | "Pending" | "Cancelled"; // статус сделки
 };
+
+export type UpdateUserBasicSettingsInput = {
+	id: string
+	firstName: string
+	lastName: string
+	email: string
+	phone: string
+}
+
+export type UserBasicSettingsInput = {
+	firstName: string
+	lastName: string
+	email: string
+	phone: string
+}

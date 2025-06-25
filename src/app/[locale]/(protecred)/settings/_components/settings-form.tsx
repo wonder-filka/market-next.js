@@ -11,6 +11,9 @@ import { Button } from "@/components/ui/button"
 import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { FormErrorMessage } from "@/components/custom/form-error-message"
+import { User } from "@/generated/prisma"
+import { UpdateUserBasicSettingsInput, UserBasicSettingsInput } from "@/lib/types"
+import { updateUserBasicSettings } from "../_actions"
 
 const basicSchema = z.object({
   firstName: z.string().min(2, "minFirstName"),
@@ -21,25 +24,34 @@ const basicSchema = z.object({
 
 type BasicSettingsFormValues = z.infer<typeof basicSchema>
 
-export function BasicSettingsForm() {
+interface UserBasicSettingsProps {
+	data: UpdateUserBasicSettingsInput
+}
+
+export function BasicSettingsForm({data}: UserBasicSettingsProps) {
   const t = useI18n()
   const [pending, startTransition] = useTransition()
 
   const form = useForm<BasicSettingsFormValues>({
     resolver: zodResolver(basicSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
+      firstName: data.firstName || "",
+      lastName: data.lastName || "",
+      email: data.email || "",
+      phone: data.phone || "",
     },
   })
 
   const onSubmit: SubmitHandler<BasicSettingsFormValues> = async (values) => {
-    startTransition(() => {
-      console.log(values)
+    startTransition( async() => {
+      const val = {
+        id: data.id,
+        ...values
+      }
+      await updateUserBasicSettings(val)
     })
   }
+  
 
   return (
     <Card>

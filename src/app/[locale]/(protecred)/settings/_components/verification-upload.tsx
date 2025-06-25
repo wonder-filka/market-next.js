@@ -1,6 +1,6 @@
 'use client'
 
-import { useTransition } from "react"
+import { useState, useTransition } from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { verifyUser } from "../_actions"
 
 const documentTypes = [
   { value: "passport", label: "Passport" },
@@ -36,10 +37,15 @@ const VerificationSchema = z.object({
 
 type VerificationFormValues = z.infer<typeof VerificationSchema>
 
-export function VerificationForm() {
+interface VerificationFormProps {
+  isVerifed: boolean,
+  userId: string
+}
+
+export function VerificationForm({ isVerifed, userId }: VerificationFormProps) {
   const t = useI18n()
   const [pending, startTransition] = useTransition()
-
+  const [isVerifedUser, setIsVerifedUser] = useState(isVerifed)
   const form = useForm<VerificationFormValues>({
     resolver: zodResolver(VerificationSchema),
     defaultValues: {
@@ -47,12 +53,33 @@ export function VerificationForm() {
       documentType: "",
     },
   })
-
+  const { clearErrors, setError } = form
   const onSubmit: SubmitHandler<VerificationFormValues> = async (data) => {
-    startTransition(() => {
-      // handle file upload here
-      console.log("Verification:", data)
+    startTransition(async () => {
+      const file = data.file?.[0]
+      if (!file) return
+
+      try {
+        const updatedUser = await verifyUser(userId, data.documentType, file)
+        console.log("✅ Verification success:", updatedUser)
+        setIsVerifedUser(true)
+      } catch (err) {
+        console.error("❌ Verification error:", err)
+      }
     })
+  }
+
+  if (isVerifedUser) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("verificationTitle")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-green-600">{t("alreadyVerified")}</div>
+        </CardContent>
+      </Card>
+    )
   }
 
   return (
@@ -70,18 +97,17 @@ export function VerificationForm() {
                 <FormItem>
                   <FormLabel>{t("verificationDocumentType")}</FormLabel>
                   <FormControl>
-                    <Select>
+                    <Select {...field} onValueChange={field.onChange} value={field.value}>
                       <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder={t("selectADocument")} />
+                        <SelectValue placeholder={t("selectADocument")} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
                           {documentTypes.map((type) => (
-                            <SelectItem key={type.value} value={type.value}>  {t(type.value)}
+                            <SelectItem key={type.value} value={type.value}>
+                              {t(type.value)}
                             </SelectItem>
-
                           ))}
-                         
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -102,8 +128,22 @@ export function VerificationForm() {
                   <FormControl>
                     <Input
                       type="file"
+                      accept=".jpeg,.jpg,.png, .webp,.heic,.heif, .pdf"
                       disabled={pending}
-                      onChange={e => field.onChange(e.target.files)}
+                      onChange={(e) => {
+                        const files = e.target.files
+                        const f = files?.[0]
+                        if (!f) return
+                        if (f.size > 10 * 1024 * 1024) {
+                          setError("file", {
+                            type: "manual",
+                            message: "fileTooLarge",
+                          })
+                          return
+                        }
+                        clearErrors("file")
+                        field.onChange(files)
+                      }}
                     />
                   </FormControl>
                   <FormErrorMessage

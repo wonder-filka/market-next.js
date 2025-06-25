@@ -26,7 +26,7 @@ export default {
 	shortPassword: "Password too short",
 	longPassword: "Password too long",
 	emailExists: "A user with this email already exists",
-phoneExists: "A user with this phone number already exists",
+	phoneExists: "A user with this phone number already exists",
 	success: "You have successfully registered!",
 	registerFormDescription: "Register now to start trading or learning today",
 	incorrectCredentials: "Incorrect email or password",
@@ -169,11 +169,11 @@ phoneExists: "A user with this phone number already exists",
 	verificationDocumentDescription: "Document Description",
 	verificationUploadDocument: "Upload Document",
 
-  
-  verificationDocumentType: "Document Type",
-selectADocument: "Select a document",
-  passport: "Passport",
-  id_card: "ID Card",
-  driver_license: "Driver License",
-
+	verificationDocumentType: "Document Type",
+	selectADocument: "Select a document",
+	passport: "Passport",
+	id_card: "ID Card",
+	driver_license: "Driver License",
+	alreadyVerified: "Your account has already been verified. Thank you!",
+	"fileTooLarge": "The file is too large. Maximum size is 10MB."
 } as const;
