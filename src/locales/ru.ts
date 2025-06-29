@@ -5,7 +5,6 @@ export default {
 	contacts: "Контакты",
 	login: "Войти",
 	profile: "Профиль",
-	dashboard: "Личный кабинет",
 	logout: "Выйти",
 	reviews: "Отзывы",
 	faq: "FAQ",
@@ -214,4 +213,12 @@ export default {
 	takeProfit: "Тейк-профит",
 	stopLoss: "Стоп-лосс",
 	lotSize: "Лотажность",
+
+	filterDay: "День",
+	filterWeek: "Неделя",
+	filterMonth: "Месяц",
+	tableTradePeriod: "Период сделки",
+	resetFilter: "Сбросить фильтр",
+	selectDate: "Выбрать дату",
+	resetDate: "Сбросить дату",
 } as const;

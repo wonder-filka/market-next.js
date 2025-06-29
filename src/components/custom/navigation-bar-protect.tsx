@@ -41,8 +41,6 @@ export function ProtectedHeader({ data }: UserBasicSettingsProps) {
             redirect('/login')
         })
     }
-
-    console.log(data)
     return (
         <header className="flex min-w-[80vw] justify-between items-center p-2 border-b">
             {/* Mobile menu */}
@@ -86,10 +84,10 @@ export function ProtectedHeader({ data }: UserBasicSettingsProps) {
                         <DropdownMenuLabel>{data.firstName} {data.lastName}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
-                            <Link href="/profile">{t('profile')}</Link>
+                            <Link href="/accounts">{t('sidebar.accounts')}</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                            <Link href="/dashboard">{t('dashboard')}</Link>
+                            <Link href="/settings">{t('sidebar.settings')}</Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>

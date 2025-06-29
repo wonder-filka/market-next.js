@@ -13,7 +13,8 @@ const fakeSummary = {
 const fakeTrades: Trade[] = [
   {
     id: "TRD-001",
-    date: "2024-06-01 10:15",
+    startDate: "2024-06-01 09:00",
+    endDate: "2024-06-01 10:15",
     asset: "BTC",
     type: "Buy",
     quantity: 0.5,
@@ -23,7 +24,8 @@ const fakeTrades: Trade[] = [
   },
   {
     id: "TRD-002",
-    date: "2024-06-02 14:30",
+    startDate: "2024-06-02 14:00",
+    endDate: "2024-06-02 14:30",
     asset: "ETH",
     type: "Sell",
     quantity: 10,
@@ -33,7 +35,8 @@ const fakeTrades: Trade[] = [
   },
   {
     id: "TRD-003",
-    date: "2024-06-03 09:20",
+    startDate: "2024-06-06 08:00",
+    endDate: "2024-06-06 09:20",
     asset: "SOL",
     type: "Buy",
     quantity: 100,
@@ -43,7 +46,8 @@ const fakeTrades: Trade[] = [
   },
   {
     id: "TRD-004",
-    date: "2024-06-04 16:45",
+    startDate: "2024-06-10 15:00",
+    endDate: "2024-06-10 16:45",
     asset: "ADA",
     type: "Sell",
     quantity: 2000,
@@ -53,7 +57,8 @@ const fakeTrades: Trade[] = [
   },
   {
     id: "TRD-005",
-    date: "2024-06-05 11:10",
+    startDate: "2024-06-15 10:00",
+    endDate: "2024-06-15 11:10",
     asset: "BTC",
     type: "Buy",
     quantity: 0.2,
@@ -61,7 +66,7 @@ const fakeTrades: Trade[] = [
     total: 13400,
     status: "Completed",
   },
-];
+]
 
 
 export default async function  Page() {

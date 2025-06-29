@@ -23,7 +23,6 @@ export default async function DashboardPage() {
   const name = 'Lena'
 
   const quotes = await getQuotes()
-  console.log(quotes)
   return (
     <main className="p-6 space-y-6">
       <h1 className="text-3xl font-bold">{t("dashboardGreeting")}, {name}</h1>

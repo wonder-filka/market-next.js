@@ -216,4 +216,12 @@ export default {
 	stopLoss: "Stop Loss",
 	lotSize: "Lot Size",
 	confirm: "Confirm",
+
+	filterDay: "Day",
+	filterWeek: "Week",
+	filterMonth: "Month",
+	tableTradePeriod: "Trade Period",
+	resetFilter: "Reset filter",
+	selectDate: "Select date",
+	resetDate: "Reset date",
 } as const;
