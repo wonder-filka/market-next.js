@@ -31,7 +31,7 @@ export default {
 	registerFormDescription: "Register now to start trading or learning today",
 	incorrectCredentials: "Incorrect email or password",
 
-	"sidebar.quotes": "Quotes",
+	"sidebar.quotes": "Trade",
 	"sidebar.accounts": "Accounts",
 	"sidebar.portfolio": "Portfolio",
 	"sidebar.report": "Report",
@@ -210,4 +210,10 @@ export default {
 	low: "Low",
 	locale: "en-US",
 
+	buy: "Buy",
+	sell: "Sell",
+	takeProfit: "Take Profit",
+	stopLoss: "Stop Loss",
+	lotSize: "Lot Size",
+	confirm: "Confirm",
 } as const;

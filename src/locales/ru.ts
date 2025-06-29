@@ -33,7 +33,7 @@ export default {
 
 	incorrectCredentials: "Неверный email или пароль",
 
-	"sidebar.quotes": "Котировки",
+	"sidebar.quotes": "Торговать",
 	"sidebar.accounts": "Счета",
 	"sidebar.portfolio": "Портфель",
 	"sidebar.report": "Отчет",
@@ -209,6 +209,9 @@ export default {
 	high: "Макс.",
 	low: "Мин.",
 	locale: "ru-RU",
-
-
+	buy: "Купить",
+	sell: "Продать",
+	takeProfit: "Тейк-профит",
+	stopLoss: "Стоп-лосс",
+	lotSize: "Лотажность",
 } as const;

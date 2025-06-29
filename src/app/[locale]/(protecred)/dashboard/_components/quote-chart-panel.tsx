@@ -10,10 +10,11 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { useQuoteStore } from '@/stores/chart-store'
-import * as React from 'react'
 import { useCurrentLocale, useI18n } from '@/locales/client'
 import { Button } from '@/components/ui/button'
 import { quoteNames } from '@/lib/constants'
+import { useState } from 'react'
+import { TradeDialog } from './trade-dialog'
 
 const Candlestick = (props: any) => {
   const {
@@ -59,8 +60,8 @@ const prepareCandlestickData = (history: { time: string; price: number }[]) => {
     return {
       ...d,
       openClose: [open, close],
-      high, 
-      low,  
+      high,
+      low,
     }
   })
 }
@@ -69,6 +70,9 @@ export function QuoteChartPanel() {
   const t = useI18n()
   const locale = useCurrentLocale()
   const selectedQuote = useQuoteStore((state) => state.selectedQuote)
+  const [isDialogOpen, setDialogOpen] = useState<boolean>(false)
+  const [tradeType, setTradeType] = useState<'buy' | 'sell'>('buy')
+
   if (!selectedQuote) return null
 
   const data = prepareCandlestickData(selectedQuote.history)
@@ -80,11 +84,17 @@ export function QuoteChartPanel() {
     <>
 
       <div className="w-full rounded-lg border p-4 shadow-sm bg-background">
+        <TradeDialog
+          isOpen={isDialogOpen}
+          onClose={() => setDialogOpen(false)}
+          type={tradeType}
+          assetName={quoteNames[selectedQuote.symbol]?.[locale] ?? selectedQuote.name}
+        />
         <div className='flex justify-between'>
           <h2 className="text-lg font-semibold mb-2">{quoteNames[selectedQuote.symbol]?.[locale] ?? selectedQuote.name}</h2>
           <div className='m-2 flex gap-4'>
-            <Button>Купить</Button>
-            <Button>Продать</Button>
+            <Button onClick={() => { setDialogOpen(true); setTradeType('buy') }} className='bg-blue-700'>{t("buy")}</Button>
+            <Button onClick={() => { setDialogOpen(true); setTradeType('sell') }} className='bg-blue-700'>{t("sell")}</Button>
           </div>
         </div>
         <div className="h-[300px] w-full">
