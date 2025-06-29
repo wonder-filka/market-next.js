@@ -201,7 +201,13 @@ export default {
 	quantity: "Quantity",
 	confirmBuy: "Confirm Purchase",
 	confirmSell: "Confirm Sale",
-	  "editPosition": "Edit position",
-  "buyMore": "Buy more",
-  "sellPart": "Sell part"
+	editPosition: "Edit position",
+	buyMore: "Buy more",
+	sellPart: "Sell part",
+	open: "Open",
+	close: "Close",
+	high: "High",
+	low: "Low",
+	locale: "en-US",
+
 } as const;

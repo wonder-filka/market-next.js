@@ -8,6 +8,25 @@ export type QuoteData = {
 	buy: number;
 };
 
+export type QuoteHistoryPoint = {
+  time: string
+  price: number
+  open?: number
+  close?: number
+  high?: number
+  low?: number
+}
+
+export type Quote = {
+  symbol: string
+  name: string
+  price: number
+  change: number
+  buy: number
+  sell: number
+  history: QuoteHistoryPoint[]
+}
+
 export type Trade = {
   id: string;
   date: string;         // формат: "YYYY-MM-DD HH:mm"

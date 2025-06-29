@@ -14,7 +14,7 @@ export default async function SettingsPage() {
   const userBasicSettings = await getUserBasicSettings(userId)
   if (!userBasicSettings) return
 
-  console.log(userBasicSettings)
+  // console.log(userBasicSettings)
   return (
     <div className="p-6 space-y-8">
       <h1 className="text-3xl font-bold">{t("settingsTitle")}</h1>

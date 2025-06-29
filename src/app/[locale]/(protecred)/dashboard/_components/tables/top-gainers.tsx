@@ -1,14 +1,18 @@
 'use client'
 
 import { useQuoteStore } from "@/stores/chart-store"
-import { fakeQuotes } from "../../_actions/constants"
 import { useI18n } from "@/locales/client"
+import { Quote } from "@/lib/types"
 
-export function TopGainers() {
+type Props = {
+  initialQuotes: Quote[]
+}
+
+export function TopGainers({ initialQuotes }: Props) {
   const t = useI18n()
 
     const setSelectedQuote = useQuoteStore((state) => state.setSelectedQuote)
-  const gainers = fakeQuotes
+  const gainers = initialQuotes
     .filter(q => q.change !== null && q.change > 0.01)
     .sort((a, b) => b.change! - a.change!)
     .slice(0, 5)
