@@ -17,9 +17,9 @@ export default function WalletInterface({ wallet }: WalletProps) {
 
   return (
     <div className="flex flex-col gap-4 p-8">
-      <div className="flex justify-between">
+      <div className="flex justify-start">
         <span className="text-2xl font-bold">{t("walletTitle")}</span>
-        <Button variant="ghost">{t("transactionHistory")}</Button>
+       
       </div>
       <Card>
         <CardContent className="flex flex-col gap-8 md:flex-row justify-between items-center">

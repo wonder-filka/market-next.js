@@ -1,9 +1,8 @@
 'use client'
 
-import { Button } from "@/components/ui/button"
 import { useI18n } from "@/locales/client"
 import { AccountItem } from "./account-item"
-import { PlusIcon } from "lucide-react"
+import { OpenAccount } from "./open-account"
 
 type Account = {
   id: string
@@ -20,9 +19,7 @@ export function AccountCard({ accounts }: { accounts: Account[] }) {
     <div className="flex flex-col gap-4 p-8">
         <div className="flex justify-between">
           <span className="text-2xl font-bold">{t("accountsTitle")}</span>
-          <Button variant="default" className="bg-blue-900">
-            <PlusIcon /> {t("openAccount")}
-          </Button>
+         <OpenAccount />
         </div>
 
         {accounts.length > 0 ? (

@@ -6,16 +6,16 @@ const accounts = [
     id: "590670305",
     isDemo: true,
     type: "hedging",
-    balance: 200000,
-    freeMargin: 200000,
+    balance: 1234.56,
+    freeMargin: 1234.56,
     currency: "£"
   },
   {
     id: "5910670305",
     isDemo: true,
     type: "hedging",
-    balance: 200000,
-    freeMargin: 200000,
+    balance: 1234.56,
+    freeMargin: 1234.56,
     currency: "£"
   }
 ]

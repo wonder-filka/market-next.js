@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useI18n } from "@/locales/client"
+import { useRouter } from "next/navigation"
 
 type Account = {
   id: string
@@ -15,15 +16,15 @@ type Account = {
 
 export function AccountItem({ account }: { account: Account }) {
   const t = useI18n()
+  const router = useRouter()
   return (
     <Card>
       <CardContent className="flex justify-between items-start md:items-center flex-col md:flex-row gap-8">
         <div>
           <div className="flex items-center gap-8">
             <span className="text-2xl font-bold">#{account.id}</span>
-            <span className="text-sm text-muted-foreground">{t('hedging')}</span>
+            {/* <span className="text-sm text-muted-foreground">{t('hedging')}</span> */}
           </div>
-          <span className="text-sm text-muted-foreground">{t('mt5')}</span>
         </div>
         <div className="flex-1 flex justify-between md:justify-center gap-8">
           <div className="text-center">
@@ -37,7 +38,7 @@ export function AccountItem({ account }: { account: Account }) {
         </div>
         <div className="flex gap-8">
           <Button variant="outline">{t('deposit')}</Button>
-          <Button variant="default" >{t('trade')}</Button>
+          <Button variant="default" onClick={() => router.push('/dashboard')}>{t('trade')}</Button>
         </div>
       </CardContent>
     </Card>

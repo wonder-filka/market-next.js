@@ -4,14 +4,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useI18n } from "@/locales/client"
 
-export function SummaryCards({ summary }: { summary: { balance: number, openPositions: number, invested: number } }) {
+interface Props {
+  balance: number,
+  openPositions: number,
+  profit: number,
+  loss: number,
+}
+export const SummaryCards = ({ balance, openPositions, profit, loss }: Props) => {
   const t = useI18n()
 
   const formatCurrency = (value: number) =>
     value.toLocaleString("en-US", { style: "currency", currency: "USD" })
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-8">
@@ -20,7 +26,7 @@ export function SummaryCards({ summary }: { summary: { balance: number, openPosi
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold">{formatCurrency(summary.balance)}</div>
+          <div className="text-3xl font-bold">{formatCurrency(balance)}</div>
         </CardContent>
       </Card>
       <Card>
@@ -28,15 +34,23 @@ export function SummaryCards({ summary }: { summary: { balance: number, openPosi
           <CardTitle>{t("openPositions")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold">{summary.openPositions}</div>
+          <div className="text-3xl font-bold">{openPositions}</div>
         </CardContent>
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>{t("totalInvested")}</CardTitle>
+          <CardTitle>{t("profit")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold">{formatCurrency(summary.invested)}</div>
+          <div className="text-3xl font-bold text-green-600">{formatCurrency(profit)}</div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("loss")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-3xl font-bold text-red-600">{formatCurrency(loss)}</div>
         </CardContent>
       </Card>
     </div>

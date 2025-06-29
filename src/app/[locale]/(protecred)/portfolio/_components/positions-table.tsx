@@ -12,6 +12,17 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowUpRight, ArrowDownRight } from "lucide-react"
 import { useI18n } from "@/locales/client"
 import { Card, CardContent } from "@/components/ui/card"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import * as React from "react"
 
 const assetNames: Record<string, string> = {
   BTC: "Bitcoin",
@@ -25,20 +36,20 @@ const assetNames: Record<string, string> = {
 
 export function PositionsTable({ positions }: { positions: any[] }) {
   const t = useI18n()
-
-  const statusVariant = {
-    Active: "default",
-    Closed: "secondary",
-    Liquidated: "destructive"
-  }
+  const [openDialogId, setOpenDialogId] = React.useState<string | null>(null)
+  const [activeAction, setActiveAction] = React.useState<'buy' | 'sell' | null>(null)
+  const [amount, setAmount] = React.useState<number | "">("")
+  const [selectedPosition, setSelectedPosition] = React.useState<any | null>(null)
 
   const formatCurrency = (value: number) =>
     value.toLocaleString("en-US", { style: "currency", currency: "USD" })
 
-  const formatDate = (date: string) =>
-    new Date(date).toLocaleDateString("en-US", {
-      year: "numeric", month: "short", day: "numeric"
-    })
+  const handleSubmit = () => {
+    console.log("Submit action:", activeAction, "amount:", amount, selectedPosition)
+    setAmount("")
+    setActiveAction(null)
+    setOpenDialogId(null)
+  }
 
   return (
     <Card>
@@ -51,8 +62,6 @@ export function PositionsTable({ positions }: { positions: any[] }) {
               <TableHead>{t("tableShares")}</TableHead>
               <TableHead>{t("tablePrice")}</TableHead>
               <TableHead>{t("tableChange")}</TableHead>
-              <TableHead>{t("tableTotalCost")}</TableHead>
-              <TableHead>{t("tableMarketValue")}</TableHead>
               <TableHead>{t("tableGain")}</TableHead>
               <TableHead>{t("tableReturn")}</TableHead>
               <TableHead>{t("tableActions")}</TableHead>
@@ -61,9 +70,8 @@ export function PositionsTable({ positions }: { positions: any[] }) {
           <TableBody>
             {positions.map((pos) => {
               const returnPercentage = ((pos.pnl / (pos.entry * pos.quantity)) * 100).toFixed(2)
-              const totalCost = pos.entry * pos.quantity
-              const marketValue = pos.current * pos.quantity
               const name = assetNames[pos.asset] || pos.asset
+
               return (
                 <TableRow key={pos.id}>
                   <TableCell>
@@ -80,8 +88,6 @@ export function PositionsTable({ positions }: { positions: any[] }) {
                       {formatCurrency(pos.current - pos.entry)}
                     </span>
                   </TableCell>
-                  <TableCell>{formatCurrency(totalCost)}</TableCell>
-                  <TableCell>{formatCurrency(marketValue)}</TableCell>
                   <TableCell>
                     <span className={`flex items-center gap-1 font-medium ${pos.pnl >= 0 ? "text-green-500" : "text-red-500"}`}>
                       {pos.pnl >= 0 ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
@@ -90,9 +96,53 @@ export function PositionsTable({ positions }: { positions: any[] }) {
                   </TableCell>
                   <TableCell className={pos.pnl >= 0 ? "text-green-600" : "text-red-600"}>{returnPercentage}%</TableCell>
                   <TableCell>
-                    <button className="text-sm font-medium text-blue-500 hover:underline">
-                      {t("edit")}
-                    </button>
+                    <Dialog
+                      open={openDialogId === pos.id}
+                      onOpenChange={(isOpen) => {
+                        if (!isOpen) {
+                          setAmount("")
+                          setActiveAction(null)
+                          setSelectedPosition(null)
+                        } else {
+                          setSelectedPosition(pos)
+                        }
+                        setOpenDialogId(isOpen ? pos.id : null)
+                      }}>
+                      <DialogTrigger asChild>
+                        <Button variant="link" className="text-blue-400 p-0 m-0">
+                          {t("edit")}
+                        </Button>
+                      </DialogTrigger>
+                      {openDialogId === pos.id && (
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>{t("editPosition")}: {pos.asset}</DialogTitle>
+                            <DialogDescription></DialogDescription>
+                          </DialogHeader>
+                          <div className="flex gap-4 mt-4">
+                            <Button variant={activeAction === 'buy' ? 'default' : 'secondary'} onClick={() => setActiveAction("buy")}>{t("buyMore")}</Button>
+                            <Button variant={activeAction === 'sell' ? 'default' : 'secondary'} onClick={() => setActiveAction("sell")}>{t("sellPart")}</Button>
+                          </div>
+                          {activeAction && (
+                            <form onSubmit={(e) => { e.preventDefault(); handleSubmit() }} className="mt-4 space-y-4">
+                              <Input
+                                type="number"
+                                min="0"
+                                step="any"
+                                value={amount}
+                                onChange={(e) => {
+                                  const val = parseFloat(e.target.value)
+                                  setAmount(isNaN(val) ? "" : val)
+                                }}
+
+                                placeholder="0.00"
+                              />
+                              <Button type="submit" disabled={!amount}>{t("save")}</Button>
+                            </form>
+                          )}
+                        </DialogContent>
+                      )}
+                    </Dialog>
                   </TableCell>
                 </TableRow>
               )

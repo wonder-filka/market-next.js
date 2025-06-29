@@ -7,7 +7,6 @@ import { SummaryCards } from "./_components/summary-cards";
 const accountSummary = {
   balance: 18750.5,
   openPositions: 4,
-  invested: 15000
 };
 
 const positions = [
@@ -21,9 +20,16 @@ const positions = [
 ];
 
 export default function PortfolioPage() {
+    const profit = positions.filter(p => p.pnl > 0).reduce((sum, p) => sum + p.pnl, 0)
+  const loss = positions.filter(p => p.pnl < 0).reduce((sum, p) => sum + Math.abs(p.pnl), 0)
+
+
   return (
     <div className="p-8 flex flex-col gap-8">
-      <SummaryCards summary={accountSummary} />
+      <SummaryCards  balance={accountSummary.balance}
+        openPositions={accountSummary.openPositions}
+        profit={profit}
+        loss={loss} />
       {/* <PnLChart /> */}
       <ActionsPanel />
       <PositionsTable positions={positions} />

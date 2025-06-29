@@ -181,4 +181,28 @@ export default {
 	fileTooLarge: "Файл слишком большой. Максимальный размер — 10 МБ.",
 	basicSettingsUpdated: "Настройки успешно сохранены.",
 	passwordUpdated: "Пароль успешно обновлён.",
+
+	openAccountTitle: "Открытие нового счёта",
+	createAccount: "Создать счёт",
+	accountType: "Тип счёта",
+	selectAccountType: "Выберите тип счёта",
+	realAccount: "Реальный",
+	demoAccount: "Демо",
+	currency: "Валюта",
+	selectCurrency: "Выберите валюту",
+	leverage: "Кредитное плечо",
+	selectLeverage: "Выберите плечо",
+	 "profit": "Прибыль",
+  "loss": "Убыток",
+
+  buyAssetTitle: "Покупка актива",
+  sellAssetTitle: "Продажа актива",
+  selectAsset: "Выберите актив",
+  quantity: "Количество",
+  confirmBuy: "Подтвердить покупку",
+  confirmSell: "Подтвердить продажу",
+    "editPosition": "Редактировать позицию",
+  "buyMore": "Докупить",
+  "sellPart": "Продать"
+
 } as const;

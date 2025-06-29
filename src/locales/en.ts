@@ -180,4 +180,28 @@ export default {
 	fileTooLarge: "The file is too large. Maximum size is 10MB.",
 	basicSettingsUpdated: "Settings have been successfully saved.",
 	passwordUpdated: "Your password has been successfully updated.",
+
+	openAccountTitle: "Open a New Account",
+	createAccount: "Create Account",
+	accountType: "Account Type",
+	selectAccountType: "Select account type",
+	realAccount: "Real",
+	demoAccount: "Demo",
+	currency: "Currency",
+	selectCurrency: "Select currency",
+	leverage: "Leverage",
+	selectLeverage: "Select leverage",
+
+	profit: "Profit",
+	loss: "Loss",
+
+	buyAssetTitle: "Buy Asset",
+	sellAssetTitle: "Sell Asset",
+	selectAsset: "Select Asset",
+	quantity: "Quantity",
+	confirmBuy: "Confirm Purchase",
+	confirmSell: "Confirm Sale",
+	  "editPosition": "Edit position",
+  "buyMore": "Buy more",
+  "sellPart": "Sell part"
 } as const;
