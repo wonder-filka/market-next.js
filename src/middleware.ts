@@ -30,7 +30,11 @@ export async function middleware(request: NextRequest) {
 	const cookie = (await cookies()).get("session")?.value;
 	const session = await decrypt(cookie);
 	if (isProtectedRoute && !session?.userId) {
-		return NextResponse.redirect(new URL("/", request.nextUrl));
+		const redirectResponse = NextResponse.redirect(
+			new URL("/", request.nextUrl)
+		);
+		redirectResponse.cookies.delete("session");
+		return redirectResponse;
 	}
 
 	if (

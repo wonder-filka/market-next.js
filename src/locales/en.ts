@@ -224,4 +224,7 @@ export default {
 	resetFilter: "Reset filter",
 	selectDate: "Select date",
 	resetDate: "Reset date",
+
+	accountCreated: "Account successfully created",
+	accountCreationFailed: "Failed to create account",
 } as const;

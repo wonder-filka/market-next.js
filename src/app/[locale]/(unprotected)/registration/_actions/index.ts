@@ -33,6 +33,12 @@ export async function signup(data: z.infer<typeof RegistrationSchema>) {
 			email: parsed.data.email,
 			phone: normalizedPhone,
 			passwordHash,
+			wallet: {
+				create: {
+					balance: 0,
+					currency: parsed.data.currency,
+				},
+			},
 		},
 	});
 	await createSession(user.id);

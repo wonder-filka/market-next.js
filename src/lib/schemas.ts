@@ -6,9 +6,10 @@ export const RegistrationSchema = z.object({
 	email: z.string().email("invalidEmail"),
 	phone: z.string().min(10, "invalidPhone"),
 	password: z.string().min(8, "shortPassword").max(32, "longPassword"),
+	currency: z.enum(["RUB", "EUR", "GBP", "USD"]),
 });
 
 export const LoginSchema = z.object({
-  email: z.string().email("invalidEmail"),
-  password: z.string().min(8, "shortPassword"),
+	email: z.string().email("invalidEmail"),
+	password: z.string().min(8, "shortPassword"),
 });

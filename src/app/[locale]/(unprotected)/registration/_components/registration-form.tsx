@@ -28,6 +28,7 @@ export const RegistrationForm = () => {
             email: '',
             phone: '',
             password: '',
+            currency: 'USD'
         },
     })
 
@@ -137,6 +138,31 @@ export const RegistrationForm = () => {
                                 t={t}
                             />
 
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name='currency'
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>{t('currency')}</FormLabel>
+                            <FormControl>
+                                <select
+                                    {...field}
+                                    disabled={pending}
+                                    className="border rounded px-3 py-2 w-full text-sm"
+                                >
+                                    <option className="bg-black hover:bg-accent-foreground" value="USD">🇺🇸 USD</option>
+                                    <option className="bg-black hover:bg-accent-foreground"  value="EUR">🇪🇺 EUR</option>
+                                    <option className="bg-black hover:bg-accent-foreground"  value="GBP">🇬🇧 GBP</option>
+                                    <option className="bg-black hover:bg-accent-foreground"  value="RUB">🇷🇺 RUB</option>
+                                </select>
+                            </FormControl>
+                            <FormErrorMessage
+                                error={form.formState.errors.currency?.message}
+                                t={t}
+                            />
                         </FormItem>
                     )}
                 />

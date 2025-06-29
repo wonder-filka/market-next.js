@@ -2,19 +2,18 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { Account } from "@/generated/prisma"
+import { getCurrencySymbol } from "@/lib/helpers"
 import { useI18n } from "@/locales/client"
 import { useRouter } from "next/navigation"
 
-type Account = {
-  id: string
-  isDemo: boolean
-  type: string
-  balance: number
-  freeMargin: number
-  currency: string
+interface AccountProps {
+  account: Account
+  userId: string
 }
 
-export function AccountItem({ account }: { account: Account }) {
+
+export function AccountItem({ account, userId }:AccountProps) {
   const t = useI18n()
   const router = useRouter()
   return (
@@ -22,18 +21,18 @@ export function AccountItem({ account }: { account: Account }) {
       <CardContent className="flex justify-between items-start md:items-center flex-col md:flex-row gap-8">
         <div>
           <div className="flex items-center gap-8">
-            <span className="text-2xl font-bold">#{account.id}</span>
+            <span className="text-2xl font-bold">#{account.mt5Id}</span>
             {/* <span className="text-sm text-muted-foreground">{t('hedging')}</span> */}
           </div>
         </div>
         <div className="flex-1 flex justify-between md:justify-center gap-8">
           <div className="text-center">
             <p className="text-sm text-muted-foreground">{t('accountBalance')}</p>
-            <p className="text-2xl font-bold">{account.currency} {account.balance.toLocaleString()}</p>
+            <p className="text-2xl font-bold">   {getCurrencySymbol(account.currency)} {account.balance.toLocaleString()}</p>
           </div>
           <div className="text-center">
             <p className="text-sm text-muted-foreground">{t('freeMargin')}</p>
-            <p className="text-2xl font-bold">{account.currency} {account.freeMargin.toLocaleString()}</p>
+            <p className="text-2xl font-bold">   {getCurrencySymbol(account.currency)} {account.freeMargin.toLocaleString()}</p>
           </div>
         </div>
         <div className="flex gap-8">

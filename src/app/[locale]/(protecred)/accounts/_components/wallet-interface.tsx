@@ -4,15 +4,17 @@ import { Download, ArrowUpRight, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useI18n } from "@/locales/client"
+import { getCurrencySymbol } from "@/lib/helpers"
 
 type WalletProps = {
   wallet: {
     balance: number
     currency: string
-  }
+  },
+  userId: string
 }
 
-export default function WalletInterface({ wallet }: WalletProps) {
+export default function WalletInterface({ wallet, userId }: WalletProps) {
   const t = useI18n()
 
   return (
@@ -26,7 +28,7 @@ export default function WalletInterface({ wallet }: WalletProps) {
           <div>
             <p className="text-sm text-muted-foreground">{t("walletTitle")}</p>
             <p className="text-3xl font-bold">
-              {wallet.currency}{wallet.balance.toLocaleString()}
+              {getCurrencySymbol(wallet.currency)} {wallet.balance.toLocaleString()}
             </p>
           </div>
           <div className="flex flex-col gap-8 md:flex-row ">

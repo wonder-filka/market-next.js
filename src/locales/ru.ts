@@ -221,4 +221,7 @@ export default {
 	resetFilter: "Сбросить фильтр",
 	selectDate: "Выбрать дату",
 	resetDate: "Сбросить дату",
+
+	accountCreated: "Счёт успешно создан",
+	accountCreationFailed: "Не удалось создать счёт",
 } as const;
