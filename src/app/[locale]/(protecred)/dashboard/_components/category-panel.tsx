@@ -34,6 +34,12 @@ export function CategoryPanel({ initialQuotes }: Props) {
   const t = useI18n()
   const categories = groupByCategory(initialQuotes)
 
+  const maxAbsChange = Math.max(
+  ...Object.values(categories).map((qs) =>
+    Math.abs(qs.reduce((acc, q) => acc + q.change, 0) / qs.length)
+  )
+)
+
   return (
     <div className="border rounded-md p-4 bg-background space-y-6">
       <h2 className="text-xl font-semibold">{t("activeMarkets")}</h2>
@@ -46,15 +52,15 @@ export function CategoryPanel({ initialQuotes }: Props) {
           return (
             <div key={category}>
               <div className="flex justify-between text-sm mb-1">
-                <span>{t(category)}</span>
+                <span>{t(category as keyof typeof t)}</span>
                 <span className="text-muted-foreground">{avgChange.toFixed(2)}%</span>
               </div>
-              <Progress value={Math.min(Math.abs(avgChange) * 10, 100)} />
+            <Progress value={(Math.abs(avgChange) / maxAbsChange) * 100} />
             </div>
           )
         })}
       </div>
-
+{/* 
       <div className="space-y-2">
         <h3 className="text-sm font-medium text-muted-foreground">
           {t("mostPopularInCategory")}
@@ -79,7 +85,7 @@ export function CategoryPanel({ initialQuotes }: Props) {
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   )
 }

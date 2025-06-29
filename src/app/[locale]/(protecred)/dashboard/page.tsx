@@ -33,11 +33,12 @@ export default async function DashboardPage() {
 
           <VolatileTable initialQuotes={quotes}/>
           <TopGainers initialQuotes={quotes} />
-          <TopLosers  initialQuotes={quotes}/>
+       <TopLosers  initialQuotes={quotes}/>
         </div>
 
         <div className="space-y-6 col-span-3">
           <QuoteChartPanel />
+             
           <CategoryPanel  initialQuotes={quotes} />
 
 

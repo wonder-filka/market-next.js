@@ -1,8 +1,9 @@
 'use client'
 
 import { useQuoteStore } from "@/stores/chart-store"
-import { useI18n } from "@/locales/client"
+import { useCurrentLocale, useI18n } from "@/locales/client"
 import { Quote } from "@/lib/types"
+import { quoteNames } from "@/lib/constants"
 
 type Props = {
   initialQuotes: Quote[]
@@ -10,7 +11,7 @@ type Props = {
 
 export function TopGainers({ initialQuotes }: Props) {
   const t = useI18n()
-
+  const locale = useCurrentLocale()
     const setSelectedQuote = useQuoteStore((state) => state.setSelectedQuote)
   const gainers = initialQuotes
     .filter(q => q.change !== null && q.change > 0.01)
@@ -26,7 +27,7 @@ export function TopGainers({ initialQuotes }: Props) {
         <ul className="space-y-1 text-sm" >
           {gainers.map((q) => (
             <li key={q.symbol} className="flex justify-between cursor-pointer"  onClick={() => setSelectedQuote(q)}>
-              <span>{q.name}</span>
+              <span>{quoteNames[q.symbol]?.[locale] ?? q.name}</span>
               <span className="text-green-500 font-medium">
                 +{q.change?.toFixed(4)}%
               </span>

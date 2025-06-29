@@ -4,8 +4,9 @@ import { useEffect } from 'react'
 import { useQuoteStore } from '@/stores/chart-store'
 import { cn } from '@/lib/utils'
 import { Progress } from '@/components/ui/progress'
-import { useI18n } from '@/locales/client'
+import { useCurrentLocale, useI18n } from '@/locales/client'
 import { Quote } from '@/lib/types'
+import { quoteNames } from '@/lib/constants'
 
 type Props = {
   initialQuotes: Quote[]
@@ -14,7 +15,7 @@ type Props = {
 export function VolatileTable({ initialQuotes }: Props) {
   const setSelectedQuote = useQuoteStore((state) => state.setSelectedQuote)
   const t = useI18n()
-
+  const locale = useCurrentLocale()
   useEffect(() => {
     if (initialQuotes.length > 0) {
       const btc = initialQuotes.find((q) => q.symbol === 'BTC-USD')
@@ -38,10 +39,10 @@ export function VolatileTable({ initialQuotes }: Props) {
         <thead>
           <tr className="text-muted-foreground border-b">
             <th className="text-left p-2">{t('columnMarket')}</th>
-            <th>{t('columnVolatility')}.</th>
-            <th>{t('columnSell')}</th>
-            <th>{t('columnBuy')}</th>
-            <th>{t('columnChange')}.</th>
+            <th className="text-left py-2">{t('columnVolatility')}</th>
+            <th className="text-left py-2">{t('columnSell')}</th>
+            <th className="text-left py-2">{t('columnBuy')}</th>
+            <th className="text-left py-2">{t('columnChange')}.</th>
             <th>%</th>
           </tr>
         </thead>
@@ -57,7 +58,9 @@ export function VolatileTable({ initialQuotes }: Props) {
                 className="border-b hover:bg-muted cursor-pointer"
                 onClick={() => setSelectedQuote(q)}
               >
-                <td className="p-2 font-medium">{q.name}</td>
+                <td className="p-2 font-medium">
+                  {quoteNames[q.symbol]?.[locale] ?? q.name}
+                </td>
                 <td>
                   <Progress value={Math.min(q.volatility * 10, 100)} className="w-24 h-2" />
                 </td>

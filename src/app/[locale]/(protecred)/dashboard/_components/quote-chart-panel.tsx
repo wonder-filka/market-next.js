@@ -11,7 +11,9 @@ import {
 } from 'recharts'
 import { useQuoteStore } from '@/stores/chart-store'
 import * as React from 'react'
-import { useI18n } from '@/locales/client'
+import { useCurrentLocale, useI18n } from '@/locales/client'
+import { Button } from '@/components/ui/button'
+import { quoteNames } from '@/lib/constants'
 
 const Candlestick = (props: any) => {
   const {
@@ -57,12 +59,15 @@ const prepareCandlestickData = (history: { time: string; price: number }[]) => {
     return {
       ...d,
       openClose: [open, close],
+      high, 
+      low,  
     }
   })
 }
 
 export function QuoteChartPanel() {
   const t = useI18n()
+  const locale = useCurrentLocale()
   const selectedQuote = useQuoteStore((state) => state.selectedQuote)
   if (!selectedQuote) return null
 
@@ -71,49 +76,59 @@ export function QuoteChartPanel() {
   const min = Math.min(...data.map(d => Math.min(d.low, d.openClose[0], d.openClose[1])))
   const max = Math.max(...data.map(d => Math.max(d.high, d.openClose[0], d.openClose[1])))
 
-  const locale = t("locale") // ← your locale string like 'ru-RU' or 'en-US'
-
   return (
-    <div className="w-full rounded-lg border p-4 shadow-sm bg-background">
-      <h2 className="text-lg font-semibold mb-2">{selectedQuote.name}</h2>
-      <div className="h-[300px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={data}
-            margin={{ top: 10, right: 20, left: 20, bottom: 0 }}
-          >
-            <XAxis
-              dataKey="time"
-              tick={{ fontSize: 10 }}
-              tickFormatter={(value) => {
-                const date = new Date(`2024-${value}`)
-                return date.toLocaleDateString(locale, { day: '2-digit', month: 'short' })
-              }}
-            />
-            <YAxis
-              domain={[min, max]}
-              tick={{ fontSize: 10 }}
+    <>
 
-              width={60}
-            />
-            <CartesianGrid strokeDasharray="3 3" />
-            <Tooltip
-              content={({ payload }) => {
-                if (!payload?.[0]) return null
-                const item = payload[0].payload
-                return (
-                  <div className="p-2 bg-white border shadow-sm text-sm text-black">
-                    <div>{t("open")}: {item.openClose[0]}</div>
-                    <div>{t("close")}: {item.openClose[1]}</div>
-                  
-                  </div>
-                )
-              }}
-            />
-            <Bar dataKey="openClose" shape={<Candlestick />} />
-          </BarChart>
-        </ResponsiveContainer>
+      <div className="w-full rounded-lg border p-4 shadow-sm bg-background">
+        <div className='flex justify-between'>
+          <h2 className="text-lg font-semibold mb-2">{quoteNames[selectedQuote.symbol]?.[locale] ?? selectedQuote.name}</h2>
+          <div className='m-2 flex gap-4'>
+            <Button>Купить</Button>
+            <Button>Продать</Button>
+          </div>
+        </div>
+        <div className="h-[300px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={data}
+              margin={{ top: 10, right: 20, left: 20, bottom: 0 }}
+            >
+              <XAxis
+                dataKey="time"
+                tick={{ fontSize: 10 }}
+                tickFormatter={(value) => {
+                  const date = new Date(`2024-${value}`)
+                  return date.toLocaleDateString(locale, { day: '2-digit', month: 'short' })
+                }}
+              />
+              <YAxis
+                domain={[min, max]}
+                tick={{ fontSize: 10 }}
+
+                width={60}
+              />
+              <CartesianGrid strokeDasharray="3 3" />
+              <Tooltip
+                content={({ payload }) => {
+                  if (!payload?.[0]) return null
+                  const item = payload[0].payload
+                  return (
+                    <div className="p-2 bg-white border shadow-sm text-sm text-black">
+                      <div>{t("open")}: {item.openClose[0]}</div>
+                      <div>{t("close")}: {item.openClose[1]}</div>
+
+                    </div>
+                  )
+                }}
+              />
+              <Bar dataKey="openClose" shape={<Candlestick />} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
-    </div>
+
+
+    </>
+
   )
 }

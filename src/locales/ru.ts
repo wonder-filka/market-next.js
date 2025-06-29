@@ -105,7 +105,7 @@ export default {
 	// Volatile Table
 	mostVolatileTitle: "Высоковолатильные",
 	columnMarket: "Рынок",
-	columnVolatility: "Вол.",
+	columnVolatility: "Вольтажность",
 	columnSell: "Продажа",
 	columnBuy: "Покупка",
 	columnChange: "Изм.",
@@ -209,4 +209,6 @@ export default {
 	high: "Макс.",
 	low: "Мин.",
 	locale: "ru-RU",
+
+
 } as const;
