@@ -57,8 +57,8 @@ const fakeTrades: Trade[] = [
   },
   {
     id: "TRD-005",
-    startDate: "2024-06-15 10:00",
-    endDate: "2024-06-15 11:10",
+    startDate: "2025-06-29 10:00",
+    endDate: "2025-06-29 11:10",
     asset: "BTC",
     type: "Buy",
     quantity: 0.2,

@@ -33,7 +33,7 @@ export function TradesList({ data }: { data: Trade[] }) {
   const now = new Date()
 
   const filteredTrades = data.filter((trade) => {
-    const end = parse(trade.endDate, "yyyy-MM-dd HH:mm", new Date())
+    const end = parse(trade.startDate, "yyyy-MM-dd HH:mm", new Date())
 
     if (selectedDate) {
       return isSameDay(end, selectedDate)
