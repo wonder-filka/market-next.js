@@ -70,9 +70,10 @@ const prepareCandlestickData = (history: { time: string; price: number }[]) => {
 type QuoteChartProps = {
   accounts: Account[]
   userId: string
+  rates: { [k: string]: number | undefined; }
 }
 
-export function QuoteChartPanel({ accounts, userId }: QuoteChartProps) {
+export function QuoteChartPanel({ accounts, userId, rates }: QuoteChartProps) {
   const t = useI18n()
   const locale = useCurrentLocale()
   const selectedQuote = useQuoteStore((state) => state.selectedQuote)
@@ -98,6 +99,7 @@ export function QuoteChartPanel({ accounts, userId }: QuoteChartProps) {
           accounts={accounts}
           userId={userId}
           price={selectedQuote.price}
+          rates={rates}
         />
         <div className='flex justify-between'>
           <h2 className="text-lg font-semibold mb-2">{quoteNames[selectedQuote.symbol]?.[locale] ?? selectedQuote.name}</h2>

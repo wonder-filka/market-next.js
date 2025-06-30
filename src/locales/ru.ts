@@ -237,4 +237,5 @@ export default {
 	transfer: "Перевести",
 	amount: "Сумма",
 	transferSuccess: "Перевод выполнен успешно",
+	tradeAmount: "Сумма сделки",
 } as const;

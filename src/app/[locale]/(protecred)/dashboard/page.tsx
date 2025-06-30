@@ -7,6 +7,7 @@ import { VolatileTable } from "./_components/tables/volatile-table";
 import { getQuotes } from "./_actions";
 import { getSessionUserId } from "@/lib/session";
 import { prisma } from "@/lib/db";
+import { getRates } from "@/lib/rates";
 
 
 export default async function DashboardPage() {
@@ -28,7 +29,7 @@ export default async function DashboardPage() {
     }
 
   const t = await getI18n()
-
+ const rates = await getRates([...new Set(user.accounts.map(a => a.currency))]);
   const quotes = await getQuotes()
   return (
     <main className="p-6 space-y-6">
@@ -43,7 +44,7 @@ export default async function DashboardPage() {
         </div>
 
         <div className="space-y-6 col-span-3">
-          <QuoteChartPanel accounts={user.accounts} userId={userId}/>
+          <QuoteChartPanel accounts={user.accounts} userId={userId} rates={rates}/>
 
           <CategoryPanel initialQuotes={quotes} />
 

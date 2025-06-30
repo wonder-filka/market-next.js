@@ -17,9 +17,17 @@ type TradeDialogProps = {
   accounts: Account[]
   userId: string
   price: number
+  rates: { [k: string]: number | undefined; }
 }
 
-export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId, price }: TradeDialogProps) {
+function convert(amount: number, currency: string, rates: Record<string, number | undefined>) {
+  if (currency === 'USD') return amount;
+  const rate = rates[currency] ?? 1;
+  return amount * rate;
+}
+
+
+export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId, price, rates }: TradeDialogProps) {
   const t = useI18n()
   const [quantity, setQuantity] = useState('')
   const [takeProfit, setTakeProfit] = useState('')
@@ -27,7 +35,7 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
   const [accountId, setAccountId] = useState('')
   const [pending, startTransition] = useTransition()
 
-    const handleSubmit = () => {
+  const handleSubmit = () => {
     if (!quantity || !accountId) return
 
     startTransition(async () => {
@@ -60,6 +68,7 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
     })
   }
 
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md bg-gray-900">
@@ -78,11 +87,16 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
               onChange={(e) => setAccountId(e.target.value)}
             >
               <option value="">{t('selectAccount')}</option>
-              {accounts.map(acc => (
-                <option key={acc.id} value={acc.id}>
-                  {acc.mt5Id} - {acc.currency} {acc.balance.toFixed(2)}
-                </option>
-              ))}
+
+              {accounts.map((acc) => {
+                const converted = convert(acc.balance, acc.currency, rates);
+
+                return (
+                  <option key={acc.id} value={acc.id}>
+                    {acc.mt5Id} — {acc.currency} {converted.toFixed(2)}
+                  </option>
+                );
+              })}
             </select>
           </div>
 
@@ -94,6 +108,19 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
               onChange={(e) => setQuantity(e.target.value)}
               placeholder="0.00"
             />
+            {quantity && accountId && (() => {
+              const acc = accounts.find(a => a.id === accountId)
+              if (!acc) return null   
+              const rate = acc.currency === 'USD' ? 1 : (rates[acc.currency] ?? 1)
+              const usdValue = Number(quantity) * price 
+              const total = usdValue * rate      
+
+              return (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {t('tradeAmount')}: {(acc.currency)} {total.toFixed(2)}
+                </p>
+              )
+            })()}
           </div>
 
           <div>

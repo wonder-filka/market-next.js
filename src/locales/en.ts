@@ -240,4 +240,5 @@ export default {
 	transfer: "Transfer",
 	amount: "Amount",
 	transferSuccess: "Transfer successful",
+	tradeAmount: "Trade amount",
 } as const;
