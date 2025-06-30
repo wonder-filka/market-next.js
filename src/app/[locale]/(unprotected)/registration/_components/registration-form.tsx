@@ -141,7 +141,7 @@ export const RegistrationForm = () => {
                         </FormItem>
                     )}
                 />
-                <FormField
+                {/* <FormField
                     control={form.control}
                     name='currency'
                     render={({ field }) => (
@@ -165,7 +165,7 @@ export const RegistrationForm = () => {
                             />
                         </FormItem>
                     )}
-                />
+                /> */}
                 <Button disabled={pending} type='submit' className='w-full mt-12'>
                     {t('register')}
                 </Button>

@@ -1,12 +1,3 @@
-export type QuoteHistoryPoint = {
-  time: string
-  price: number
-  open?: number
-  close?: number
-  high?: number
-  low?: number
-}
-
 export type Quote = {
   symbol: string
   name: string
@@ -16,6 +7,16 @@ export type Quote = {
   sell: number
   history: QuoteHistoryPoint[]
 }
+
+export type QuoteHistoryPoint = {
+  time: string // формат MM-DD, например "06-30"
+  open: number
+  close: number
+  high: number
+  low: number
+  price: number
+}
+
 
 export type Trade = {
   id: string

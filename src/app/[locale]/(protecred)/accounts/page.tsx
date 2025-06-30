@@ -26,7 +26,7 @@ export default async function WalletPage() {
 
   return (
     <>
-      <WalletInterface wallet={user.wallet} userId={userId}/>
+      <WalletInterface wallet={user.wallet} userId={userId} accounts={user.accounts}/>
       <AccountCard accounts={user.accounts} userId={userId}/>
     </>
   )

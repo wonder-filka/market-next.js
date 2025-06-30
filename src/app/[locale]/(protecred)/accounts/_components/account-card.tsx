@@ -12,6 +12,9 @@ type AccountProps = {
  
 export function AccountCard({ accounts, userId }: AccountProps) {
   const t = useI18n()
+    const sortedAccounts = [...accounts].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  )
   return (
     <div className="flex flex-col gap-4 p-8">
         <div className="flex justify-between">
@@ -19,9 +22,9 @@ export function AccountCard({ accounts, userId }: AccountProps) {
          <OpenAccount userId={userId}/>
         </div>
 
-        {accounts.length > 0 ? (
-          <div className="flex flex-col gap-8">
-            {accounts.map((account) => (
+        {sortedAccounts.length > 0 ? (
+          <div className="flex flex-col gap-4">
+            {sortedAccounts.map((account) => (
               <AccountItem key={account.id} account={account} userId={userId} />
             ))}
           </div>

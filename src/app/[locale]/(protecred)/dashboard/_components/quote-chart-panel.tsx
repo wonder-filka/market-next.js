@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button'
 import { quoteNames } from '@/lib/constants'
 import { useState } from 'react'
 import { TradeDialog } from './trade-dialog'
+import { Account } from '@/generated/prisma'
 
 const Candlestick = (props: any) => {
   const {
@@ -66,7 +67,12 @@ const prepareCandlestickData = (history: { time: string; price: number }[]) => {
   })
 }
 
-export function QuoteChartPanel() {
+type QuoteChartProps = {
+  accounts: Account[]
+  userId: string
+}
+
+export function QuoteChartPanel({ accounts, userId }: QuoteChartProps) {
   const t = useI18n()
   const locale = useCurrentLocale()
   const selectedQuote = useQuoteStore((state) => state.selectedQuote)
@@ -89,6 +95,9 @@ export function QuoteChartPanel() {
           onClose={() => setDialogOpen(false)}
           type={tradeType}
           assetName={quoteNames[selectedQuote.symbol]?.[locale] ?? selectedQuote.name}
+          accounts={accounts}
+          userId={userId}
+          price={selectedQuote.price}
         />
         <div className='flex justify-between'>
           <h2 className="text-lg font-semibold mb-2">{quoteNames[selectedQuote.symbol]?.[locale] ?? selectedQuote.name}</h2>

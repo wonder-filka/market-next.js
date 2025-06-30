@@ -1,5 +1,6 @@
 'use server'
 
+import { Account, Wallet } from "@/generated/prisma"
 import { prisma } from "@/lib/db"
 import { revalidatePath } from "next/cache"
 
@@ -24,5 +25,41 @@ export async function createAccount(currency: string, userId: string) {
   } catch (error) {
     console.error("❌ Ошибка при создании аккаунта:", error)
     throw new Error("accountCreationFailed")
+  }
+}
+
+type TransferInput = {
+  wallet: Wallet
+  account: Account
+  amount: number
+}
+
+export async function transferFundsToAccount({ wallet, account, amount }: TransferInput) {
+  try {
+    const available = wallet.balance - (wallet.withdrawn ?? 0)
+
+    if (available < amount) {
+      throw new Error('insufficientFunds')
+    }
+
+    await prisma.$transaction([
+      prisma.wallet.update({
+        where: { id: wallet.id },
+        data: {
+          withdrawn: (wallet.withdrawn ?? 0) + amount,
+        },
+      }),
+      prisma.account.update({
+        where: { id: account.id },
+        data: {
+          balance: account.balance + amount,
+          freeMargin: account.freeMargin + amount,
+        },
+      }),
+    ])
+    revalidatePath('/accounts')
+  } catch (error: any) {
+    console.error('[TransferFundsToAccount]', error)
+    throw new Error(error.message || 'unexpectedError')
   }
 }

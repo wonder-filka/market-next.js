@@ -5,23 +5,24 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useI18n } from "@/locales/client"
 import { getCurrencySymbol } from "@/lib/helpers"
+import { Account, Wallet } from "@/generated/prisma"
+import { TransferDialog } from "./transfer-dialog"
+import { useState } from "react"
 
 type WalletProps = {
-  wallet: {
-    balance: number
-    currency: string
-  },
-  userId: string
+  wallet: Wallet,
+  userId: string,
+  accounts: Account[]
 }
 
-export default function WalletInterface({ wallet, userId }: WalletProps) {
+export default function WalletInterface({ wallet, userId, accounts }: WalletProps) {
   const t = useI18n()
-
+  const [isTransferOpen, setIsTransferOpen] = useState(false);
   return (
     <div className="flex flex-col gap-4 p-8">
       <div className="flex justify-start">
         <span className="text-2xl font-bold">{t("walletTitle")}</span>
-       
+
       </div>
       <Card>
         <CardContent className="flex flex-col gap-8 md:flex-row justify-between items-center">
@@ -36,7 +37,7 @@ export default function WalletInterface({ wallet, userId }: WalletProps) {
               <Download className="h-4 w-4" />
               {t("withdrawFunds")}
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" className="flex items-center gap-2" onClick={() => setIsTransferOpen(true)}>
               <ArrowUpRight className="h-4 w-4" />
               {t("transferFunds")}
             </Button>
@@ -47,6 +48,13 @@ export default function WalletInterface({ wallet, userId }: WalletProps) {
           </div>
         </CardContent>
       </Card>
+      <TransferDialog
+        isOpen={isTransferOpen}
+        onClose={() => setIsTransferOpen(false)}
+        accounts={accounts}
+        userId={userId}
+        wallet={wallet}
+      />
     </div>
   )
 }

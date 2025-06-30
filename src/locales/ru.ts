@@ -224,4 +224,17 @@ export default {
 
 	accountCreated: "Счёт успешно создан",
 	accountCreationFailed: "Не удалось создать счёт",
+
+	account: "Счёт",
+	selectAccount: "Выберите счёт",
+	buySuccess: "Ордер на покупку успешно размещён",
+	sellSuccess: "Ордер на продажу успешно размещён",
+	error: "Произошла ошибка",
+	accountNotFound: "Счёт не найден",
+	unauthorized: "Недопустимая операция",
+	insufficientFunds: "Недостаточно средств",
+
+	transfer: "Перевести",
+	amount: "Сумма",
+	transferSuccess: "Перевод выполнен успешно",
 } as const;

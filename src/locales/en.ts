@@ -227,4 +227,17 @@ export default {
 
 	accountCreated: "Account successfully created",
 	accountCreationFailed: "Failed to create account",
+
+	account: "Account",
+	selectAccount: "Select an account",
+	buySuccess: "Buy order placed successfully",
+	sellSuccess: "Sell order placed successfully",
+	error: "An error occurred",
+	accountNotFound: "Account not found",
+	unauthorized: "Unauthorized operation",
+	insufficientFunds: "Insufficient funds",
+
+	transfer: "Transfer",
+	amount: "Amount",
+	transferSuccess: "Transfer successful",
 } as const;
