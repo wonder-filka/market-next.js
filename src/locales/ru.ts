@@ -73,6 +73,7 @@ export default {
 	tableName: "Название",
 	tableShares: "Кол-во",
 	tablePrice: "Цена",
+	tableCurrentPrice: "Текущая цена",
 	tableChange: "Изменение",
 	tableTotalCost: "Общая стоимость",
 	tableMarketValue: "Рыночная стоимость",

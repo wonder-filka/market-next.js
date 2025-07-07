@@ -73,6 +73,7 @@ export default {
 	tableAsset: "Asset",
 	tableShares: "Shares",
 	tablePrice: "Price",
+	tableCurrentPrice: "Current price",
 	tableChange: "Change",
 	tableTotalCost: "Total Cost",
 	tableMarketValue: "Market Value",

@@ -61,6 +61,7 @@ export function PositionsTable({ positions }: { positions: any[] }) {
               <TableHead>{t("tableName")}</TableHead>
               <TableHead>{t("tableShares")}</TableHead>
               <TableHead>{t("tablePrice")}</TableHead>
+              <TableHead>{t("tableCurrentPrice")}</TableHead>
               <TableHead>{t("tableChange")}</TableHead>
               <TableHead>{t("tableGain")}</TableHead>
               <TableHead>{t("tableReturn")}</TableHead>
@@ -69,7 +70,6 @@ export function PositionsTable({ positions }: { positions: any[] }) {
           </TableHeader>
           <TableBody>
             {positions.map((pos) => {
-              const returnPercentage = pos.pnl.toFixed(2)
               const name = assetNames[pos.asset] || pos.asset
 
               return (
@@ -81,20 +81,21 @@ export function PositionsTable({ positions }: { positions: any[] }) {
                   </TableCell>
                   <TableCell>{name}</TableCell>
                   <TableCell>{pos.quantity}</TableCell>
-                  <TableCell>{formatCurrency(pos.current)}</TableCell>
+                  <TableCell>{(pos.entry)}</TableCell>
+                  <TableCell>{(pos.current)}</TableCell>
                   <TableCell>
                     <span className={`flex items-center gap-1 font-medium ${pos.pnl >= 0 ? "text-green-500" : "text-red-500"}`}>
                       {pos.pnl >= 0 ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
-                      {formatCurrency(pos.current - pos.entry)}
+                      {(pos.current - pos.entry)}
                     </span>
                   </TableCell>
                   <TableCell>
                     <span className={`flex items-center gap-1 font-medium ${pos.pnl >= 0 ? "text-green-500" : "text-red-500"}`}>
                       {pos.pnl >= 0 ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
-                      {formatCurrency(pos.pnl)}
+                      {(pos.pnl)}
                     </span>
                   </TableCell>
-                  <TableCell className={pos.pnl >= 0 ? "text-green-600" : "text-red-600"}>{returnPercentage}%</TableCell>
+                  <TableCell className={pos.pnl >= 0 ? "text-green-600" : "text-red-600"}>{pos.pnl}%</TableCell>
                   <TableCell>
                     <Dialog
                       open={openDialogId === pos.id}

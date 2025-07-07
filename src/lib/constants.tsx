@@ -40,3 +40,9 @@ export const quoteNames: Record<string, { en: string; ru: string }> = {
   "CL=F": { en: "Oil", ru: "Нефть" },
   "COMT": { en: "Commodities ETF", ru: "Товары ETF" },
 }
+
+export const nameToSymbol = Object.entries(quoteNames).reduce<Record<string,string>>((acc, [symbol, {en,ru}]) => {
+  acc[en] = symbol
+  acc[ru] = symbol
+  return acc
+}, {})

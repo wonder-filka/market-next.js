@@ -19,39 +19,43 @@ export async function getQuotes() {
 	const today = new Date();
 	const from = new Date();
 	from.setDate(today.getDate() - 30);
+	try {
+		const result = await Promise.all(
+			symbols.map(async (symbol) => {
+				const history = await yahooFinance.chart(symbol, {
+					period1: from.toISOString().split("T")[0],
+					period2: today.toISOString().split("T")[0],
+					interval: "1d",
+				});
 
-	const result = await Promise.all(
-		symbols.map(async (symbol) => {
-			const history = await yahooFinance.chart(symbol, {
-				period1: from.toISOString().split("T")[0],
-				period2: today.toISOString().split("T")[0],
-				interval: "1d",
-			});
+				const prices = history.quotes || [];
+				const last = prices.at(-1);
+				const prev = prices.at(-2);
 
-			const prices = history.quotes || [];
-			const last = prices.at(-1);
-			const prev = prices.at(-2);
+				return {
+					symbol,
+					name: symbol,
+					price: last?.close ?? 0,
+					change: (last?.close ?? 0) - (prev?.close ?? 0),
+					buy: last?.close ?? 0,
+					sell: last?.close ?? 0,
+					history: prices.map((d) => ({
+						time: new Date(d.date).toISOString().slice(5, 10),
+						open: d.open ?? 0,
+						close: d.close ?? 0,
+						high: d.high ?? 0,
+						low: d.low ?? 0,
+						price: d.close ?? 0,
+					})),
+				};
+			})
+		);
 
-			return {
-				symbol,
-				name: symbol,
-				price: last?.close ?? 0,
-				change: (last?.close ?? 0) - (prev?.close ?? 0),
-				buy: last?.close ?? 0,
-				sell: last?.close ?? 0,
-				history: prices.map((d) => ({
-					time: new Date(d.date).toISOString().slice(5, 10),
-					open: d.open ?? 0,
-					close: d.close ?? 0,
-					high: d.high ?? 0,
-					low: d.low ?? 0,
-					price: d.close ?? 0,
-				})),
-			};
-		})
-	);
-
-	return result;
+		return result;
+	} catch (error) {
+		console.log(error)
+		return [];
+	}
 }
 
 type CreateTradeInput = {
@@ -121,7 +125,7 @@ export async function createTrade(input: CreateTradeInput) {
 					type: tradeType,
 					quantity: isBuy ? quantity : -quantity,
 					entry: price,
-					current: price,
+					current: 0,
 					pnl: 0,
 					status: "Active",
 					date: new Date(),
