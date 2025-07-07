@@ -129,6 +129,7 @@ export async function createTrade(input: CreateTradeInput) {
 					pnl: 0,
 					status: "Active",
 					date: new Date(),
+					startDate: new Date(),
 				},
 			});
 		} else {

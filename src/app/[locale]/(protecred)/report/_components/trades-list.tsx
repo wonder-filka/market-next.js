@@ -6,7 +6,6 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table"
 import { formatCurrency } from "@/lib/helpers"
-import { Trade } from "@/lib/types"
 import { Badge } from "@/components/ui/badge"
 import { useI18n } from "@/locales/client"
 import {
@@ -18,6 +17,7 @@ import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import { format } from "date-fns"
+import { Account, Position, Trade } from "@/generated/prisma"
 
 const statusVariant: Record<Trade["status"], "default" | "secondary" | "destructive"> = {
   Completed: "default",
@@ -25,15 +25,20 @@ const statusVariant: Record<Trade["status"], "default" | "secondary" | "destruct
   Cancelled: "destructive"
 }
 
-export function TradesList({ data }: { data: Trade[] }) {
+export function PositionsTableReport({
+  positions,
+}: {
+  // Массив позиций с подгруженным account.mt5Id
+  positions: Array<Position & { account: { mt5Id: string } }>
+}) {
   const t = useI18n()
   const [filter, setFilter] = useState<'day' | 'week' | 'month' | null>(null)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
 
   const now = new Date()
 
-  const filteredTrades = data.filter((trade) => {
-    const end = parse(trade.startDate, "yyyy-MM-dd HH:mm", new Date())
+  const filteredTrades = positions.filter((trade) => {
+    const end = trade.startDate
 
     if (selectedDate) {
       return isSameDay(end, selectedDate)
@@ -99,7 +104,7 @@ export function TradesList({ data }: { data: Trade[] }) {
                   setSelectedDate(date ?? null)
                   setFilter(null) // disable range filter
                 }}
-   
+
               />
             </PopoverContent>
           </Popover>
@@ -132,13 +137,13 @@ export function TradesList({ data }: { data: Trade[] }) {
           <TableBody>
             {filteredTrades.map((trade) => (
               <TableRow key={trade.id}>
-                <TableCell>{trade.id}</TableCell>
-                <TableCell>{trade.startDate} – {trade.endDate}</TableCell>
+                <TableCell>{trade.accountId}</TableCell>
+                <TableCell>  {new Date(trade.startDate).toLocaleString()} – {new Date(trade.endDate).toLocaleString()}</TableCell>
                 <TableCell>{trade.asset}</TableCell>
                 <TableCell>{t(`type${trade.type}`)}</TableCell>
                 <TableCell>{trade.quantity}</TableCell>
-                <TableCell>{formatCurrency(trade.price)}</TableCell>
-                <TableCell>{formatCurrency(trade.total)}</TableCell>
+                <TableCell>{formatCurrency(trade.entry)}</TableCell>
+                <TableCell>{formatCurrency(trade.quantity)}</TableCell>
                 <TableCell>
                   <Badge variant={statusVariant[trade.status]}>
                     {t(`status${trade.status}`)}

@@ -4,6 +4,14 @@ import { Account, Wallet } from "@/generated/prisma"
 import { prisma } from "@/lib/db"
 import { revalidatePath } from "next/cache"
 
+function genMt5Id() {
+  // 9 случайных цифр + префикс "mt"
+  const num = Math.floor(Math.random() * 1_000_000_000)
+    .toString()
+    .padStart(9, "0")
+  return `mt${num}`  // например: "mt004582371"
+}
+
 export async function createAccount(currency: string, userId: string) {
   try {
     if (!userId) throw new Error("Unauthorized")
@@ -12,7 +20,7 @@ export async function createAccount(currency: string, userId: string) {
       data: {
         userId,
         currency,
-        mt5Id: String(Math.floor(Math.random() * 1_000_000_000)), 
+        mt5Id: genMt5Id(), 
         type: "hedging",
         isDemo: true,
         balance: 0,
