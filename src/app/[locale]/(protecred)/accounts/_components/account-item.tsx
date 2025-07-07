@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Account } from "@/generated/prisma"
-import { getCurrencySymbol } from "@/lib/helpers"
+import { formatter, getCurrencySymbol } from "@/lib/helpers"
 import { useI18n } from "@/locales/client"
 import { useRouter } from "next/navigation"
 
@@ -28,11 +28,11 @@ export function AccountItem({ account, userId }:AccountProps) {
         <div className="flex-1 flex justify-between md:justify-center gap-8">
           <div className="text-center">
             <p className="text-sm text-muted-foreground">{t('accountBalance')}</p>
-            <p className="text-2xl font-bold">   {getCurrencySymbol(account.currency)} {account.balance.toLocaleString()}</p>
+            <p className="text-2xl font-bold">   {getCurrencySymbol(account.currency)} {formatter.format(account.balance)}</p>
           </div>
           <div className="text-center">
             <p className="text-sm text-muted-foreground">{t('freeMargin')}</p>
-            <p className="text-2xl font-bold">   {getCurrencySymbol(account.currency)} {account.freeMargin.toLocaleString()}</p>
+            <p className="text-2xl font-bold">   {getCurrencySymbol(account.currency)} {formatter.format(account.freeMargin)}</p>
           </div>
         </div>
         <div className="flex gap-8">

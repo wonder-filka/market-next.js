@@ -1,4 +1,4 @@
-'use server'
+"use server";
 
 import { TradeType } from "@/generated/prisma";
 import { prisma } from "@/lib/db";
@@ -55,57 +55,99 @@ export async function getQuotes() {
 }
 
 type CreateTradeInput = {
-  userId: string;
-  accountId: string;
-  asset: string;
-  type: 'buy' | 'sell';
-  quantity: number;
-  price: number;
-  takeProfit: number | null;
-  stopLoss: number | null;
+	userId: string;
+	accountId: string;
+	asset: string;
+	type: "buy" | "sell";
+	quantity: number;
+	price: number;
+	takeProfit: number | null;
+	stopLoss: number | null;
 };
 
 export async function createTrade(input: CreateTradeInput) {
-  const {
-    userId,
-    accountId,
-    asset,
-    type,
-    quantity,
-    price,
-    takeProfit,
-    stopLoss,
-  } = input;
+	const {
+		userId,
+		accountId,
+		asset,
+		type,
+		quantity,
+		price,
+		takeProfit,
+		stopLoss,
+	} = input;
 
-  const total = price * quantity;
+	const totalUSD = price * quantity; // считаем в валюте счёта
+	const isBuy = type === "buy";
+	const tradeType: TradeType = isBuy ? "Buy" : "Sell";
 
-  const account = await prisma.account.findUnique({
-    where: { id: accountId },
-  });
+	await prisma.$transaction(async (tx) => {
+		// 1. Проверки счёта
+		const account = await tx.account.findUnique({ where: { id: accountId } });
+		if (!account) throw new Error("accountNotFound");
+		if (account.userId !== userId) throw new Error("unauthorized");
+		if (isBuy && account.freeMargin < totalUSD)
+			throw new Error("insufficientFunds");
 
-  if (!account) throw new Error("accountNotFound");
-  if (account.userId !== userId) throw new Error("unauthorized");
+		// 2. Записываем Trade
+		const trade = await tx.trade.create({
+			data: {
+				userId,
+				accountId,
+				asset,
+				type: tradeType,
+				quantity,
+				price,
+				total: isBuy ? -totalUSD : totalUSD, // расход/приход
+				status: "Completed",
+				startDate: new Date(),
+				endDate: new Date(),
+				takeProfit,
+				stopLoss,
+			},
+		});
 
-  if (type === "buy" && account.freeMargin < total) {
-    throw new Error("insufficientFunds");
-  }
+		const pos = await tx.position.findFirst({
+			where: { accountId, asset, status: "Active" },
+		});
 
-  const formattedType = type === "buy" ? "Buy" : "Sell" as TradeType;
+		if (!pos) {
+			// новая позиция
+			await tx.position.create({
+				data: {
+					accountId,
+					userId,
+					asset,
+					type: tradeType,
+					quantity: isBuy ? quantity : -quantity,
+					entry: price,
+					current: price,
+					pnl: 0,
+					status: "Active",
+					date: new Date(),
+				},
+			});
+		} else {
+			const newQty = pos.quantity + (isBuy ? quantity : -quantity);
+			const closed = newQty === 0;
 
-  await prisma.trade.create({
-    data: {
-      asset,
-      type: formattedType,
-      quantity,
-      price,
-      total,
-      status: "Pending",
-      startDate: new Date(),
-      endDate: new Date(),
-      userId,
-      accountId,
-      takeProfit, 
-      stopLoss,   
-    },
-  });
+			await tx.position.update({
+				where: { id: pos.id },
+				data: {
+					quantity: newQty,
+					current: price,
+					pnl: pos.pnl - (isBuy ? totalUSD : -totalUSD),
+					status: closed ? "Closed" : "Active",
+					date: closed ? new Date() : pos.date,
+				},
+			});
+		}
+		await tx.account.update({
+			where: { id: accountId },
+			data: {
+				freeMargin: { increment: isBuy ? -totalUSD : totalUSD },
+			},
+		});
+		return trade;
+	});
 }

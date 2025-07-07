@@ -37,7 +37,15 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
 
   const handleSubmit = () => {
     if (!quantity || !accountId) return
+    const qty = parseFloat(quantity)
+    const total = price * qty
+    const account = accounts.find(a => a.id === accountId)!
 
+    if (account.freeMargin < total) {
+      return toast.error(t('insufficientFunds'), {
+        style: { backgroundColor: 'red', color: 'white' },
+      })
+    }
     startTransition(async () => {
       try {
         await createTrade({
@@ -110,10 +118,10 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
             />
             {quantity && accountId && (() => {
               const acc = accounts.find(a => a.id === accountId)
-              if (!acc) return null   
+              if (!acc) return null
               const rate = acc.currency === 'USD' ? 1 : (rates[acc.currency] ?? 1)
-              const usdValue = Number(quantity) * price 
-              const total = usdValue * rate      
+              const usdValue = Number(quantity) * price
+              const total = usdValue * rate
 
               return (
                 <p className="mt-1 text-xs text-muted-foreground">
