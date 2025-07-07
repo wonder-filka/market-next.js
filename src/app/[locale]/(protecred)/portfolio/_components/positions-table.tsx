@@ -69,7 +69,7 @@ export function PositionsTable({ positions }: { positions: any[] }) {
           </TableHeader>
           <TableBody>
             {positions.map((pos) => {
-              const returnPercentage = ((pos.pnl / (pos.entry * pos.quantity)) * 100).toFixed(2)
+              const returnPercentage = pos.pnl.toFixed(2)
               const name = assetNames[pos.asset] || pos.asset
 
               return (
