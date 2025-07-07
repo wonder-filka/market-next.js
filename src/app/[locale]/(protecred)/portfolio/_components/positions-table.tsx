@@ -71,6 +71,9 @@ export function PositionsTable({ positions }: { positions: any[] }) {
           <TableBody>
             {positions.map((pos) => {
               const name = assetNames[pos.asset] || pos.asset
+              const gain = pos.current - pos.entry
+              const pct = ((gain / pos.entry) * 100)
+              const isUp = gain >= 0
 
               return (
                 <TableRow key={pos.id}>
@@ -95,7 +98,9 @@ export function PositionsTable({ positions }: { positions: any[] }) {
                       {(pos.pnl)}
                     </span>
                   </TableCell>
-                  <TableCell className={pos.pnl >= 0 ? "text-green-600" : "text-red-600"}>{pos.pnl}%</TableCell>
+                  <TableCell className={isUp ? "text-green-600" : "text-red-600"}>
+                    {pct}%
+                  </TableCell>
                   <TableCell>
                     <Dialog
                       open={openDialogId === pos.id}

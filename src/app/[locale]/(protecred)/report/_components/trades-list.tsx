@@ -36,8 +36,12 @@ export function PositionsTableReport({
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
 
   const now = new Date()
-
-  const filteredTrades = positions.filter((trade) => {
+const enriched = positions.map(p => ({
+  ...p,
+  _start: format(p.startDate, "dd.MM.yyyy, HH:mm:ss"),
+  _end:   format(p.endDate  ?? new Date(), "dd.MM.yyyy, HH:mm:ss"),
+}))
+  const filteredTrades = enriched.filter((trade) => {
     const end = trade.startDate
 
     if (selectedDate) {
