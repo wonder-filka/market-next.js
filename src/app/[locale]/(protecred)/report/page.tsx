@@ -4,23 +4,13 @@ import { PositionsTableReport } from "./_components/trades-list";
 import { getI18n } from "@/locales/server";
 import { prisma } from "@/lib/db";
 import { getSessionUserId } from "@/lib/session";
+import { getPostitions } from "./_actions";
 
 export default async function Page() {
   const t = await getI18n()
   const userId = await getSessionUserId();
   if (!userId) return null;
- const positions = await prisma.position.findMany({
-    where: { userId },
-    include: {
-      account: {
-        select: {
-          mt5Id: true,
-        }
-      }
-    },
-    orderBy: { date: "desc" },
-  })
-
+ const positions = await getPostitions()
   // 2. Считаем метрики
   const openPositions = positions.filter(p => p.status === "Active").length
   const profit = positions
@@ -32,7 +22,6 @@ export default async function Page() {
     include: { wallet: true },
   })
   const balance = user?.wallet.balance ?? 0
-
 
   return (
     <div className="space-y-8 p-8">
