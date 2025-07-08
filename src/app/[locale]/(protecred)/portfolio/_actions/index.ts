@@ -11,7 +11,7 @@ export async function closePosition(pos: Position) {
 
 		// 2. Считаем сумму закрытия в USD
 		const currentPrice = pos.current;
-		const total = currentPrice * pos.quantity;
+		const total = pos.pnl;
 
 		// 3. Открываем транзакцию:
 		//    - создаём запись Trade типа Sell/Buy (в зависимости от изначального направления)
@@ -26,7 +26,7 @@ export async function closePosition(pos: Position) {
 					type: pos.type === "Buy" ? "Sell" : "Buy",
 					quantity: pos.quantity,
 					price: currentPrice,
-					total: pos.type === "Buy" ? total : -total,
+					total: total,
 					status: "Completed",
 					startDate: new Date(),
 					endDate: new Date(),

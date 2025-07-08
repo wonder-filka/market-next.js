@@ -131,7 +131,7 @@ export async function createTrade(input: CreateTradeInput) {
 		await tx.account.update({
 			where: { id: accountId },
 			data: {
-				freeMargin: { increment: isBuy ? -totalUSD : totalUSD },
+				freeMargin: { increment:  -totalUSD  },
 			},
 		});
 		revalidatePath("/dashboard");
