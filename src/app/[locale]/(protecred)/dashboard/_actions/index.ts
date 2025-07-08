@@ -2,6 +2,7 @@
 
 import { TradeType } from "@/generated/prisma";
 import { prisma } from "@/lib/db";
+import { revalidatePath } from "next/cache";
 import yahooFinance from "yahoo-finance2";
 
 const symbols = [
@@ -109,13 +110,7 @@ export async function createTrade(input: CreateTradeInput) {
 				takeProfit,
 				stopLoss,
 			},
-		});
-
-		const pos = await tx.position.findFirst({
-			where: { accountId, asset, status: "Active" },
-		});
-
-		if (!pos) {
+		});	
 			// новая позиция
 			await tx.position.create({
 				data: {
@@ -123,7 +118,7 @@ export async function createTrade(input: CreateTradeInput) {
 					userId,
 					asset,
 					type: tradeType,
-					quantity: isBuy ? quantity : -quantity,
+					quantity: quantity,
 					entry: price,
 					current: 0,
 					pnl: 0,
@@ -132,27 +127,14 @@ export async function createTrade(input: CreateTradeInput) {
 					startDate: new Date(),
 				},
 			});
-		} else {
-			const newQty = pos.quantity + (isBuy ? quantity : -quantity);
-			const closed = newQty === 0;
-
-			await tx.position.update({
-				where: { id: pos.id },
-				data: {
-					quantity: newQty,
-					current: price,
-					pnl: pos.pnl - (isBuy ? totalUSD : -totalUSD),
-					status: closed ? "Closed" : "Active",
-					date: closed ? new Date() : pos.date,
-				},
-			});
-		}
+		
 		await tx.account.update({
 			where: { id: accountId },
 			data: {
 				freeMargin: { increment: isBuy ? -totalUSD : totalUSD },
 			},
 		});
+		revalidatePath("/dashboard");
 		return trade;
 	});
 }

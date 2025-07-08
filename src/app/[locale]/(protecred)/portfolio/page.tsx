@@ -5,6 +5,7 @@ import { SummaryCards } from "./_components/summary-cards";
 import { getSessionUserId } from "@/lib/session";
 import { getQuotes } from "../dashboard/_actions";
 import { nameToSymbol } from "@/lib/constants";
+import { TradeType } from "@/generated/prisma";
 
 
 
@@ -19,16 +20,16 @@ export default async function PortfolioPage() {
   if (!user) return null;
 
   const positions = await prisma.position.findMany({
-    where: { userId },
+    where: { userId, status: { not: "Closed" } },
     orderBy: { date: 'desc' },
   })
 
   const quotes = await getQuotes();
   const priceMap = Object.fromEntries(quotes.map((q) => [q.symbol, q.price]));
-    console.log('priceMap', priceMap)
+  console.log('priceMap', priceMap)
   // 3. Обогащаем позиции, но только если p.pnl из БД == 0 или null
   const enriched = positions.map((p) => {
-  const sym = nameToSymbol[p.asset]
+    const sym = nameToSymbol[p.asset]
     console.log('sym', sym)
     const savedPnl = p.pnl;
     if (savedPnl && savedPnl !== 0) {
@@ -36,11 +37,18 @@ export default async function PortfolioPage() {
       return p;
     }
     // иначе пересчитываем
-    const currentPrice = p.current  !== 0 ?p.current : priceMap[sym];
+    const currentPrice = p.current !== 0 ? p.current : priceMap[sym];
     console.log('currentPrice', currentPrice)
-    const recalculatedPnl = (currentPrice - p.entry) * p.quantity;
-    console.log('recalculatedPnl', recalculatedPnl)
-    return { ...p, current: currentPrice, pnl: recalculatedPnl };
+    const qty = p.quantity
+    const entry = p.entry
+    let pnl: number
+
+    if (p.type === TradeType.Buy) {
+      pnl = (currentPrice - entry) * qty
+    } else {
+      pnl = (entry - currentPrice) * qty
+    }
+    return { ...p, current: currentPrice, pnl: pnl };
   });
 
   // 4. Считаем метрики по enriched

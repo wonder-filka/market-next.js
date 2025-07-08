@@ -97,7 +97,7 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
               <option value="">{t('selectAccount')}</option>
 
               {accounts.map((acc) => {
-                const converted = convert(acc.balance, acc.currency, rates);
+                const converted = convert(acc.freeMargin, acc.currency, rates);
 
                 return (
                   <option key={acc.id} value={acc.id}>

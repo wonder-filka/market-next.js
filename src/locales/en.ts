@@ -207,6 +207,7 @@ export default {
 	sellPart: "Sell part",
 	open: "Open",
 	close: "Close",
+	closePosition: "Close Position",
 	high: "High",
 	low: "Low",
 	locale: "en-US",
@@ -242,4 +243,10 @@ export default {
 	amount: "Amount",
 	transferSuccess: "Transfer successful",
 	tradeAmount: "Trade amount",
+	Cancel: "Cancel",
+	"Save changes": "Save changes",
+	confirmCloseText: "Are you sure you want to close the deal?",
+	closePositionText: "Close Position",
+	  "positionClosed": "Position closed successfully",
+  "positionCloseError": "Failed to close position"
 } as const;

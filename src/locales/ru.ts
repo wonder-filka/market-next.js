@@ -206,6 +206,7 @@ export default {
 	sellPart: "Продать",
 	open: "Открытие",
 	close: "Закрытие",
+	closePosition: "Закрыть",
 	high: "Макс.",
 	low: "Мин.",
 	locale: "ru-RU",
@@ -239,4 +240,10 @@ export default {
 	amount: "Сумма",
 	transferSuccess: "Перевод выполнен успешно",
 	tradeAmount: "Сумма сделки",
+	Cancel: "Закрыть",
+	"Save changes": "Сохранить изменения",
+	  "confirmCloseText": "Вы уверены, что хотите закрыть сделку?",
+	   "closePositionText": "Закрыть сделку",
+	    "positionClosed": "Позиция успешно закрыта",
+  "positionCloseError": "Не удалось закрыть позицию"
 } as const;

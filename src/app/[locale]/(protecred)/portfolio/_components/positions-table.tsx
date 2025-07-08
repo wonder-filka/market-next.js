@@ -14,8 +14,10 @@ import { useI18n } from "@/locales/client"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -23,6 +25,9 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import * as React from "react"
+import { closePosition } from "../_actions"
+import { Position } from "@/generated/prisma"
+import { toast } from "sonner"
 
 const assetNames: Record<string, string> = {
   BTC: "Bitcoin",
@@ -34,21 +39,28 @@ const assetNames: Record<string, string> = {
   XRP: "Ripple"
 }
 
-export function PositionsTable({ positions }: { positions: any[] }) {
+export function PositionsTable({ positions }: { positions: Position[] }) {
   const t = useI18n()
   const [openDialogId, setOpenDialogId] = React.useState<string | null>(null)
   const [activeAction, setActiveAction] = React.useState<'buy' | 'sell' | null>(null)
   const [amount, setAmount] = React.useState<number | "">("")
-  const [selectedPosition, setSelectedPosition] = React.useState<any | null>(null)
-
-  const formatCurrency = (value: number) =>
-    value.toLocaleString("en-US", { style: "currency", currency: "USD" })
+  const [selectedPosition, setSelectedPosition] = React.useState<Position | null>(null)
 
   const handleSubmit = () => {
     console.log("Submit action:", activeAction, "amount:", amount, selectedPosition)
     setAmount("")
     setActiveAction(null)
     setOpenDialogId(null)
+  }
+
+  const handleClose = async (pos: Position) => {
+    console.log("pos:", pos)
+    try {
+      await closePosition(pos)
+      toast.success(t("positionClosed"))
+    } catch (error) {
+      toast.error(t("positionCloseError"))
+    }
   }
 
   return (
@@ -59,6 +71,7 @@ export function PositionsTable({ positions }: { positions: any[] }) {
             <TableRow>
               <TableHead>{t("tableAsset")}</TableHead>
               <TableHead>{t("tableName")}</TableHead>
+              <TableHead>{t("tableTradeType")}</TableHead>
               <TableHead>{t("tableShares")}</TableHead>
               <TableHead>{t("tablePrice")}</TableHead>
               <TableHead>{t("tableCurrentPrice")}</TableHead>
@@ -66,6 +79,7 @@ export function PositionsTable({ positions }: { positions: any[] }) {
               <TableHead>{t("tableGain")}</TableHead>
               <TableHead>{t("tableReturn")}</TableHead>
               <TableHead>{t("tableActions")}</TableHead>
+              <TableHead></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -74,7 +88,7 @@ export function PositionsTable({ positions }: { positions: any[] }) {
               const gain = pos.current - pos.entry
               const pct = ((gain / pos.entry) * 100)
               const isUp = gain >= 0
-
+              const type = pos.type === "Buy" ? "typeBuy" : "typeSell"
               return (
                 <TableRow key={pos.id}>
                   <TableCell>
@@ -83,6 +97,7 @@ export function PositionsTable({ positions }: { positions: any[] }) {
                     </div>
                   </TableCell>
                   <TableCell>{name}</TableCell>
+                  <TableCell>{t(type)}</TableCell>
                   <TableCell>{pos.quantity}</TableCell>
                   <TableCell>{(pos.entry)}</TableCell>
                   <TableCell>{(pos.current)}</TableCell>
@@ -148,6 +163,26 @@ export function PositionsTable({ positions }: { positions: any[] }) {
                           )}
                         </DialogContent>
                       )}
+                    </Dialog>
+                  </TableCell>
+                  <TableCell>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="link" className="text-red-500">{t("closePosition")}</Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>
+                            {t('closePositionText')}: {pos.asset}
+                          </DialogTitle>
+                          <DialogDescription>
+                            {t('confirmCloseText')}
+                          </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                          <Button onClick={() => handleClose(pos)}  type="submit">{t("Save changes")}</Button>
+                        </DialogFooter>
+                      </DialogContent>
                     </Dialog>
                   </TableCell>
                 </TableRow>

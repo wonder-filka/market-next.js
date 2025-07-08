@@ -141,7 +141,7 @@ const enriched = positions.map(p => ({
           <TableBody>
             {filteredTrades.map((trade) => (
               <TableRow key={trade.id}>
-                <TableCell>{trade.accountId}</TableCell>
+                <TableCell>{trade.account.mt5Id}</TableCell>
                 <TableCell>  {new Date(trade.startDate).toLocaleString()} – {new Date(trade.endDate ?? new Date()).toLocaleString()}</TableCell>
                 <TableCell>{trade.asset}</TableCell>
                 <TableCell>{t(`type${trade.type}`)}</TableCell>
