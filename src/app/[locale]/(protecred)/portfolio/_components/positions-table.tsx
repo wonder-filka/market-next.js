@@ -55,12 +55,12 @@ export function PositionsTable({ positions }: { positions: Position[] }) {
 
   const handleClose = async (pos: Position) => {
     console.log("pos:", pos)
-    try {
-      await closePosition(pos)
-      toast.success(t("positionClosed"))
-    } catch (error) {
-      toast.error(t("positionCloseError"))
-    }
+    // try {
+    //   await closePosition(pos)
+    //   toast.success(t("positionClosed"))
+    // } catch (error) {
+    //   toast.error(t("positionCloseError"))
+    // }
   }
 
   return (
@@ -86,8 +86,13 @@ export function PositionsTable({ positions }: { positions: Position[] }) {
             {positions.map((pos) => {
               const name = assetNames[pos.asset] || pos.asset
               const gain = pos.current - pos.entry
-              const pct = ((gain / pos.entry) * 100)
-              const isUp = gain >= 0
+              const signedGain = pos.type === "Buy" ? gain : -gain
+
+              // теперь процент:
+              const pct = (signedGain / pos.entry) * 100
+              // и чтобы всегда две цифры после точки:
+              const pctDisplay = pct.toFixed(2) + '%'
+              const isUp = pos.type === "Buy" ? gain >= 0 : gain <= 0
               const type = pos.type === "Buy" ? "typeBuy" : "typeSell"
               return (
                 <TableRow key={pos.id}>
@@ -114,7 +119,7 @@ export function PositionsTable({ positions }: { positions: Position[] }) {
                     </span>
                   </TableCell>
                   <TableCell className={isUp ? "text-green-600" : "text-red-600"}>
-                    {pct}%
+                    {pctDisplay}
                   </TableCell>
                   <TableCell>
                     <Dialog
@@ -180,7 +185,7 @@ export function PositionsTable({ positions }: { positions: Position[] }) {
                           </DialogDescription>
                         </DialogHeader>
                         <DialogFooter>
-                          <Button onClick={() => handleClose(pos)}  type="submit">{t("Save changes")}</Button>
+                          <Button onClick={() => handleClose(pos)} type="submit">{t("Save changes")}</Button>
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>
