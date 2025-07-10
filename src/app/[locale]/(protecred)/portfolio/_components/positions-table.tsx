@@ -55,12 +55,12 @@ export function PositionsTable({ positions }: { positions: Position[] }) {
 
   const handleClose = async (pos: Position) => {
     console.log("pos:", pos)
-    // try {
-    //   await closePosition(pos)
-    //   toast.success(t("positionClosed"))
-    // } catch (error) {
-    //   toast.error(t("positionCloseError"))
-    // }
+    try {
+      await closePosition(pos)
+      toast.success(t("positionClosed"))
+    } catch (error) {
+      toast.error(t("positionCloseError"))
+    }
   }
 
   return (

@@ -12,6 +12,7 @@ export async function closePosition(pos: Position) {
 		// 2. Считаем сумму закрытия в USD
 		const currentPrice = pos.current;
 		const total = pos.pnl;
+		const walletTotal = pos.entry * pos.quantity + pos.pnl;
 
 		// 3. Открываем транзакцию:
 		//    - создаём запись Trade типа Sell/Buy (в зависимости от изначального направления)
@@ -46,8 +47,8 @@ export async function closePosition(pos: Position) {
 			prisma.account.update({
 				where: { id: pos.accountId },
 				data: {
-					balance: { increment: total },
-					freeMargin: { increment: total },
+					balance: { increment: walletTotal },
+					freeMargin: { increment: walletTotal },
 				},
 			}),
 		]);
