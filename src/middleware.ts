@@ -22,6 +22,7 @@ const protectedRoutes = [
 	"/ru/dashboard",
 ];
 
+
 export async function middleware(request: NextRequest) {
 	const response = I18nMiddleware(request);
 
@@ -29,6 +30,20 @@ export async function middleware(request: NextRequest) {
 	const isProtectedRoute = protectedRoutes.includes(path);
 	const cookie = (await cookies()).get("session")?.value;
 	const session = await decrypt(cookie);
+
+	if (path === "/ru/admin" || path === "/en/admin") {
+		if (
+			!session?.userId ||
+			(session.userId !==  "5f463fba-4745-4a67-9358-fcd5d2509d4d" && session.email !== "111@test.com") 
+		) {
+			const redirectToHome = NextResponse.redirect(
+				new URL("/", request.nextUrl)
+			);
+			return redirectToHome;
+		}
+		return response;
+	}
+
 	if (isProtectedRoute && !session?.userId) {
 		const redirectResponse = NextResponse.redirect(
 			new URL("/", request.nextUrl)

@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -15,30 +9,29 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  phone        String   @unique
+  id           String     @id @default(uuid())
+  email        String     @unique
+  phone        String     @unique
   firstName    String
   lastName     String
   passwordHash String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  isVerifed    Boolean  @default(false)
-
-  accounts  Account[]
-  wallet    Wallet     @relation(fields: [walletId], references: [id])
-  walletId  String     @unique
-  trades    Trade[]
-  positions Position[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  isVerifed    Boolean    @default(false)
+  walletId     String     @unique
+  accounts     Account[]
+  positions    Position[]
+  trades       Trade[]
+  wallet       Wallet     @relation(fields: [walletId], references: [id])
 }
 
 model Wallet {
   id        String   @id @default(uuid())
   balance   Float    @default(0)
   currency  String   @default("USD")
-  withdrawn Float    @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  withdrawn Float    @default(0)
   user      User?
 }
 
@@ -50,12 +43,12 @@ model Account {
   balance    Float
   freeMargin Float
   currency   String     @default("USD")
-  user       User       @relation(fields: [userId], references: [id])
   userId     String
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  trades     Trade[]
+  user       User       @relation(fields: [userId], references: [id])
   positions  Position[]
+  trades     Trade[]
 }
 
 model Trade {
@@ -66,17 +59,15 @@ model Trade {
   price      Float
   total      Float
   status     TradeStatus
-  takeProfit Float?
-  stopLoss   Float?
   startDate  DateTime
   endDate    DateTime
   userId     String
+  createdAt  DateTime    @default(now())
+  accountId  String
+  stopLoss   Float?
+  takeProfit Float?
+  account    Account     @relation(fields: [accountId], references: [id])
   user       User        @relation(fields: [userId], references: [id])
-
-  accountId String
-  account   Account @relation(fields: [accountId], references: [id])
-
-  createdAt DateTime @default(now())
 }
 
 model Position {
@@ -90,11 +81,12 @@ model Position {
   status    PositionStatus
   date      DateTime
   userId    String
-  user      User           @relation(fields: [userId], references: [id])
+  createdAt DateTime       @default(now())
   accountId String
+  endDate   DateTime?
+  startDate DateTime       @default(now())
   account   Account        @relation(fields: [accountId], references: [id])
-
-  createdAt DateTime @default(now())
+  user      User           @relation(fields: [userId], references: [id])
 }
 
 enum TradeType {
