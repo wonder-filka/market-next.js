@@ -41,7 +41,7 @@ export async function closePosition(pos: Position) {
 						pos.type === "Buy"
 							? (currentPrice - pos.entry) * pos.quantity
 							: (pos.entry - currentPrice) * pos.quantity,
-					date: new Date(),
+					endDate: new Date(),
 				},
 			}),
 			prisma.account.update({
