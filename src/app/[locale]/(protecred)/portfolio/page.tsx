@@ -6,6 +6,7 @@ import { getSessionUserId } from "@/lib/session";
 import { getQuotes } from "../dashboard/_actions";
 import { nameToSymbol } from "@/lib/constants";
 import { TradeType } from "@/generated/prisma";
+import { getRates } from "@/lib/rates";
 
 
 
@@ -15,7 +16,7 @@ export default async function PortfolioPage() {
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    include: { wallet: true },
+    include: { wallet: true, accounts: true },
   });
   if (!user) return null;
 
@@ -25,6 +26,7 @@ export default async function PortfolioPage() {
   })
 
   const quotes = await getQuotes();
+  const rates = await getRates([...new Set(user.accounts.map(a => a.currency))]);
   const priceMap = Object.fromEntries(quotes.map((q) => [q.symbol, q.price]));
   console.log('priceMap', priceMap)
   // 3. Обогащаем позиции, но только если p.pnl из БД == 0 или null
@@ -67,7 +69,7 @@ export default async function PortfolioPage() {
         loss={loss} />
       {/* <PnLChart /> */}
       <ActionsPanel />
-      <PositionsTable positions={enriched} />
+      <PositionsTable positions={enriched} userId={user.id} accounts={user.accounts} rates={rates}/>
     </div>
   );
 }

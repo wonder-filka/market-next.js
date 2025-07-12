@@ -85,7 +85,8 @@ export async function createTrade(input: CreateTradeInput) {
 	const totalUSD = price * quantity; // считаем в валюте счёта
 	const isBuy = type === "buy";
 	const tradeType: TradeType = isBuy ? "Buy" : "Sell";
-
+console.log("input", input)
+console.log("tradeType", tradeType)
 	await prisma.$transaction(async (tx) => {
 		// 1. Проверки счёта
 		const account = await tx.account.findUnique({ where: { id: accountId } });

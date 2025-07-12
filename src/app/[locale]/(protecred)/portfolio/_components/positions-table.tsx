@@ -24,10 +24,11 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import * as React from "react"
 import { closePosition } from "../_actions"
-import { Position } from "@/generated/prisma"
+import { Account, Position } from "@/generated/prisma"
 import { toast } from "sonner"
+import { createTrade } from "../../dashboard/_actions"
+import { useState } from "react"
 
 const assetNames: Record<string, string> = {
   BTC: "Bitcoin",
@@ -39,15 +40,49 @@ const assetNames: Record<string, string> = {
   XRP: "Ripple"
 }
 
-export function PositionsTable({ positions }: { positions: Position[] }) {
-  const t = useI18n()
-  const [openDialogId, setOpenDialogId] = React.useState<string | null>(null)
-  const [activeAction, setActiveAction] = React.useState<'buy' | 'sell' | null>(null)
-  const [amount, setAmount] = React.useState<number | "">("")
-  const [selectedPosition, setSelectedPosition] = React.useState<Position | null>(null)
+function convert(amount: number, currency: string, rates: Record<string, number | undefined>) {
+  if (currency === 'USD') return amount;
+  const rate = rates[currency] ?? 1;
+  return amount * rate;
+}
 
-  const handleSubmit = () => {
+
+export function PositionsTable({ positions, userId, accounts, rates }: { positions: Position[], userId: string, accounts: Account[], rates: { [k: string]: number | undefined; } }) {
+  const t = useI18n()
+  const [openDialogId, setOpenDialogId] = useState<string | null>(null)
+  const [activeAction, setActiveAction] = useState<'buy' | 'sell' | null>(null)
+  const [amount, setAmount] = useState<number | "">("")
+  const [selectedPosition, setSelectedPosition] = useState<Position | null>(null)
+  const [accountId, setAccountId] = useState("");
+  const [takeProfit, setTakeProfit] = useState("");
+  const [stopLoss, setStopLoss] = useState("");
+
+  const handleSubmit = async () => {
     console.log("Submit action:", activeAction, "amount:", amount, selectedPosition)
+    if (!amount || !selectedPosition || !accountId) return
+    try {
+      await createTrade({
+        userId,
+        accountId,
+        asset: selectedPosition.asset,
+        type: activeAction === 'buy' ? 'buy' : 'sell',
+        price: selectedPosition.current,
+        quantity: parseFloat(amount.toString()),
+        takeProfit: takeProfit ? parseFloat(takeProfit) : null,
+        stopLoss: stopLoss ? parseFloat(stopLoss) : null,
+      })
+
+      toast.success(t(selectedPosition.type === 'Buy' ? 'buySuccess' : 'sellSuccess'), {
+        style: { backgroundColor: 'green', color: 'white' },
+      })
+    } catch (error) {
+      toast.error(t(error.message || 'error'), {
+        style: { backgroundColor: 'red', color: 'white' },
+      })
+    }
+    setAccountId("")
+    setTakeProfit("")
+    setStopLoss("")
     setAmount("")
     setActiveAction(null)
     setOpenDialogId(null)
@@ -151,6 +186,26 @@ export function PositionsTable({ positions }: { positions: Position[] }) {
                           </div>
                           {activeAction && (
                             <form onSubmit={(e) => { e.preventDefault(); handleSubmit() }} className="mt-4 space-y-4">
+                              <div>
+                                <label className="block text-sm font-medium mb-1">{t('account')}</label>
+                                <select
+                                  className="w-full bg-background border rounded-md p-2"
+                                  value={accountId}
+                                  onChange={(e) => setAccountId(e.target.value)}
+                                >
+                                  <option value="">{t('selectAccount')}</option>
+
+                                  {accounts.map((acc) => {
+                                    const converted = convert(acc.freeMargin, acc.currency, rates);
+
+                                    return (
+                                      <option key={acc.id} value={acc.id}>
+                                        {acc.mt5Id} — {acc.currency} {converted.toFixed(2)}
+                                      </option>
+                                    );
+                                  })}
+                                </select>
+                              </div>
                               <Input
                                 type="number"
                                 min="0"
@@ -163,6 +218,39 @@ export function PositionsTable({ positions }: { positions: Position[] }) {
 
                                 placeholder="0.00"
                               />
+                              {amount && accountId && (() => {
+                                const acc = accounts.find(a => a.id === accountId)
+                                if (!acc) return null
+                                const rate = acc.currency === 'USD' ? 1 : (rates[acc.currency] ?? 1)
+                                const usdValue = Number(amount) * selectedPosition!.current
+                                const total = usdValue * rate
+
+                                return (
+                                  <p className="mt-1 text-xs text-muted-foreground">
+                                    {t('tradeAmount')}: {(acc.currency)} {total.toFixed(2)}
+                                  </p>
+                                )
+                              })()}
+
+                              <div>
+                                <label className="block text-sm font-medium mb-1">{t('takeProfit')}</label>
+                                <Input
+                                  type="number"
+                                  value={takeProfit}
+                                  onChange={(e) => setTakeProfit(e.target.value)}
+                                  placeholder="0.00"
+                                />
+                              </div>
+
+                              <div>
+                                <label className="block text-sm font-medium mb-1">{t('stopLoss')}</label>
+                                <Input
+                                  type="number"
+                                  value={stopLoss}
+                                  onChange={(e) => setStopLoss(e.target.value)}
+                                  placeholder="0.00"
+                                />
+                              </div>
                               <Button type="submit" disabled={!amount}>{t("save")}</Button>
                             </form>
                           )}
