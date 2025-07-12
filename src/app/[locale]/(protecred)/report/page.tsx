@@ -21,14 +21,16 @@ export default async function Page() {
     where: { id: userId },
     include: { wallet: true },
   })
+    if (!user) return null;
   const balance = user?.wallet.balance ?? 0
-
+const freeMargin = user?.wallet.balance - user?.wallet.withdrawn
   return (
     <div className="space-y-8 p-8">
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <section className="grid grid-cols-1 md:grid-cols-4 gap-8">
         <SummaryCard label={"totalTrades"} value={openPositions} />
         <SummaryCard label={"totalVolume"} value={formatCurrency(profit)} />
         <SummaryCard label={"accountBalance"} value={formatCurrency(balance)} />
+        <SummaryCard label={"freeMargin"} value={formatCurrency(freeMargin)} />
       </section>
 
       <section>

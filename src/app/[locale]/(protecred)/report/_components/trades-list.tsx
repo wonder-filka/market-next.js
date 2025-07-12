@@ -19,10 +19,10 @@ import { Calendar } from "@/components/ui/calendar"
 import { format } from "date-fns"
 import { Account, Position, Trade } from "@/generated/prisma"
 
-const statusVariant: Record<Trade["status"], "default" | "secondary" | "destructive"> = {
-  Completed: "default",
-  Pending: "secondary",
-  Cancelled: "destructive"
+const statusVariant: Record<Position["status"], "default" | "secondary" | "destructive"> = {
+  Active: "default",
+  Closed: "secondary",
+  Liquidated: "destructive"
 }
 
 export function PositionsTableReport({
