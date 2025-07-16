@@ -242,8 +242,15 @@ export default {
 	tradeAmount: "Сумма сделки",
 	Cancel: "Закрыть",
 	"Save changes": "Сохранить изменения",
-	  "confirmCloseText": "Вы уверены, что хотите закрыть сделку?",
-	   "closePositionText": "Закрыть сделку",
-	    "positionClosed": "Позиция успешно закрыта",
-  "positionCloseError": "Не удалось закрыть позицию"
+	confirmCloseText: "Вы уверены, что хотите закрыть сделку?",
+	closePositionText: "Закрыть сделку",
+	positionClosed: "Позиция успешно закрыта",
+	positionCloseError: "Не удалось закрыть позицию",
+	support: {
+		chatTitle: "Чат с поддержкой",
+		chatDescription:
+			"Задайте свой вопрос и мы постараемся ответить как можно скорее.",
+		typeMessagePlaceholder: "Введите ваше сообщение...",
+		noMessages: "Начните чат, отправив первое сообщение!",
+	},
 } as const;

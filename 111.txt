@@ -1,0 +1,53 @@
+
+- cad-back/front
+yarn start:dev
+./run.sh
+
+- general-data docker/app
+docker-compose up
+yarn start:dev
+
+- formular-back/front
+npm run start
+yarn dev
+
+- angebot-backend
+docker-compose up dev
+yarn start:dev       
+
+- code-for-excel
+uvicorn app.main:app --reload --port 4443 
+
+uvicorn main:app --reload --port 8800
+
+
+Email: admin@faber-etec.de
+Password: admin2023! 
+
+Email: admin@mail.com
+Password: ho5fpa27
+
+$2b$10$R9jb4.xymD/MzEaYbCW9aedBZ80BHrSRIagy6ogm5DAg5X2/KKazK
+Test123456789
+
+
+export NODE_OPTIONS="--max-old-space-size=8192"
+
+docker build -f Dockerfile-dev -t dev-cad .
+docker run --name dev-cad-container -p 8000:8000 -d dev-cad
+
+
+bunx prisma db pull --schema prisma/cad.prisma
+bunx prisma generate --schema prisma/cad.prisma
+
+bunx prisma db pull --schema prisma/angebot.prisma
+bunx prisma generate --schema prisma/angebot.prisma
+
+bunx prisma db pull --schema prisma/formular.prisma
+bunx prisma generate --schema prisma/formular.prisma
+
+bunx prisma db pull --schema prisma/new-cad.prisma
+bunx prisma generate --schema prisma/new-cad.prisma
+
+bunx prisma migrate dev --name init --schema prisma/new-cad.prisma
+bunx prisma migrate dev --name init --schema prisma/formular.prisma

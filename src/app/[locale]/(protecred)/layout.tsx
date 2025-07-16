@@ -19,7 +19,7 @@ export default async function Layout({
   return (
     <SidebarProvider defaultOpen={true}>
 
-      <AppSidebar className="hidden md:flex" />
+      <AppSidebar className="hidden md:flex" userId={userId} />
       <SidebarInset>
         <ProtectedHeader data={userBasicSettings} />
         <main className="flex-1 p-4 pt-0">{children}</main>

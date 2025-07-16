@@ -19,9 +19,10 @@ import { useTransition } from "react"
 import { deleteSession } from "@/lib/session"
 import { redirect } from "next/navigation"
 import { sidebarItems } from "@/lib/constants"
+import { SupportComponent } from "./support-component"
 
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ userId, ...props }: React.ComponentProps<typeof Sidebar>  & { userId: string | null }) {
   const t = useI18n();
   const [pending, startTransition] = useTransition()
 
@@ -71,12 +72,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter hidden={false}>
         <SidebarMenu >
           <SidebarMenuItem>
-            <SidebarMenuButton asChild   >
-              <Link href="/support" >
-                <Send />
-                <span className="">{t('sidebar.support')}</span>
-              </Link>
-            </SidebarMenuButton>
+             {userId && <SupportComponent userId={userId} />} {/* Передаем userId */}
+            {!userId && ( // Опционально, если нет userId, можно показать обычную ссылку или ничего
+              <SidebarMenuButton asChild>
+                <Link href="/support">
+                  <Send />
+                  <span className="">{t('sidebar.support')}</span>
+                </Link>
+              </SidebarMenuButton>
+            )}
           </SidebarMenuItem>
           <SidebarSeparator />
           <SidebarMenuItem>

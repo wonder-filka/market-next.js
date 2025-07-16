@@ -247,6 +247,13 @@ export default {
 	"Save changes": "Save changes",
 	confirmCloseText: "Are you sure you want to close the deal?",
 	closePositionText: "Close Position",
-	  "positionClosed": "Position closed successfully",
-  "positionCloseError": "Failed to close position"
+	positionClosed: "Position closed successfully",
+	positionCloseError: "Failed to close position",
+	support: {
+		chatTitle: "Support Chat",
+		chatDescription:
+			"Ask your question and we will try to respond as soon as possible.",
+		typeMessagePlaceholder: "Type your message...",
+		noMessages: "Start the chat by sending your first message!",
+	},
 } as const;
