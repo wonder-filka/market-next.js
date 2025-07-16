@@ -8,25 +8,16 @@ import { getQuotes } from "./_actions";
 import { getSessionUserId } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { getRates } from "@/lib/rates";
+import { getUser } from "../accounts/_actions";
 
 
 export default async function DashboardPage() {
-  const userId = await getSessionUserId()
-    if (!userId) {
-      return null
-    }
-  
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      include: {
-        wallet: true,
-        accounts: true,
-      },
-    })
-  
-    if (!user) {
-      return null
-    }
+  const userId = await getSessionUserId();
+  if (!userId) return null;
+
+  const user = await getUser(userId);
+  if (!user) return null;
+
 
   const t = await getI18n()
  const rates = await getRates([...new Set(user.accounts.map(a => a.currency))]);

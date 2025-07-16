@@ -71,3 +71,17 @@ export async function transferFundsToAccount({ wallet, account, amount }: Transf
     throw new Error(error.message || 'unexpectedError')
   }
 }
+
+export async function getUser(userId: string) {
+  try {
+    console.log('Fetching user with ID:', userId)
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { wallet: true, accounts: true },
+    })
+    return user
+  } catch (error) {
+    console.error('[GetUser]', error)
+    throw new Error('userFetchFailed')
+  }
+}

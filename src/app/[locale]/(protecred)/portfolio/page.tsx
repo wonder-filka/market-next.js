@@ -7,6 +7,7 @@ import { getQuotes } from "../dashboard/_actions";
 import { nameToSymbol } from "@/lib/constants";
 import { TradeType } from "@/generated/prisma";
 import { getRates } from "@/lib/rates";
+import { getUser } from "../accounts/_actions";
 
 
 
@@ -14,11 +15,9 @@ export default async function PortfolioPage() {
   const userId = await getSessionUserId();
   if (!userId) return null;
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    include: { wallet: true, accounts: true },
-  });
+  const user = await getUser(userId);
   if (!user) return null;
+
 
   const positions = await prisma.position.findMany({
     where: { userId, status: { not: "Closed" } },

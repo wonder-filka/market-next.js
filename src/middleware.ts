@@ -1,7 +1,7 @@
 import { createI18nMiddleware } from "next-international/middleware";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { decrypt } from "./lib/session";
+import { decrypt, encrypt, updateSession } from "./lib/session";
 
 const I18nMiddleware = createI18nMiddleware({
 	locales: ["ru", "en"],
@@ -22,7 +22,6 @@ const protectedRoutes = [
 	"/ru/dashboard",
 ];
 
-
 export async function middleware(request: NextRequest) {
 	const response = I18nMiddleware(request);
 
@@ -30,11 +29,25 @@ export async function middleware(request: NextRequest) {
 	const isProtectedRoute = protectedRoutes.includes(path);
 	const cookie = (await cookies()).get("session")?.value;
 	const session = await decrypt(cookie);
-
+	if (session) {
+		const newExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+		const newSession = await encrypt({
+			userId: session.userId,
+			expiresAt: newExpiresAt,
+		});
+		response.cookies.set("session", newSession, {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === "production",
+			expires: newExpiresAt,
+			sameSite: "lax",
+			path: "/",
+		});
+	}
 	if (path === "/ru/admin" || path === "/en/admin") {
 		if (
 			!session?.userId ||
-			(session.userId !==  "5f463fba-4745-4a67-9358-fcd5d2509d4d" && session.email !== "111@test.com") 
+			(session.userId !== "5f463fba-4745-4a67-9358-fcd5d2509d4d" &&
+				session.email !== "111@test.com")
 		) {
 			const redirectToHome = NextResponse.redirect(
 				new URL("/", request.nextUrl)

@@ -1,19 +1,16 @@
 'use server';
 
-import { prisma } from '@/lib/db';
 import { getSessionUserId } from '@/lib/session';
 import WalletInterface from './_components/wallet-interface';
 import { AccountCard } from './_components/account-card';
 import { getRates } from '@/lib/rates';
+import { getUser } from './_actions';
 
-export default async function WalletPage() {
+export default async function Page() {
   const userId = await getSessionUserId();
   if (!userId) return null;
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    include: { wallet: true, accounts: true },
-  });
+  const user = await getUser(userId);
   if (!user) return null;
 
   const rates = await getRates([...new Set(user.accounts.map(a => a.currency))]);
