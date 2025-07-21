@@ -105,8 +105,9 @@ export function PositionsTable({ positions, userId, accounts, rates }: { positio
           <TableHeader>
             <TableRow>
               <TableHead>{t("tableAsset")}</TableHead>
-              <TableHead>{t("tableName")}</TableHead>
+              <TableHead>{t("tableDateOpen")}</TableHead>
               <TableHead>{t("tableTradeType")}</TableHead>
+              <TableHead>{t("account")}</TableHead>
               <TableHead>{t("tableShares")}</TableHead>
               <TableHead>{t("tablePrice")}</TableHead>
               <TableHead>{t("tableCurrentPrice")}</TableHead>
@@ -119,10 +120,10 @@ export function PositionsTable({ positions, userId, accounts, rates }: { positio
           </TableHeader>
           <TableBody>
             {positions.map((pos) => {
-              const name = assetNames[pos.asset] || pos.asset
               const gain = pos.current - pos.entry
               const signedGain = pos.type === "Buy" ? gain : -gain
-
+              const account = accounts.find(acc => acc.id === pos.accountId);
+              const displayMt5Id = account ? account.mt5Id : "N/A"; // Показываем MT5 ID или "N/A" если не найдено
               // теперь процент:
               const pct = (signedGain / pos.entry) * 100
               // и чтобы всегда две цифры после точки:
@@ -136,8 +137,9 @@ export function PositionsTable({ positions, userId, accounts, rates }: { positio
                       <Badge variant="outline">{pos.asset}</Badge>
                     </div>
                   </TableCell>
-                  <TableCell>{name}</TableCell>
+                  <TableCell>{new Date(pos.startDate).toLocaleString()}</TableCell>
                   <TableCell>{t(type)}</TableCell>
+                  <TableCell>{displayMt5Id}</TableCell>
                   <TableCell>{pos.quantity}</TableCell>
                   <TableCell>{(pos.entry)}</TableCell>
                   <TableCell>{(pos.current)}</TableCell>

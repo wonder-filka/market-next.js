@@ -64,6 +64,7 @@ const columns: ColumnDef<PositionWithRelations>[] = [
 		accessorKey: "current",
 		header: () => "Текущая цена",
 		cell: ({ row }) => row.original.current,
+		enableGlobalFilter: true,
 	},
 	{
 		accessorKey: "pnl",
@@ -74,6 +75,8 @@ const columns: ColumnDef<PositionWithRelations>[] = [
 		accessorKey: "startDate",
 		header: () => "Дата открытия",
 		cell: ({ row }) => new Date(row.original.startDate).toLocaleString(),
+		enableGlobalFilter: true,
+		accessorFn: row => new Date(row.startDate).toLocaleString()
 	},
 	{
 		accessorKey: "endDate",

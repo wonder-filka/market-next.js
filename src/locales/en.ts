@@ -41,6 +41,7 @@ export default {
 	"sidebar.cabinet": "Personal Cabinet",
 
 	accountsTitle: "Your trading accounts",
+	account: "Account",
 	openAccount: "Open account",
 	noAccounts: "You have not opened any accounts yet.",
 	hedging: "Hedging",
@@ -81,7 +82,7 @@ export default {
 	tableReturn: "Return",
 	tableActions: "Actions",
 	edit: "Edit",
-
+	tableDateOpen: "Open Date",
 	typeBuy: "Buy",
 	typeSell: "Sell",
 	statusActive: "Active",

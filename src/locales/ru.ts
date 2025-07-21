@@ -42,6 +42,7 @@ export default {
 	"sidebar.cabinet": "Личный кабинет",
 
 	accountsTitle: "Ваши торговые счета",
+	account: "Счет",
 	openAccount: "Открыть счет",
 	noAccounts: "У вас еще нет открытых счетов.",
 	hedging: "Хеджинг",
@@ -124,6 +125,7 @@ export default {
 
 	tableTradeId: "ID",
 	tableTradeDate: "Дата",
+	tableDateOpen: "Дата открытия",
 	tableTradeAsset: "Актив",
 	tableTradeType: "Тип",
 	tableTradeQuantity: "Количество",
