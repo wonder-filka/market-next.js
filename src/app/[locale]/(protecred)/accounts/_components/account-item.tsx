@@ -13,19 +13,19 @@ interface AccountProps {
 }
 
 
-export function AccountItem({ account, userId }:AccountProps) {
+export function AccountItem({ account, userId }: AccountProps) {
   const t = useI18n()
   const router = useRouter()
   return (
     <Card>
-      <CardContent className="flex justify-between items-start md:items-center flex-col md:flex-row gap-8">
+      <CardContent className="flex justify-between items-center flex-col md:flex-row gap-8">
         <div>
           <div className="flex items-center gap-8">
             <span className="text-2xl font-bold">#{account.mt5Id}</span>
             {/* <span className="text-sm text-muted-foreground">{t('hedging')}</span> */}
           </div>
         </div>
-        <div className="flex-1 flex justify-between md:justify-center gap-8">
+        <div className="flex-1 flex  flex-col md:flex-row   justify-center gap-8">
           <div className="text-center">
             <p className="text-sm text-muted-foreground">{t('accountBalance')}</p>
             <p className="text-2xl font-bold">   {getCurrencySymbol(account.currency)} {formatter.format(account.balance)}</p>

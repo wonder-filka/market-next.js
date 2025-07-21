@@ -32,9 +32,9 @@ interface SupportComponentProps {
 
 export const SupportComponent = ({ userId }: SupportComponentProps) => {
 	const t = useI18n(); // Для перевода текста
-	const [messages, setMessages] = useState<Message[]>([]); // Сообщения чата
-	const [inputMessage, setInputMessage] = useState(""); // Текст в поле ввода
-	const [isOpen, setIsOpen] = useState(false); // Состояние открытия/закрытия диалога
+	const [messages, setMessages] = useState<Message[]>([]); 
+	const [inputMessage, setInputMessage] = useState(""); 
+	const [isOpen, setIsOpen] = useState(false); 
 
 	const handleSendMessage = () => {
 		if (inputMessage.trim() === "") return;
@@ -46,16 +46,15 @@ export const SupportComponent = ({ userId }: SupportComponentProps) => {
 			timestamp: new Date(),
 		};
 		setMessages((prevMessages) => [...prevMessages, newMessage]);
-		setInputMessage(""); // Очищаем поле ввода
+		setInputMessage(""); 
 	};
 
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
-				{/* Кнопка "Поддержка" в вашей Sidebar */}
 				<Button variant="ghost" className="justify-start w-full">
 					<Send className="mr-2" />
-					{t('sidebar.support')} {/* Используем ваш хук для перевода */}
+					{t('sidebar.support')}
 				</Button>
 			</DialogTrigger>
 			<DialogContent
@@ -94,7 +93,7 @@ export const SupportComponent = ({ userId }: SupportComponentProps) => {
 						</div>
 					</ScrollArea>
 				</div>
-				<div className="flex gap-2 p-4 pt-0 border-t items-center"> {/* Добавляем границу сверху */}
+				<div className="flex gap-2 p-4 pt-0 items-center">
 					<Textarea
 						placeholder={t('support.typeMessagePlaceholder')}
 						value={inputMessage}

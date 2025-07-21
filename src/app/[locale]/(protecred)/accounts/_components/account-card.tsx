@@ -23,7 +23,7 @@ export function AccountCard({ accounts, userId }: AccountProps) {
         </div>
 
         {sortedAccounts.length > 0 ? (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 my-8">
             {sortedAccounts.map((account) => (
               <AccountItem key={account.id} account={account} userId={userId} />
             ))}
