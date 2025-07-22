@@ -70,7 +70,7 @@ const prepareCandlestickData = (history: { time: string; price: number }[]) => {
 type QuoteChartProps = {
   accounts: Account[]
   userId: string
-  rates: { [k: string]: number | undefined; }
+  rates: Record<string, number>
 }
 
 export function QuoteChartPanel({ accounts, userId, rates }: QuoteChartProps) {

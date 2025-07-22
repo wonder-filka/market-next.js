@@ -8,31 +8,32 @@ import { Account } from "@/generated/prisma"
 type AccountProps = {
   accounts: Account[]
   userId: string
+  rates: Record<string, number>
 }
- 
-export function AccountCard({ accounts, userId }: AccountProps) {
+
+export function AccountCard({ accounts, userId, rates }: AccountProps) {
   const t = useI18n()
-    const sortedAccounts = [...accounts].sort(
+  const sortedAccounts = [...accounts].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   )
   return (
     <div className="flex flex-col gap-4 p-8">
-        <div className="flex justify-between">
-          <span className="text-2xl font-bold">{t("accountsTitle")}</span>
-         <OpenAccount userId={userId}/>
-        </div>
-
-        {sortedAccounts.length > 0 ? (
-          <div className="flex flex-col gap-4 my-8">
-            {sortedAccounts.map((account) => (
-              <AccountItem key={account.id} account={account} userId={userId} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-muted-foreground py-12 text-center">
-            {t("noAccounts")}
-          </div>
-        )}
+      <div className="flex justify-between">
+        <span className="text-2xl font-bold">{t("accountsTitle")}</span>
+        <OpenAccount userId={userId} />
       </div>
+
+      {sortedAccounts.length > 0 ? (
+        <div className="flex flex-col gap-4 my-8">
+          {sortedAccounts.map((account) => (
+            <AccountItem key={account.id} account={account} userId={userId} rates={rates} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-muted-foreground py-12 text-center">
+          {t("noAccounts")}
+        </div>
+      )}
+    </div>
   )
 }

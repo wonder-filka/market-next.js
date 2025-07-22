@@ -271,4 +271,12 @@ export default {
 		"This chat is closed. You cannot send new messages.",
 	"support.chatClosedNotification": "The chat has been closed.",
 	"support.chatInProgressNotification": "The support team has responded.",
+	withdrawToWallet: "Withdraw to Wallet",
+	enterWithdrawAmount: "Enter amount to withdraw",
+	invalidAmount: "Invalid amount",
+	withdrawSuccess: "Withdrawal successful!",
+	withdrawError: "Withdrawal error",
+	cancel: "Cancel",
+	currentRate: "Current rate",
+	"willBeCredited": "Will be credited",
 } as const;

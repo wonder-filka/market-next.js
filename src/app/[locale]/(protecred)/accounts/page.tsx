@@ -14,19 +14,17 @@ export default async function Page() {
   if (!user) return null;
 
   const rates = await getRates([...new Set(user.accounts.map(a => a.currency))]);
-  const accUSD = user.accounts.map(a => {
-    const rate = a.currency === 'USD' ? 1 : rates[a.currency] ?? 1;
-    return {
-      ...a,
-      balance: +(a.balance * rate).toFixed(2),
-      freeMargin: +(a.freeMargin * rate).toFixed(2),
-    };
-  });
+
+  const safeRates: Record<string, number> = Object.fromEntries(
+    Object.entries(rates)
+      .filter(([_, v]) => typeof v === "number" && !isNaN(v))
+      .map(([k, v]) => [k, v as number])
+  );
 
   return (
     <>
-      <WalletInterface wallet={user.wallet} userId={userId} accounts={accUSD} />
-      <AccountCard accounts={accUSD} userId={userId} />
+      <WalletInterface wallet={user.wallet} userId={userId} accounts={ user.accounts}  rates={safeRates}/>
+      <AccountCard accounts={ user.accounts} userId={userId} rates={safeRates} />
     </>
   );
 }

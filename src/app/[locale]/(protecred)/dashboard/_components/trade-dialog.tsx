@@ -1,6 +1,6 @@
 'use client'
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useI18n } from '@/locales/client'
@@ -8,6 +8,7 @@ import { useState, useTransition } from 'react'
 import { Account } from '@/generated/prisma'
 import { createTrade } from '../_actions'
 import { toast } from 'sonner'
+import { LoaderCircle } from 'lucide-react'
 
 type TradeDialogProps = {
   isOpen: boolean
@@ -17,46 +18,49 @@ type TradeDialogProps = {
   accounts: Account[]
   userId: string
   price: number
-  rates: { [k: string]: number | undefined; }
+  rates: Record<string, number>
 }
-
-function convert(amount: number, currency: string, rates: Record<string, number | undefined>) {
-  if (currency === 'USD') return amount;
-  const rate = rates[currency] ?? 1;
-  return amount * rate;
-}
-
 
 export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId, price, rates }: TradeDialogProps) {
+  console.log("accounts", accounts)
+  console.log("price", price)
   const t = useI18n()
   const [quantity, setQuantity] = useState('')
   const [takeProfit, setTakeProfit] = useState('')
   const [stopLoss, setStopLoss] = useState('')
   const [accountId, setAccountId] = useState('')
   const [pending, startTransition] = useTransition()
+  const [loading, setLoading] = useState(false)
+
 
   const handleSubmit = () => {
+    setLoading(true)
     if (!quantity || !accountId) return
     const qty = parseFloat(quantity)
-    const total = price * qty
+    const totalUsd = price * qty // сколько нужно USD для сделки
     const account = accounts.find(a => a.id === accountId)!
-
-    if (account.freeMargin < total) {
+    const rate = account.currency === 'USD' ? 1 : (rates[account.currency] ?? 1)
+    const requiredInAccountCurrency = totalUsd * rate
+    // 2. Проверка на наличие средств именно в валюте аккаунта!
+    if (account.freeMargin < requiredInAccountCurrency) {
+      setLoading(false)
       return toast.error(t('insufficientFunds'), {
         style: { backgroundColor: 'red', color: 'white' },
       })
     }
     startTransition(async () => {
       try {
+        await new Promise(res => setTimeout(res, 5000))
         await createTrade({
           userId,
-          accountId,
+          account,
           asset: assetName,
           type,
           price,
           quantity: parseFloat(quantity),
           takeProfit: takeProfit ? parseFloat(takeProfit) : null,
           stopLoss: stopLoss ? parseFloat(stopLoss) : null,
+          rates
         })
 
         toast.success(t(type === 'buy' ? 'buySuccess' : 'sellSuccess'), {
@@ -68,96 +72,113 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
         setTakeProfit('')
         setStopLoss('')
         setAccountId('')
+        setLoading(false)
       } catch (err: any) {
+
         toast.error(t(err.message || 'error'), {
           style: { backgroundColor: 'red', color: 'white' },
         })
+        setLoading(false)
       }
+
     })
   }
 
+  const dialogClose = () => {
+    setQuantity('')
+    setTakeProfit('')
+    setStopLoss('')
+    setAccountId('')
+    onClose()
+  }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={dialogClose}>
+
       <DialogContent className="sm:max-w-md bg-gray-900">
+
         <DialogHeader>
           <DialogTitle>
             {type === 'buy' ? t('buy') : t('sell')} {assetName}
           </DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
+        {loading ? (
+          <div className='flex justify-center items-center space-x-2'>
+            <LoaderCircle size={25} className='text-gray-500 animate-spin' />
+          </div>
+        ) :
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">{t('account')}</label>
+              <select
+                className="w-full bg-background border rounded-md p-2"
+                value={accountId}
+                onChange={(e) => setAccountId(e.target.value)}
+              >
+                <option value="">{t('selectAccount')}</option>
 
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">{t('account')}</label>
-            <select
-              className="w-full bg-background border rounded-md p-2"
-              value={accountId}
-              onChange={(e) => setAccountId(e.target.value)}
-            >
-              <option value="">{t('selectAccount')}</option>
+                {accounts.map((acc) => {
+                  return (
+                    <option key={acc.id} value={acc.id}>
+                      {acc.mt5Id} — {acc.currency} {acc.freeMargin}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
 
-              {accounts.map((acc) => {
-                const converted = convert(acc.freeMargin, acc.currency, rates);
+            <div>
+              <label className="block text-sm font-medium mb-1">{t('quantity')}</label>
+              <Input
+                type="number"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+                placeholder="0.00"
+              />
+              {quantity && accountId && (() => {
+                const acc = accounts.find(a => a.id === accountId)
+                if (!acc) return null
+                const rate = acc.currency === 'USD' ? 1 : (rates[acc.currency] ?? 1)
+                const usdValue = Number(quantity) * price
+                const total = usdValue * rate
 
                 return (
-                  <option key={acc.id} value={acc.id}>
-                    {acc.mt5Id} — {acc.currency} {converted.toFixed(2)}
-                  </option>
-                );
-              })}
-            </select>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {t('tradeAmount')}: {(acc.currency)} {total.toFixed(2)}
+                  </p>
+                )
+              })()}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">{t('takeProfit')}</label>
+              <Input
+                type="number"
+                value={takeProfit}
+                onChange={(e) => setTakeProfit(e.target.value)}
+                placeholder="0.00"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">{t('stopLoss')}</label>
+              <Input
+                type="number"
+                value={stopLoss}
+                onChange={(e) => setStopLoss(e.target.value)}
+                placeholder="0.00"
+              />
+            </div>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">{t('quantity')}</label>
-            <Input
-              type="number"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-              placeholder="0.00"
-            />
-            {quantity && accountId && (() => {
-              const acc = accounts.find(a => a.id === accountId)
-              if (!acc) return null
-              const rate = acc.currency === 'USD' ? 1 : (rates[acc.currency] ?? 1)
-              const usdValue = Number(quantity) * price
-              const total = usdValue * rate
-
-              return (
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {t('tradeAmount')}: {(acc.currency)} {total.toFixed(2)}
-                </p>
-              )
-            })()}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">{t('takeProfit')}</label>
-            <Input
-              type="number"
-              value={takeProfit}
-              onChange={(e) => setTakeProfit(e.target.value)}
-              placeholder="0.00"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">{t('stopLoss')}</label>
-            <Input
-              type="number"
-              value={stopLoss}
-              onChange={(e) => setStopLoss(e.target.value)}
-              placeholder="0.00"
-            />
-          </div>
-        </div>
-
+        }
         <DialogFooter className="pt-4">
-          <Button onClick={handleSubmit} disabled={pending || !quantity || !accountId}>
+          <Button onClick={handleSubmit} disabled={pending || !quantity || !accountId || loading}>
             {t(type)}
           </Button>
         </DialogFooter>
       </DialogContent>
+
     </Dialog>
   )
 }

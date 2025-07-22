@@ -84,7 +84,7 @@ const columns: ColumnDef<PositionWithRelations>[] = [
 		header: () => "Дата закрытия",
 		cell: ({ row }) =>
 			row.original.endDate
-				? new Date(row.original.endDate).toLocaleString()
+				? format(new Date(row.original.endDate), "dd.MM.yyyy, HH:mm:ss")
 				: "-",
 	},
 	{

@@ -20,8 +20,13 @@ export default async function DashboardPage() {
 
 
   const t = await getI18n()
- const rates = await getRates([...new Set(user.accounts.map(a => a.currency))]);
+  const rates = await getRates([...new Set(user.accounts.map(a => a.currency))]);
   const quotes = await getQuotes()
+  const safeRates: Record<string, number> = Object.fromEntries(
+    Object.entries(rates)
+      .filter(([_, v]) => typeof v === "number" && !isNaN(v))
+      .map(([k, v]) => [k, v as number])
+  );
   return (
     <main className="p-6 space-y-6">
       <h1 className="text-3xl font-bold">{t("dashboardGreeting")}, {user.firstName}</h1>
@@ -35,7 +40,7 @@ export default async function DashboardPage() {
         </div>
 
         <div className="space-y-6 col-span-3">
-          <QuoteChartPanel accounts={user.accounts} userId={userId} rates={rates}/>
+          <QuoteChartPanel accounts={user.accounts} userId={userId} rates={safeRates} />
 
           <CategoryPanel initialQuotes={quotes} />
 

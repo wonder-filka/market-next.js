@@ -13,9 +13,10 @@ type WalletProps = {
   wallet: Wallet,
   userId: string,
   accounts: Account[]
+  rates: Record<string, number>
 }
 
-export default function WalletInterface({ wallet, userId, accounts }: WalletProps) {
+export default function WalletInterface({ wallet, userId, accounts, rates }: WalletProps) {
   const t = useI18n()
   const [isTransferOpen, setIsTransferOpen] = useState(false);
 
@@ -64,6 +65,7 @@ export default function WalletInterface({ wallet, userId, accounts }: WalletProp
         accounts={accounts}
         userId={userId}
         wallet={wallet}
+        rates={rates}
       />
     </div>
   )

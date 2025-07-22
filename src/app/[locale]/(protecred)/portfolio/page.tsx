@@ -31,7 +31,6 @@ export default async function PortfolioPage() {
   // 3. Обогащаем позиции, но только если p.pnl из БД == 0 или null
   const enriched = positions.map((p) => {
     const sym = nameToSymbol[p.asset]
-    console.log('sym', sym)
     const savedPnl = p.pnl;
     if (savedPnl && savedPnl !== 0) {
       console.log('savedPnl', savedPnl)
@@ -59,7 +58,11 @@ export default async function PortfolioPage() {
     .filter((p) => p.pnl < 0)
     .reduce((sum, p) => sum + Math.abs(p.pnl), 0);
 
-
+  const safeRates: Record<string, number> = Object.fromEntries(
+    Object.entries(rates)
+      .filter(([_, v]) => typeof v === "number" && !isNaN(v))
+      .map(([k, v]) => [k, v as number])
+  );
   return (
     <div className="p-8 flex flex-col gap-8">
       <SummaryCards balance={user?.wallet.balance}
@@ -68,7 +71,7 @@ export default async function PortfolioPage() {
         loss={loss} />
       {/* <PnLChart /> */}
       <ActionsPanel />
-      <PositionsTable positions={enriched} userId={user.id} accounts={user.accounts} rates={rates}/>
+      <PositionsTable positions={enriched} userId={user.id} accounts={user.accounts} rates={safeRates} />
     </div>
   );
 }

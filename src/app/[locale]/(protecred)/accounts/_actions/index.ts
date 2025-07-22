@@ -42,12 +42,17 @@ type TransferInput = {
   amount: number
 }
 
-export async function transferFundsToAccount({ wallet, account, amount }: TransferInput) {
+export async function transferFundsToAccount({ wallet, account, amount, rates }: TransferInput & { rates: Record<string, number> }) {
   try {
+    // amount — в USD!
     const available = wallet.balance - (wallet.withdrawn ?? 0)
+    if (available < amount) throw new Error('insufficientFunds')
 
-    if (available < amount) {
-      throw new Error('insufficientFunds')
+    let creditedAmount = amount
+    if (account.currency !== 'USD') {
+      const rate = rates[account.currency]
+      if (!rate) throw new Error('rateNotFound')
+      creditedAmount = amount * rate // USD → EUR (или другая валюта)
     }
 
     await prisma.$transaction([
@@ -60,8 +65,8 @@ export async function transferFundsToAccount({ wallet, account, amount }: Transf
       prisma.account.update({
         where: { id: account.id },
         data: {
-          balance: account.balance + amount,
-          freeMargin: account.freeMargin + amount,
+          balance: account.balance + creditedAmount,
+          freeMargin: account.freeMargin + creditedAmount,
         },
       }),
     ])
@@ -83,4 +88,48 @@ export async function getUser(userId: string) {
     console.error('[GetUser]', error)
     throw new Error('userFetchFailed')
   }
+}
+
+export async function withdrawFromAccountToWallet({
+  accountId,
+  amount,
+  rateToUSD,
+}: {
+  accountId: string
+  amount: number
+  rateToUSD: number
+}) {
+  const account = await prisma.account.findUnique({
+    where: { id: accountId },
+    include: { user: { include: { wallet: true } } }
+  })
+
+  console.log("amount", amount)
+    console.log("rateToUSD", rateToUSD)
+    console.log("account.balance", account.balance)
+  if (!account) throw new Error("accountNotFound")
+  const wallet = account.user.wallet
+
+  if (account.freeMargin < amount) throw new Error("insufficientFunds")
+
+  // Рассчитываем сумму в USD для зачисления на кошелек
+  const amountInUSD = +(amount * (rateToUSD ?? 1)).toFixed(2)
+
+  await prisma.$transaction([
+    prisma.account.update({
+      where: { id: accountId },
+      data: {
+        balance: account.balance - amount,
+        freeMargin: account.freeMargin - amount,
+      },
+    }),
+    prisma.wallet.update({
+      where: { id: wallet.id },
+      data: {
+        balance: wallet.balance + amountInUSD,
+      },
+    }),
+  ])
+
+  revalidatePath('/accounts')
 }

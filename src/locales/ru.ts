@@ -268,4 +268,13 @@ export default {
 		"Этот чат закрыт. Вы не можете отправлять новые сообщения.",
 	"support.chatClosedNotification": "Чат был закрыт.",
 	"support.chatInProgressNotification": "Вам ответила поддержка.",
+	withdrawToWallet: "Вывод на кошелек",
+	enterWithdrawAmount: "Введите сумму для вывода",
+	invalidAmount: "Некорректная сумма",
+	withdrawSuccess: "Вывод успешно выполнен!",
+	withdrawError: "Ошибка при выводе",
+	cancel: "Отмена",
+	confirm: "Подтвердить",
+	currentRate: "Текущий курс",
+	willBeCredited: "Будет зачислено",
 } as const;

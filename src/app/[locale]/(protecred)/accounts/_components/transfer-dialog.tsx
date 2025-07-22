@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from "react"
+import { useMemo, useState, useTransition } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -15,13 +15,27 @@ type TransferDialogProps = {
 	accounts: Account[]
 	userId: string
 	wallet: Wallet
+	rates: Record<string, number>
 }
 
-export function TransferDialog({ isOpen, onClose, accounts, userId, wallet }: TransferDialogProps) {
+export function TransferDialog({ isOpen, onClose, accounts, userId, wallet, rates }: TransferDialogProps) {
 	const t = useI18n()
 	const [amount, setAmount] = useState('')
 	const [accountId, setAccountId] = useState('')
 	const [pending, startTransition] = useTransition()
+
+	const selectedAccount = accounts.find(acc => acc.id === accountId)
+	const targetCurrency = selectedAccount?.currency || "USD"
+	const rate = rates[targetCurrency] || 1
+
+	// Считаем сумму для зачисления (чтобы показать)
+	const creditedAmount = useMemo(() => {
+		if (!amount || !selectedAccount) return ""
+		const num = parseFloat(amount)
+		if (isNaN(num)) return ""
+		if (targetCurrency === "USD") return num.toFixed(2)
+		return (num * rate).toFixed(2)
+	}, [amount, rate, targetCurrency, selectedAccount])
 
 	const handleTransfer = () => {
 		if (!amount || !accountId) return
@@ -36,9 +50,8 @@ export function TransferDialog({ isOpen, onClose, accounts, userId, wallet }: Tr
 					wallet,
 					account: selectedAccount,
 					amount: parseFloat(amount),
-
+					rates, // обязательно!
 				})
-
 				toast.success(t('transferSuccess'), {
 					style: { backgroundColor: 'green', color: 'white' }
 				})
@@ -86,6 +99,12 @@ export function TransferDialog({ isOpen, onClose, accounts, userId, wallet }: Tr
 							onChange={(e) => setAmount(e.target.value)}
 							placeholder="0.00"
 						/>
+						{selectedAccount && targetCurrency !== "USD" && amount && (
+							<p className="text-xs mt-1 text-muted-foreground">
+								{t('willBeCredited')}: {creditedAmount} {targetCurrency} <br />
+								({t('currentRate')}: 1 USD = {rate} {targetCurrency})
+							</p>
+						)}
 					</div>
 				</div>
 

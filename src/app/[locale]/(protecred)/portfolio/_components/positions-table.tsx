@@ -29,6 +29,7 @@ import { Account, Position } from "@/generated/prisma"
 import { toast } from "sonner"
 import { createTrade } from "../../dashboard/_actions"
 import { useState } from "react"
+import { format } from "date-fns"
 
 const assetNames: Record<string, string> = {
   BTC: "Bitcoin",
@@ -47,7 +48,7 @@ function convert(amount: number, currency: string, rates: Record<string, number 
 }
 
 
-export function PositionsTable({ positions, userId, accounts, rates }: { positions: Position[], userId: string, accounts: Account[], rates: { [k: string]: number | undefined; } }) {
+export function PositionsTable({ positions, userId, accounts, rates }: { positions: Position[], userId: string, accounts: Account[], rates: Record<string, number> }) {
   const t = useI18n()
   const [openDialogId, setOpenDialogId] = useState<string | null>(null)
   const [activeAction, setActiveAction] = useState<'buy' | 'sell' | null>(null)
@@ -60,16 +61,30 @@ export function PositionsTable({ positions, userId, accounts, rates }: { positio
   const handleSubmit = async () => {
     console.log("Submit action:", activeAction, "amount:", amount, selectedPosition)
     if (!amount || !selectedPosition || !accountId) return
+    const account = accounts.find(a => a.id === accountId)!;
+
+    // 1. Рассчитать стоимость сделки в валюте аккаунта
+    const usdValue = Number(amount) * selectedPosition.current;
+    const rate = account.currency === 'USD' ? 1 : (rates[account.currency] ?? 1);
+    const requiredInAccountCurrency = usdValue * rate;
+
+    // 2. Проверка на наличие средств именно в валюте аккаунта!
+    if (account.freeMargin < requiredInAccountCurrency) {
+      return toast.error(t('insufficientFunds'), {
+        style: { backgroundColor: 'red', color: 'white' },
+      })
+    }
     try {
       await createTrade({
         userId,
-        accountId,
+        account,
         asset: selectedPosition.asset,
         type: activeAction === 'buy' ? 'buy' : 'sell',
         price: selectedPosition.current,
         quantity: parseFloat(amount.toString()),
         takeProfit: takeProfit ? parseFloat(takeProfit) : null,
         stopLoss: stopLoss ? parseFloat(stopLoss) : null,
+        rates
       })
 
       toast.success(t(selectedPosition.type === 'Buy' ? 'buySuccess' : 'sellSuccess'), {
@@ -90,8 +105,9 @@ export function PositionsTable({ positions, userId, accounts, rates }: { positio
 
   const handleClose = async (pos: Position) => {
     console.log("pos:", pos)
+    const account = accounts.find(a => a.id === pos.accountId)!;
     try {
-      await closePosition(pos)
+      await closePosition(pos, account, rates)
       toast.success(t("positionClosed"))
     } catch (error) {
       toast.error(t("positionCloseError"))
@@ -137,7 +153,7 @@ export function PositionsTable({ positions, userId, accounts, rates }: { positio
                       <Badge variant="outline">{pos.asset}</Badge>
                     </div>
                   </TableCell>
-                  <TableCell>{new Date(pos.startDate).toLocaleString()}</TableCell>
+                  <TableCell>{format(new Date(pos.startDate), "dd.MM.yyyy, HH:mm:ss")}</TableCell>
                   <TableCell>{t(type)}</TableCell>
                   <TableCell>{displayMt5Id}</TableCell>
                   <TableCell>{pos.quantity}</TableCell>
