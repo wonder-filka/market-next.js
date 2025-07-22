@@ -10,6 +10,7 @@ import { changePositionPrice } from "../_actions"
 import { toast } from "sonner"
 import { PositionWithRelations } from "../_actions/types"
 import { useReactTable, getCoreRowModel, ColumnDef, flexRender, ColumnFiltersState, getFilteredRowModel } from "@tanstack/react-table"
+import { format } from "date-fns"
 
 const columns: ColumnDef<PositionWithRelations>[] = [
 	{
@@ -74,7 +75,7 @@ const columns: ColumnDef<PositionWithRelations>[] = [
 	{
 		accessorKey: "startDate",
 		header: () => "Дата открытия",
-		cell: ({ row }) => new Date(row.original.startDate).toLocaleString(),
+		cell: ({ row }) => format(new Date(row.original.startDate), "dd.MM.yyyy, HH:mm:ss"),
 		enableGlobalFilter: true,
 		accessorFn: row => new Date(row.startDate).toLocaleString()
 	},

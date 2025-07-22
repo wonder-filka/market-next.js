@@ -228,8 +228,6 @@ export default {
 
 	accountCreated: "Счёт успешно создан",
 	accountCreationFailed: "Не удалось создать счёт",
-
-	account: "Счёт",
 	selectAccount: "Выберите счёт",
 	buySuccess: "Ордер на покупку успешно размещён",
 	sellSuccess: "Ордер на продажу успешно размещён",
@@ -255,4 +253,19 @@ export default {
 		typeMessagePlaceholder: "Введите ваше сообщение...",
 		noMessages: "Начните чат, отправив первое сообщение!",
 	},
+	"support.chatTitle": "Чат поддержки",
+	"support.chatDescription":
+		"Наша команда готова помочь. Напишите ваш вопрос — и мы скоро ответим!",
+	"support.loadingChat": "Загрузка чата...",
+	"support.noMessages": "Сообщений пока нет",
+	"support.you": "Вы",
+	"support.messageSent": "Сообщение отправлено!",
+	"support.messageSendFailed": "Не удалось отправить сообщение.",
+	"support.typeMessagePlaceholder": "Введите ваше сообщение...",
+	"support.sendButton": "Отправить",
+	"support.chatClosed": "Чат закрыт",
+	"support.chatClosedMessage":
+		"Этот чат закрыт. Вы не можете отправлять новые сообщения.",
+	"support.chatClosedNotification": "Чат был закрыт.",
+	"support.chatInProgressNotification": "Вам ответила поддержка.",
 } as const;

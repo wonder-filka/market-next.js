@@ -72,8 +72,8 @@ export function AppSidebar({ userId, ...props }: React.ComponentProps<typeof Sid
       <SidebarFooter hidden={false}>
         <SidebarMenu >
           <SidebarMenuItem>
-             {userId && <SupportComponent userId={userId} />} {/* Передаем userId */}
-            {!userId && ( // Опционально, если нет userId, можно показать обычную ссылку или ничего
+             {userId && <SupportComponent userId={userId} />} 
+            {!userId && ( 
               <SidebarMenuButton asChild>
                 <Link href="/support">
                   <Send />

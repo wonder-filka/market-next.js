@@ -1,6 +1,7 @@
 import { getSessionUserId } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { AdminTable } from "./_components/admin-table";
+import { AdminHeader } from "@/components/custom/navigation-bar-admin";
 
 export default async function Page() {
   const userId = await getSessionUserId()
@@ -37,8 +38,13 @@ export default async function Page() {
 
 
   return (
-    <main className="p-6 space-y-6">
-      <AdminTable data={info} />
-    </main>
+    <>
+      <AdminHeader />
+      <main className="px-6 space-y-6">
+
+        <AdminTable data={info} />
+      </main>
+    </>
+
   )
 }

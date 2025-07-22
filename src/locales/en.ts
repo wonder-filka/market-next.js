@@ -231,7 +231,6 @@ export default {
 	accountCreated: "Account successfully created",
 	accountCreationFailed: "Failed to create account",
 
-	account: "Account",
 	selectAccount: "Select an account",
 	buySuccess: "Buy order placed successfully",
 	sellSuccess: "Sell order placed successfully",
@@ -257,4 +256,19 @@ export default {
 		typeMessagePlaceholder: "Type your message...",
 		noMessages: "Start the chat by sending your first message!",
 	},
+	"support.chatTitle": "Support Chat",
+	"support.chatDescription":
+		"Our team is ready to help you. Write your question and we’ll respond soon!",
+	"support.loadingChat": "Loading chat...",
+	"support.noMessages": "No messages yet",
+	"support.you": "You",
+	"support.messageSent": "Message sent!",
+	"support.messageSendFailed": "Failed to send the message.",
+	"support.typeMessagePlaceholder": "Type your message...",
+	"support.sendButton": "Send",
+	"support.chatClosed": "Chat closed",
+	"support.chatClosedMessage":
+		"This chat is closed. You cannot send new messages.",
+	"support.chatClosedNotification": "The chat has been closed.",
+	"support.chatInProgressNotification": "The support team has responded.",
 } as const;

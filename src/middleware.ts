@@ -43,7 +43,21 @@ export async function middleware(request: NextRequest) {
 			path: "/",
 		});
 	}
-	if (path === "/ru/admin" || path === "/en/admin") {
+
+	const adminSupportRoutesPrefixes = [
+		"/ru/admin",
+		"/en/admin",
+		"/ru/chat",
+		"/en/chat",
+		// These need to specifically check for startsWith for dynamic segments
+		"/ru/chat/", // Catches /ru/chat/ and /ru/chat/:chatId
+		"/en/chat/", // Catches /en/chat/ and /en/chat/:chatId <-- **THIS WAS MISSED AND IS NOW ADDED**
+	];
+
+	const requiresAdminSupportAuth = adminSupportRoutesPrefixes.some(
+		(prefix) => path.startsWith(prefix) || path === prefix
+	);
+	if (requiresAdminSupportAuth) {
 		if (
 			!session?.userId ||
 			(session.userId !== "5f463fba-4745-4a67-9358-fcd5d2509d4d" &&
@@ -76,5 +90,8 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-	matcher: ["/((?!api|static|.*\\..*|_next|favicon.ico|robots.txt).*)"],
+	matcher: [
+		"/((?!api|_next/static|_next/image|favicon.ico|robots.txt)(?!.*\\.).*)",
+		"/socket.io",
+	],
 };
