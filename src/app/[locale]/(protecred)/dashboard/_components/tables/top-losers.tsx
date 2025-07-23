@@ -6,6 +6,7 @@ import { LiveQuote } from "@/lib/types"
 import { quoteNames } from "@/lib/constants"
 import { useEffect, useState } from "react"
 import { socket } from "@/socket"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
 export function TopLosers() {
   const t = useI18n()
@@ -33,22 +34,24 @@ export function TopLosers() {
     .slice(0, 5)
 
   return (
-    <div className="p-4 border rounded-lg shadow-sm ">
-      <h2 className="text-lg font-semibold mb-2">{t("topLosersTitle")}</h2>
-      {losers.length === 0 ? (
-        <div className="text-sm text-muted-foreground">{t("noLosersData")}</div>
-      ) : (
-        <ul className="space-y-1 text-sm">
-          {losers.map((q) => (
-            <li key={q.symbol} className="flex justify-between cursor-pointer" onClick={() => setSelectedSymbol(q.symbol)} >
-              <span> {quoteNames[q.symbol]?.[locale] ?? q.name}</span>
-              <span className="text-red-500 font-medium">
-                {q.change?.toFixed(4)}%
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+    <Card>
+      <CardHeader className="text-xl font-semibold">{t("topLosersTitle")}</CardHeader>
+      <CardContent>
+        {losers.length === 0 ? (
+          <div className="text-sm text-muted-foreground">{t("noLosersData")}</div>
+        ) : (
+          <ul className="space-y-1 text-sm">
+            {losers.map((q) => (
+              <li key={q.symbol} className="flex justify-between cursor-pointer" onClick={() => setSelectedSymbol(q.symbol)} >
+                <span> {quoteNames[q.symbol]?.[locale] ?? q.name}</span>
+                <span className="text-red-500 font-medium">
+                  {q.change?.toFixed(4)}%
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </CardContent>
+    </Card>
   )
 }

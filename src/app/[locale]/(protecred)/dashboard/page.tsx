@@ -25,10 +25,10 @@ export default async function DashboardPage() {
       .map(([k, v]) => [k, v as number])
   );
   return (
-    <main className="p-6 space-y-6">
-      <h1 className="text-3xl font-bold">{t("dashboardGreeting")}, {user.firstName}</h1>
+    <main className="p-4 space-y-4">
+      <h1 className="text-2xl font-bold">{t("dashboardGreeting")}, {user.firstName}</h1>
 
-      <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-5 gap-4">
         <div className="space-y-6 col-span-1 xl:col-span-2">
           <VolatileTable />
         </div>
@@ -36,7 +36,7 @@ export default async function DashboardPage() {
           <QuoteChartPanel accounts={user.accounts} userId={userId} rates={safeRates} />
         </div>
       </div>
-      <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-5 gap-4">
         <div className="space-y-6 col-span-1 xl:col-span-2">
           <TopGainers />
           <TopLosers />

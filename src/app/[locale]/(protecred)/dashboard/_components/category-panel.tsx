@@ -5,6 +5,7 @@ import { useI18n } from "@/locales/client"
 import { LiveQuote, Quote } from "@/lib/types"
 import { useEffect, useState } from "react"
 import { socket } from "@/socket"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
 const symbolCategories: Record<string, string> = {
   "^NDX": "indices",
@@ -55,37 +56,37 @@ export function CategoryPanel() {
   )
 
   return (
-    <div className="border rounded-md p-4 bg-background space-y-6">
-      <h2 className="text-xl font-semibold">{t("activeMarkets")}</h2>
+    <Card>
+      <CardHeader className="text-xl font-semibold">{t("activeMarkets")}</CardHeader>
+      <CardContent>
+        <div className="space-y-3">
+          {
+            Object.entries(categories).length === 0 ? <div className="text-sm text-muted-foreground">{t("noLosersData")}</div>
+              :
+              <>
 
-      <div className="space-y-3">
-        {
-          Object.entries(categories).length === 0 ? <div className="text-sm text-muted-foreground">{t("noLosersData")}</div>
-            :
-            <>
-
-              {Object.entries(categories).map(([category, quotes]) => {
-                const avgChange = quotes.reduce((acc, q) => {
-                  const prev = q.history[q.history.length - 2]?.price ?? q.price;
-                  const percent = prev ? ((q.price - prev) / prev) * 100 : 0;
-                  return acc + percent;
-                }, 0) / quotes.length;
-                return (
-                  <div key={category}>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span>{t(category as keyof typeof t)}</span>
-                      <span className={avgChange >= 0 ? "text-green-600" : "text-red-600"}>
-                        {avgChange.toFixed(2)}%
-                      </span>
+                {Object.entries(categories).map(([category, quotes]) => {
+                  const avgChange = quotes.reduce((acc, q) => {
+                    const prev = q.history[q.history.length - 2]?.price ?? q.price;
+                    const percent = prev ? ((q.price - prev) / prev) * 100 : 0;
+                    return acc + percent;
+                  }, 0) / quotes.length;
+                  return (
+                    <div key={category}>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span>{t(category as keyof typeof t)}</span>
+                        <span className={avgChange >= 0 ? "text-green-600" : "text-red-600"}>
+                          {avgChange.toFixed(2)}%
+                        </span>
+                      </div>
+                      <Progress value={(Math.abs(avgChange) / maxAbsChange) * 100} />
                     </div>
-                    <Progress value={(Math.abs(avgChange) / maxAbsChange) * 100} />
-                  </div>
-                )
-              })}
-            </>
-        }
-      </div>
-      {/* 
+                  )
+                })}
+              </>
+          }
+        </div>
+        {/* 
       <div className="space-y-2">
         <h3 className="text-sm font-medium text-muted-foreground">
           {t("mostPopularInCategory")}
@@ -111,6 +112,7 @@ export function CategoryPanel() {
           </div>
         ))}
       </div> */}
-    </div>
+      </CardContent>
+    </Card>
   )
 }

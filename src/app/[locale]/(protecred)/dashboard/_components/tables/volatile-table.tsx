@@ -9,6 +9,15 @@ import { LiveQuote } from '@/lib/types'
 import { quoteNames } from '@/lib/constants'
 import { socket } from '@/socket'
 import { LoaderCircle } from 'lucide-react'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from "@/components/ui/table"
+import { Card, CardContent } from "@/components/ui/card"
 
 export function VolatileTable() {
   const t = useI18n()
@@ -47,52 +56,53 @@ export function VolatileTable() {
     </div>
   }
   return (
-    <div className="border rounded-md p-4 bg-background space-y-4">
-      <h2 className="text-xl font-semibold">{t('mostVolatileTitle')}</h2>
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="text-muted-foreground border-b">
-            <th className="text-left p-2">{t('columnMarket')}</th>
-            <th className="text-left py-2">{t('columnVolatility')}</th>
-            <th className="text-left py-2">{t('columnSell')}</th>
-            <th className="text-left py-2">{t('columnBuy')}</th>
-            <th className="text-left py-2">{t('columnChange')}.</th>
-            <th>%</th>
-          </tr>
-        </thead>
-        <tbody>
-          {withVolatility.map((q) => {
-            const previous = q.history[q.history.length - 2]?.price ?? q.price
-            const diff = q.price - previous
-            const percent = previous !== 0 ? (diff / previous) * 100 : 0
-            const isPositive = diff >= 0
-            return (
-              <tr
-                key={q.symbol}
-                className="border-b hover:bg-muted cursor-pointer"
-                onClick={() => setSelectedSymbol(q.symbol)}
-              >
-                <td className="p-2 font-medium">
-                  {quoteNames[q.symbol]?.[locale] ?? q.name}
-                </td>
-                <td>
-                  <Progress value={Math.min(q.volatility * 10, 100)} className="w-24 h-2" />
-                </td>
-                <td className="text-start">{q.sell?.toFixed(4) ?? '—'}</td>
-                <td className="text-start">{q.buy?.toFixed(4) ?? '—'}</td>
-                <td className={cn('text-center', isPositive ? 'text-green-600' : 'text-red-600')}>
-                  {diff >= 0 ? '+' : ''}
-                  {diff.toFixed(2)}
-                </td>
-                <td className={cn('text-center', percent >= 0 ? 'text-green-600' : 'text-red-600')}>
-                  {percent >= 0 ? '+' : ''}
-                  {percent.toFixed(2)}%
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-    </div>
+    <Card>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow >
+              <TableHead>{t('columnMarket')}</TableHead>
+              {/* <TableHead>{t('columnVolatility')}</TableHead> */}
+              <TableHead>{t('columnSell')}</TableHead>
+              <TableHead>{t('columnBuy')}</TableHead>
+              <TableHead>{t('columnChange')}</TableHead>
+              <TableHead>%</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {withVolatility.map((q) => {
+              const previous = q.history[q.history.length - 2]?.price ?? q.price
+              const diff = q.price - previous
+              const percent = previous !== 0 ? (diff / previous) * 100 : 0
+              const isPositive = diff >= 0
+              return (
+                <TableRow
+                  key={q.symbol}
+                  className="cursor-pointer"
+                  onClick={() => setSelectedSymbol(q.symbol)}
+                >
+                  <TableCell className="p-2 font-medium">
+                    {quoteNames[q.symbol]?.[locale] ?? q.name}
+                  </TableCell>
+                  {/* <TableCell>
+                    <Progress value={Math.min(q.volatility * 10, 100)} className="w-24 h-2" />
+                  </TableCell> */}
+                  <TableCell className="text-start">{q.sell?.toFixed(4) ?? '—'}</TableCell>
+                  <TableCell className="text-start">{q.buy?.toFixed(4) ?? '—'}</TableCell>
+                  <TableCell className={cn('text-center', isPositive ? 'text-green-600' : 'text-red-600')}>
+                    {diff >= 0 ? '+' : ''}
+                    {diff.toFixed(2)}
+                  </TableCell>
+                  <TableCell className={cn('text-center', percent >= 0 ? 'text-green-600' : 'text-red-600')}>
+                    {percent >= 0 ? '+' : ''}
+                    {percent.toFixed(2)}%
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   )
 }

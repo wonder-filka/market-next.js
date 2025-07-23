@@ -6,6 +6,7 @@ import { LiveQuote } from "@/lib/types"
 import { quoteNames } from "@/lib/constants"
 import { socket } from "@/socket"
 import { useEffect, useState } from "react"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
 export function TopGainers() {
   const t = useI18n()
@@ -32,22 +33,24 @@ export function TopGainers() {
     .slice(0, 5)
 
   return (
-    <div className="p-4 border rounded-lg shadow-sm">
-      <h2 className="text-lg font-semibold mb-2">{t("topGainersTitle")}</h2>
-      {gainers.length === 0 ? (
-        <div className="text-sm text-muted-foreground">{t("noGainersData")}</div>
-      ) : (
-        <ul className="space-y-1 text-sm" >
-          {gainers.map((q) => (
-            <li key={q.symbol} className="flex justify-between cursor-pointer" onClick={() => setSelectedSymbol(q.symbol)}>
-              <span>{quoteNames[q.symbol]?.[locale] ?? q.name}</span>
-              <span className="text-green-500 font-medium">
-                +{q.change?.toFixed(4)}%
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+    <Card>
+      <CardHeader className="text-lg font-semibold">{t("topGainersTitle")}</CardHeader>
+      <CardContent>
+        {gainers.length === 0 ? (
+          <div className="text-sm text-muted-foreground">{t("noGainersData")}</div>
+        ) : (
+          <ul className="space-y-1 text-sm" >
+            {gainers.map((q) => (
+              <li key={q.symbol} className="flex justify-between cursor-pointer" onClick={() => setSelectedSymbol(q.symbol)}>
+                <span>{quoteNames[q.symbol]?.[locale] ?? q.name}</span>
+                <span className="text-green-500 font-medium">
+                  +{q.change?.toFixed(4)}%
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </CardContent>
+    </Card>
   )
 }
