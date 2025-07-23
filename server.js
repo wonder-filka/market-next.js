@@ -4,10 +4,22 @@ const express = require("express");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const { PrismaClient } = require("./src/generated/prisma");
+const yahooFinance = require("yahoo-finance2").default;
 
 const app = express();
 const httpServer = createServer(app);
 const prisma = new PrismaClient();
+
+const symbols = [
+	"^NDX",
+	"^GSPC",
+	"^DJI",
+	"BTC-USD",
+	"ETH-USD",
+	"GC=F",
+	"CL=F",
+	"COMT",
+];
 
 // Налаштування Socket.IO з CORS
 const io = new Server(httpServer, {
@@ -21,6 +33,53 @@ const io = new Server(httpServer, {
 // Зберігаємо підключених адмінів і користувачів
 const connectedAdmins = new Map();
 const connectedUsers = new Map();
+
+async function getQuotes() {
+	const today = new Date();
+	const from = new Date();
+	from.setDate(today.getDate() - 30);
+	try {
+		const result = await Promise.all(
+			symbols.map(async (symbol) => {
+				const history = await yahooFinance.chart(symbol, {
+					period1: from.toISOString().split("T")[0],
+					period2: today.toISOString().split("T")[0],
+					interval: "1d",
+				});
+				const prices = history.quotes || [];
+				const last = prices.at(-1);
+				const prev = prices.at(-2);
+				const SPREAD = 0.05;
+				return {
+					symbol,
+					name: symbol,
+					price: last?.close ?? 0,
+					change: (last?.close ?? 0) - (prev?.close ?? 0),
+					buy: last?.close ? last.close + SPREAD : 0,
+					sell: last.close,
+					history: prices.map((d) => ({
+						time: new Date(d.date).toISOString().slice(5, 10),
+						open: d.open ?? 0,
+						close: d.close ?? 0,
+						high: d.high ?? 0,
+						low: d.low ?? 0,
+						price: d.close ?? 0,
+					})),
+				};
+			})
+		);
+
+		return result;
+	} catch (error) {
+		console.log(error);
+		return [];
+	}
+}
+
+setInterval(async () => {
+	const quotes = await getQuotes();
+	io.emit("quotes-update", quotes);
+}, 10 * 1000);
 
 io.on("connection", (socket) => {
 	console.log("✅ Користувач підключився:", socket.id);
@@ -107,7 +166,6 @@ io.on("connection", (socket) => {
 				},
 				status: "IN_PROGRESS",
 			});
-
 		} catch (error) {
 			console.error("Error saving message:", error);
 			socket.emit("error", { message: "Failed to send message" });

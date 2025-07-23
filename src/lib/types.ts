@@ -45,3 +45,22 @@ export type UserBasicSettingsInput = {
 	email: string
 	phone: string
 }
+
+export type QuoteHistoryItem = {
+  time: string;
+  open: number;
+  close: number;
+  high: number;
+  low: number;
+  price: number;
+};
+
+export type LiveQuote = {
+  symbol: string;
+  name: string;
+  price: number;
+  change: number;
+  buy: number;
+  sell: number;
+  history: QuoteHistoryItem[];
+};

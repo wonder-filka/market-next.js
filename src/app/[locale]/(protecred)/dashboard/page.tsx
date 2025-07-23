@@ -4,9 +4,7 @@ import { QuoteChartPanel } from "./_components/quote-chart-panel";
 import { TopGainers } from "./_components/tables/top-gainers";
 import { TopLosers } from "./_components/tables/top-losers";
 import { VolatileTable } from "./_components/tables/volatile-table";
-import { getQuotes } from "./_actions";
 import { getSessionUserId } from "@/lib/session";
-import { prisma } from "@/lib/db";
 import { getRates } from "@/lib/rates";
 import { getUser } from "../accounts/_actions";
 
@@ -21,7 +19,6 @@ export default async function DashboardPage() {
 
   const t = await getI18n()
   const rates = await getRates([...new Set(user.accounts.map(a => a.currency))]);
-  const quotes = await getQuotes()
   const safeRates: Record<string, number> = Object.fromEntries(
     Object.entries(rates)
       .filter(([_, v]) => typeof v === "number" && !isNaN(v))
@@ -32,20 +29,20 @@ export default async function DashboardPage() {
       <h1 className="text-3xl font-bold">{t("dashboardGreeting")}, {user.firstName}</h1>
 
       <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
-        <div className="space-y-6 col-span-2">
-
-          <VolatileTable initialQuotes={quotes} />
-          <TopGainers initialQuotes={quotes} />
-          <TopLosers initialQuotes={quotes} />
+        <div className="space-y-6 col-span-1 xl:col-span-2">
+          <VolatileTable />
         </div>
-
-        <div className="space-y-6 col-span-3">
+        <div className="space-y-6 col-span-1 xl:col-span-3">
           <QuoteChartPanel accounts={user.accounts} userId={userId} rates={safeRates} />
-
-          <CategoryPanel initialQuotes={quotes} />
-
-
-
+        </div>
+      </div>
+      <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
+        <div className="space-y-6 col-span-1 xl:col-span-2">
+          <TopGainers />
+          <TopLosers />
+        </div>
+        <div className="space-y-6 col-span-1 xl:col-span-3">
+          <CategoryPanel />
         </div>
       </div>
     </main>

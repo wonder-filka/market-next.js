@@ -1,13 +1,10 @@
 'use client'
 
 import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
 import { useI18n } from "@/locales/client"
-import { Quote } from "@/lib/types"
-
-type Props = {
-  initialQuotes: Quote[]
-}
+import { LiveQuote, Quote } from "@/lib/types"
+import { useEffect, useState } from "react"
+import { socket } from "@/socket"
 
 const symbolCategories: Record<string, string> = {
   "^NDX": "indices",
@@ -30,37 +27,65 @@ function groupByCategory(quotes: Quote[]) {
   return categories
 }
 
-export function CategoryPanel({ initialQuotes }: Props) {
+export function CategoryPanel() {
   const t = useI18n()
-  const categories = groupByCategory(initialQuotes)
+  const [liveQuotes, setLiveQuotes] = useState<LiveQuote[]>([]);
+
+  useEffect(() => {
+    if (!socket.connected) {
+      socket.connect();
+    }
+    function onQuotesUpdate(newQuotes: LiveQuote[]) {
+      setLiveQuotes(newQuotes);
+    }
+    socket.on("quotes-update", onQuotesUpdate);
+
+    return () => {
+      socket.off("quotes-update", onQuotesUpdate);
+    };
+  }, [])
+
+
+  const categories = groupByCategory(liveQuotes)
 
   const maxAbsChange = Math.max(
-  ...Object.values(categories).map((qs) =>
-    Math.abs(qs.reduce((acc, q) => acc + q.change, 0) / qs.length)
+    ...Object.values(categories).map((qs) =>
+      Math.abs(qs.reduce((acc, q) => acc + q.change, 0) / qs.length)
+    )
   )
-)
 
   return (
     <div className="border rounded-md p-4 bg-background space-y-6">
       <h2 className="text-xl font-semibold">{t("activeMarkets")}</h2>
 
       <div className="space-y-3">
-        {Object.entries(categories).map(([category, quotes]) => {
-          const totalChange = quotes.reduce((acc, q) => acc + q.change, 0)
-          const avgChange = totalChange / quotes.length
+        {
+          Object.entries(categories).length === 0 ? <div className="text-sm text-muted-foreground">{t("noLosersData")}</div>
+            :
+            <>
 
-          return (
-            <div key={category}>
-              <div className="flex justify-between text-sm mb-1">
-                <span>{t(category as keyof typeof t)}</span>
-                <span className="text-muted-foreground">{avgChange.toFixed(2)}%</span>
-              </div>
-            <Progress value={(Math.abs(avgChange) / maxAbsChange) * 100} />
-            </div>
-          )
-        })}
+              {Object.entries(categories).map(([category, quotes]) => {
+                const avgChange = quotes.reduce((acc, q) => {
+                  const prev = q.history[q.history.length - 2]?.price ?? q.price;
+                  const percent = prev ? ((q.price - prev) / prev) * 100 : 0;
+                  return acc + percent;
+                }, 0) / quotes.length;
+                return (
+                  <div key={category}>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>{t(category as keyof typeof t)}</span>
+                      <span className={avgChange >= 0 ? "text-green-600" : "text-red-600"}>
+                        {avgChange.toFixed(2)}%
+                      </span>
+                    </div>
+                    <Progress value={(Math.abs(avgChange) / maxAbsChange) * 100} />
+                  </div>
+                )
+              })}
+            </>
+        }
       </div>
-{/* 
+      {/* 
       <div className="space-y-2">
         <h3 className="text-sm font-medium text-muted-foreground">
           {t("mostPopularInCategory")}

@@ -1,14 +1,11 @@
-import { Quote } from '@/lib/types'
 import { create } from 'zustand'
 
-
-
-type QuoteStore = {
-  selectedQuote: Quote | null
-  setSelectedQuote: (quote: Quote) => void
+type QuoteStoreState = {
+  selectedSymbol: string
+  setSelectedSymbol: (symbol: string) => void
 }
 
-export const useQuoteStore = create<QuoteStore>((set) => ({
-  selectedQuote: null,
-  setSelectedQuote: (quote) => set({ selectedQuote: quote }),
+export const useQuoteStore = create<QuoteStoreState>((set) => ({
+  selectedSymbol: 'BTC-USD',
+  setSelectedSymbol: (symbol) => set({ selectedSymbol: symbol }),
 }))

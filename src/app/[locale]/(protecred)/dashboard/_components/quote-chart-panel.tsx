@@ -13,9 +13,12 @@ import { useQuoteStore } from '@/stores/chart-store'
 import { useCurrentLocale, useI18n } from '@/locales/client'
 import { Button } from '@/components/ui/button'
 import { quoteNames } from '@/lib/constants'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { TradeDialog } from './trade-dialog'
 import { Account } from '@/generated/prisma'
+import { socket } from '@/socket'
+import { LiveQuote } from '@/lib/types'
+import { LoaderCircle } from 'lucide-react'
 
 const Candlestick = (props: any) => {
   const {
@@ -76,16 +79,44 @@ type QuoteChartProps = {
 export function QuoteChartPanel({ accounts, userId, rates }: QuoteChartProps) {
   const t = useI18n()
   const locale = useCurrentLocale()
-  const selectedQuote = useQuoteStore((state) => state.selectedQuote)
+  const selectedSymbol = useQuoteStore((state) => state.selectedSymbol)
   const [isDialogOpen, setDialogOpen] = useState<boolean>(false)
   const [tradeType, setTradeType] = useState<'buy' | 'sell'>('buy')
+  const [liveQuotes, setLiveQuotes] = useState<LiveQuote[]>([]);
 
-  if (!selectedQuote) return null
+  useEffect(() => {
+    if (!socket.connected) {
+      socket.connect();
+    }
+    function onQuotesUpdate(newQuotes: LiveQuote[]) {
+      setLiveQuotes(newQuotes);
+    }
+    socket.on("quotes-update", onQuotesUpdate);
+    return () => {
+      socket.off("quotes-update", onQuotesUpdate);
+    };
+  }, [])
 
-  const data = prepareCandlestickData(selectedQuote.history)
+  if (!selectedSymbol) return <div className='flex justify-center items-center space-x-2'>
+    <LoaderCircle size={25} className='text-gray-500 animate-spin' />
+  </div>
+
+  const currentQuote =
+    liveQuotes.find(q => q.symbol === selectedSymbol)
+    || liveQuotes.find(q => q.symbol === selectedSymbol);
+
+  if (!currentQuote) return <div className='flex justify-center items-center space-x-2'>
+    <LoaderCircle size={25} className='text-gray-500 animate-spin' />
+  </div>;
+  const data = prepareCandlestickData(currentQuote.history)
 
   const min = Math.min(...data.map(d => Math.min(d.low, d.openClose[0], d.openClose[1])))
   const max = Math.max(...data.map(d => Math.max(d.high, d.openClose[0], d.openClose[1])))
+
+  function openTradeDialog(type: 'buy' | 'sell') {
+    setTradeType(type)
+    setDialogOpen(true)
+  }
 
   return (
     <>
@@ -95,17 +126,17 @@ export function QuoteChartPanel({ accounts, userId, rates }: QuoteChartProps) {
           isOpen={isDialogOpen}
           onClose={() => setDialogOpen(false)}
           type={tradeType}
-          assetName={quoteNames[selectedQuote.symbol]?.[locale] ?? selectedQuote.name}
+          assetName={quoteNames[currentQuote.symbol]?.[locale] ?? currentQuote.name}
           accounts={accounts}
           userId={userId}
-          price={selectedQuote.price}
           rates={rates}
+          symbol={currentQuote.symbol}
         />
         <div className='flex justify-between'>
-          <h2 className="text-lg font-semibold mb-2">{quoteNames[selectedQuote.symbol]?.[locale] ?? selectedQuote.name}</h2>
+          <h2 className="text-lg font-semibold mb-2">{quoteNames[currentQuote.symbol]?.[locale] ?? currentQuote.name}</h2>
           <div className='m-2 flex gap-4'>
-            <Button onClick={() => { setDialogOpen(true); setTradeType('buy') }} className='bg-blue-700'>{t("buy")}</Button>
-            <Button onClick={() => { setDialogOpen(true); setTradeType('sell') }} className='bg-blue-700'>{t("sell")}</Button>
+            <Button onClick={() => { openTradeDialog('buy') }} className='bg-blue-700'>{t("buy")}</Button>
+            <Button onClick={() => openTradeDialog('sell')} className='bg-blue-700'>{t("sell")}</Button>
           </div>
         </div>
         <div className="h-[300px] w-full">
