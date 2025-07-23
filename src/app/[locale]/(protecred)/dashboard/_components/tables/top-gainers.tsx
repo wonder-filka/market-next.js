@@ -39,7 +39,7 @@ export function TopGainers() {
       ) : (
         <ul className="space-y-1 text-sm" >
           {gainers.map((q) => (
-            <li key={q.symbol} className="flex justify-between cursor-pointer" onClick={() => setSelectedSymbol(q)}>
+            <li key={q.symbol} className="flex justify-between cursor-pointer" onClick={() => setSelectedSymbol(q.symbol)}>
               <span>{quoteNames[q.symbol]?.[locale] ?? q.name}</span>
               <span className="text-green-500 font-medium">
                 +{q.change?.toFixed(4)}%

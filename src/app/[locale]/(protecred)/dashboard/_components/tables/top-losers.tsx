@@ -2,7 +2,7 @@
 
 import { useQuoteStore } from "@/stores/chart-store"
 import { useCurrentLocale, useI18n } from "@/locales/client"
-import { LiveQuote, Quote } from "@/lib/types"
+import { LiveQuote } from "@/lib/types"
 import { quoteNames } from "@/lib/constants"
 import { useEffect, useState } from "react"
 import { socket } from "@/socket"
@@ -40,7 +40,7 @@ export function TopLosers() {
       ) : (
         <ul className="space-y-1 text-sm">
           {losers.map((q) => (
-            <li key={q.symbol} className="flex justify-between cursor-pointer" onClick={() => setSelectedSymbol(q)} >
+            <li key={q.symbol} className="flex justify-between cursor-pointer" onClick={() => setSelectedSymbol(q.symbol)} >
               <span> {quoteNames[q.symbol]?.[locale] ?? q.name}</span>
               <span className="text-red-500 font-medium">
                 {q.change?.toFixed(4)}%
