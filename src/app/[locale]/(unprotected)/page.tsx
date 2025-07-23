@@ -1,12 +1,15 @@
 import { getI18n } from "@/locales/server";
-import LiveCryptoChart from "./_components/LiveCryptoChart";
+import { MainBlock } from "./_components/main-block";
+import { WhyChooseUsBlock } from "./_components/why-choose-us-block";
+
 
 export default async function Home() {
   const t = await getI18n()
 
   return (
-    <div className="mt-14 p-14">
-      <LiveCryptoChart />
+    <div className="">
+     <MainBlock />
+     <WhyChooseUsBlock />
     </div>
   );
 }
