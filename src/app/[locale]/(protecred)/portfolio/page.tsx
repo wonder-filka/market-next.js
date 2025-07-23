@@ -27,18 +27,17 @@ export default async function PortfolioPage() {
   const quotes = await getQuotes();
   const rates = await getRates([...new Set(user.accounts.map(a => a.currency))]);
   const priceMap = Object.fromEntries(quotes.map((q) => [q.symbol, q.price]));
-  console.log('priceMap', priceMap)
+
   // 3. Обогащаем позиции, но только если p.pnl из БД == 0 или null
   const enriched = positions.map((p) => {
     const sym = nameToSymbol[p.asset]
     const savedPnl = p.pnl;
     if (savedPnl && savedPnl !== 0) {
-      console.log('savedPnl', savedPnl)
       return p;
     }
     // иначе пересчитываем
     const currentPrice = p.current !== 0 ? p.current : priceMap[sym];
-    console.log('currentPrice', currentPrice)
+
     const qty = p.quantity
     const entry = p.entry
     let pnl: number
@@ -48,7 +47,7 @@ export default async function PortfolioPage() {
     } else {
       pnl = (entry - currentPrice) * qty
     }
-    return { ...p, current: currentPrice, pnl: pnl };
+    return { ...p, current: currentPrice, pnl: Number(pnl.toFixed(18))  };
   });
 
   // 4. Считаем метрики по enriched

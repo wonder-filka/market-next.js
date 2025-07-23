@@ -217,11 +217,11 @@ export const SupportComponent = ({ userId }: SupportComponentProps) => {
 								currentChat?.messages.map((msg) => (
 									<div
 										key={msg.id}
-										className={`flex ${msg.senderId === userId ? 'justify-end' : 'justify-start'
+										className={`flex  ${msg.senderId === userId ? 'justify-end' : 'justify-start'
 											}`}
 									>
-										<Card
-											className={`p-3 max-w-[70%] ${msg.senderId === userId // Если сообщение от текущего пользователя
+										<div
+											className={`p-3 max-w-[70%] min-w-[70%] ${msg.senderId === userId // Если сообщение от текущего пользователя
 												? 'bg-primary text-primary-foreground rounded-br-none'
 												: 'bg-muted rounded-bl-none'
 												}`}
@@ -233,7 +233,7 @@ export const SupportComponent = ({ userId }: SupportComponentProps) => {
 											<p className="text-xs break-all text-right opacity-75 mt-1">
 												{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
 											</p>
-										</Card>
+										</div>
 									</div>
 								))
 							)}
