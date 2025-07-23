@@ -6,6 +6,7 @@ import { LiveQuote, Quote } from "@/lib/types"
 import { useEffect, useState } from "react"
 import { socket } from "@/socket"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { LoaderCircle } from "lucide-react"
 
 const symbolCategories: Record<string, string> = {
   "^NDX": "indices",
@@ -55,36 +56,35 @@ export function CategoryPanel() {
     )
   )
 
+  if (Object.entries(categories).length === 0) {
+    return <div className='flex justify-center items-center space-x-2'>
+      <LoaderCircle size={25} className='text-gray-500 animate-spin' />
+    </div>
+  }
+
   return (
     <Card>
       <CardHeader className="text-xl font-semibold">{t("activeMarkets")}</CardHeader>
       <CardContent>
         <div className="space-y-3">
-          {
-            Object.entries(categories).length === 0 ? <div className="text-sm text-muted-foreground">{t("noLosersData")}</div>
-              :
-              <>
-
-                {Object.entries(categories).map(([category, quotes]) => {
-                  const avgChange = quotes.reduce((acc, q) => {
-                    const prev = q.history[q.history.length - 2]?.price ?? q.price;
-                    const percent = prev ? ((q.price - prev) / prev) * 100 : 0;
-                    return acc + percent;
-                  }, 0) / quotes.length;
-                  return (
-                    <div key={category}>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span>{t(category as keyof typeof t)}</span>
-                        <span className={avgChange >= 0 ? "text-green-600" : "text-red-600"}>
-                          {avgChange.toFixed(2)}%
-                        </span>
-                      </div>
-                      <Progress value={(Math.abs(avgChange) / maxAbsChange) * 100} />
-                    </div>
-                  )
-                })}
-              </>
-          }
+          {Object.entries(categories).map(([category, quotes]) => {
+            const avgChange = quotes.reduce((acc, q) => {
+              const prev = q.history[q.history.length - 2]?.price ?? q.price;
+              const percent = prev ? ((q.price - prev) / prev) * 100 : 0;
+              return acc + percent;
+            }, 0) / quotes.length;
+            return (
+              <div key={category}>
+                <div className="flex justify-between text-sm mb-1">
+                  <span>{t(category as keyof typeof t)}</span>
+                  <span className={avgChange >= 0 ? "text-green-600" : "text-red-600"}>
+                    {avgChange.toFixed(2)}%
+                  </span>
+                </div>
+                <Progress value={(Math.abs(avgChange) / maxAbsChange) * 100} />
+              </div>
+            )
+          })}
         </div>
         {/* 
       <div className="space-y-2">

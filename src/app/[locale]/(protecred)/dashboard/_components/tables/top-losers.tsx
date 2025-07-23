@@ -7,6 +7,7 @@ import { quoteNames } from "@/lib/constants"
 import { useEffect, useState } from "react"
 import { socket } from "@/socket"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { LoaderCircle } from "lucide-react"
 
 export function TopLosers() {
   const t = useI18n()
@@ -33,24 +34,27 @@ export function TopLosers() {
     .sort((a, b) => a.change! - b.change!)
     .slice(0, 5)
 
+  if (losers.length === 0) {
+    return <div className='flex justify-center items-center space-x-2'>
+      <LoaderCircle size={25} className='text-gray-500 animate-spin' />
+    </div>
+  }
+
+
   return (
     <Card>
       <CardHeader className="text-xl font-semibold">{t("topLosersTitle")}</CardHeader>
       <CardContent>
-        {losers.length === 0 ? (
-          <div className="text-sm text-muted-foreground">{t("noLosersData")}</div>
-        ) : (
-          <ul className="space-y-1 text-sm">
-            {losers.map((q) => (
-              <li key={q.symbol} className="flex justify-between cursor-pointer" onClick={() => setSelectedSymbol(q.symbol)} >
-                <span> {quoteNames[q.symbol]?.[locale] ?? q.name}</span>
-                <span className="text-red-500 font-medium">
-                  {q.change?.toFixed(4)}%
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
+        <ul className="space-y-1 text-sm">
+          {losers.map((q) => (
+            <li key={q.symbol} className="flex justify-between cursor-pointer" onClick={() => setSelectedSymbol(q.symbol)} >
+              <span> {quoteNames[q.symbol]?.[locale] ?? q.name}</span>
+              <span className="text-red-500 font-medium">
+                {q.change?.toFixed(4)}%
+              </span>
+            </li>
+          ))}
+        </ul>
       </CardContent>
     </Card>
   )
