@@ -1,6 +1,7 @@
 'use client'
 
 import Image from "next/image"
+import Link from "next/link"
 
 const features = [
   {
@@ -59,7 +60,7 @@ export function WhyChooseUsBlock() {
             </div>
             <h3 className="text-lg md:text-xl font-semibold mb-3 text-white">{f.title}</h3>
             <p className="text-sm text-gray-300 mb-4">{f.description}</p>
-            <span className="text-blue-500 font-medium text-sm cursor-pointer hover:underline">{f.cta}</span>
+            <Link href="registration" className="text-blue-500 font-medium text-sm cursor-pointer hover:underline">{f.cta}</Link>
           </div>
         ))}
       </div>
