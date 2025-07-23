@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { socket } from "@/socket";
 import { AdminChat, ChatLastMessage } from "../_actions/types";
 import { Button } from "@/components/ui/button";
-import { AudioLinesIcon, AudioWaveformIcon, Bell, Volume2 } from "lucide-react";
+import { Volume2 } from "lucide-react";
 
 interface ChatListProps {
   userId: string;

@@ -85,7 +85,7 @@ export function AccountItem({ account, userId, rates }: AccountProps) {
               <p className="text-2xl font-bold">   {getCurrencySymbol(account.currency)} {formatter.format(account.freeMargin)}</p>
             </div>
           </div>
-          <div className="flex gap-8">
+          <div className="flex flex-col md:flex-row gap-8">
             <Button variant="outline">{t('deposit')}</Button>
             <Button variant="outline" onClick={handleDialogOpen}>{t('withdrawToWallet')}</Button>
             <Button variant="default" onClick={() => router.push('/dashboard')}>{t('trade')}</Button>
