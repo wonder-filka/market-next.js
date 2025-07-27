@@ -198,7 +198,7 @@ export function ChatMessages({ chatId, currentUserId, data }: ChatMessagesProps)
                 ) : (
                     chat.messages.map((msg) => (
                         <div key={msg.id} className={`flex ${isCurrentUserSender(msg.sender.id) ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`max-w-[70%] p-3 rounded-lg ${msg.isSupport ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}>
+                            <div className={`max-w-[70%] min-w-[70%] p-3 rounded-lg ${msg.isSupport ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}>
                                 <p className="text-xs font-semibold mb-1">
                                     {msg.isSupport ? "Админ" : `${msg.sender.firstName} ${msg.sender.lastName}`}
                                 </p>

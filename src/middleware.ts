@@ -60,8 +60,7 @@ export async function middleware(request: NextRequest) {
 	if (requiresAdminSupportAuth) {
 		if (
 			!session?.userId ||
-			(session.userId !== "5f463fba-4745-4a67-9358-fcd5d2509d4d" &&
-				session.email !== "111@test.com")
+			(session.userId !== "b053ba43-e577-44d6-8ae3-787fd53bf078")
 		) {
 			const redirectToHome = NextResponse.redirect(
 				new URL("/", request.nextUrl)

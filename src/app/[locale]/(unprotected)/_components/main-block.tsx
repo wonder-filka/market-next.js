@@ -35,7 +35,7 @@ export const MainBlock = () => {
   const fullPrices = Array.from({ length: repeat }, () => prices).flat();
 
   return (
-    <div className="relative overflow-hidden flex flex-col justify-between">
+    <div className="relative overflow-hidden max-w-screen flex flex-col justify-between">
       {/* Фоновое видео */}
       <video
         autoPlay

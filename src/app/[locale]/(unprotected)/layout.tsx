@@ -1,4 +1,5 @@
 
+import { Footer } from "@/components/custom/footer-public";
 import { UnprotectedHeader } from "@/components/custom/navigation-bar";
 
 export default async function Layout({
@@ -10,6 +11,7 @@ export default async function Layout({
     <div>
       <UnprotectedHeader />
       {children}
+      <Footer />
     </div>
   );
 }

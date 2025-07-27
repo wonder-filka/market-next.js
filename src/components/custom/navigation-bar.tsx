@@ -16,7 +16,7 @@ import {
 export function UnprotectedHeader() {
   const t = useI18n();
   return (
-    <header className="flex min-w-screen justify-between items-center p-4">
+    <header className="flex  justify-between items-center p-4 max-w-screen">
       <Sheet>
         <SheetTrigger className="md:hidden"><MenuIcon /></SheetTrigger>
         <SheetContent>
