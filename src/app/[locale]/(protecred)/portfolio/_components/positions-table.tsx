@@ -160,8 +160,8 @@ export function PositionsTable({ positions, userId, accounts, rates }: { positio
                   <TableCell>{(pos.entry)}</TableCell>
                   <TableCell>{(pos.current)}</TableCell>
                   <TableCell>
-                    <span className={`flex items-center gap-1 font-medium ${pos.pnl >= 0 ? "text-green-500" : "text-red-500"}`}>
-                      {pos.pnl >= 0 ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
+                    <span className={`flex items-center gap-1 font-medium ${(pos.current - pos.entry) >= 0 ? "text-green-500" : "text-red-500"}`}>
+                      {(pos.current - pos.entry) >= 0 ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
                       {(pos.current - pos.entry).toFixed(8)}
                     </span>
                   </TableCell>

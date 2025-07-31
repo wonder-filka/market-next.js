@@ -33,7 +33,11 @@ export default async function Page() {
         },
       },
       account: true,
-    }
+    },
+    orderBy: {
+      createdAt: "desc", // Сортировка: новые первыми
+    },
+
   })
 
 

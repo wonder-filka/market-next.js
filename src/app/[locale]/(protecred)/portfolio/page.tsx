@@ -46,14 +46,13 @@ export default async function PortfolioPage() {
           ? buy
           : sell;
 
-
     const qty = p.quantity
     const entry = p.entry
     let pnl: number
     if (p.type === TradeType.Buy) {
-      pnl = (sell - entry) * qty
+      pnl = (currentPrice - entry) * qty
     } else {
-      pnl = (entry - buy) * qty
+      pnl = (entry - currentPrice) * qty
     }
     return { ...p, current: currentPrice, pnl: Number(pnl.toFixed(18)) };
   });
