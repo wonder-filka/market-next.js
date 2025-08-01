@@ -8,8 +8,10 @@ import { socket } from "@/socket"
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { LoaderCircle } from "lucide-react"
+import { UserAsset } from "@/generated/prisma"
+import { onQuotesUpdate } from '../../_actions/helpers'
 
-export function TopGainers() {
+export function TopGainers({ userAssets }: { userAssets: UserAsset[] }) {
   const t = useI18n()
   const locale = useCurrentLocale()
   const [liveQuotes, setLiveQuotes] = useState<LiveQuote[]>([]);
@@ -18,15 +20,16 @@ export function TopGainers() {
     if (!socket.connected) {
       socket.connect();
     }
-    function onQuotesUpdate(newQuotes: LiveQuote[]) {
-      setLiveQuotes(newQuotes);
-    }
-    socket.on("quotes-update", onQuotesUpdate);
-
-    return () => {
-      socket.off("quotes-update", onQuotesUpdate);
+    const onQuotesUpdates = (newQuotes: LiveQuote[]) => {
+      onQuotesUpdate(newQuotes, userAssets, setLiveQuotes);
     };
-  }, [])
+
+    socket.on("quotes-update", onQuotesUpdates);
+    return () => {
+      socket.off("quotes-update", onQuotesUpdates);
+    };
+  }, [userAssets])
+
   const setSelectedSymbol = useQuoteStore((state) => state.setSelectedSymbol)
   const gainers = liveQuotes
     .filter(q => q.change !== null && q.change > 0.01)

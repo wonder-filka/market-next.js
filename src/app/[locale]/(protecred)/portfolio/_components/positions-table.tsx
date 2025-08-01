@@ -53,13 +53,9 @@ export function PositionsTable({ positions, userId, accounts, rates }: { positio
     console.log("Submit action:", activeAction, "amount:", amount, selectedPosition)
     if (!amount || !selectedPosition || !accountId) return
     const account = accounts.find(a => a.id === accountId)!;
-
-    // 1. Рассчитать стоимость сделки в валюте аккаунта
     const usdValue = Number(amount) * selectedPosition.current;
     const rate = account.currency === 'USD' ? 1 : (rates[account.currency] ?? 1);
     const requiredInAccountCurrency = usdValue * rate;
-
-    // 2. Проверка на наличие средств именно в валюте аккаунта!
     if (account.freeMargin < requiredInAccountCurrency) {
       return toast.error(t('insufficientFunds'), {
         style: { backgroundColor: 'red', color: 'white' },

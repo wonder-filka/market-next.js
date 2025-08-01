@@ -7,6 +7,7 @@ import { TradeType } from "@/generated/prisma";
 import { getRates } from "@/lib/rates";
 import { getUser } from "../accounts/_actions";
 import { getUserOpenPositions } from "./_actions";
+import { getUserAssets } from "../_actions";
 
 export default async function PortfolioPage() {
   const userId = await getSessionUserId();
@@ -18,7 +19,7 @@ export default async function PortfolioPage() {
   const positions = await getUserOpenPositions(userId)
   const quotes = await getQuotes();
   const rates = await getRates([...new Set(user.accounts.map(a => a.currency))]);
-
+  const userAssets = await getUserAssets(userId);
   const buyMap = Object.fromEntries(quotes.map((q) => [q.symbol, q.buy]));
   const sellMap = Object.fromEntries(quotes.map((q) => [q.symbol, q.sell]));
 
@@ -31,21 +32,36 @@ export default async function PortfolioPage() {
     if (savedPnl && savedPnl !== 0) {
       return p;
     }
-    const currentPrice =
-      p.current && p.current !== 0
-        ? p.current
-        : p.type === TradeType.Buy
-          ? buy
-          : sell;
+    const assetMap = new Map(
+      userAssets.map(a => [
+        a.asset,
+        { priceBuy: a.priceBuy, priceSell: a.priceSell }
+      ])
+    );
+    const asset = assetMap.get(p.asset);
 
-    const qty = p.quantity
-    const entry = p.entry
-    let pnl: number
-    if (p.type === TradeType.Buy) {
-      pnl = (currentPrice - entry) * qty
+    let currentPrice: number;
+    if (asset) {
+      // Если есть кастомная цена — берем её
+      currentPrice = p.type === TradeType.Buy
+        ? asset.priceBuy ?? buy   // если priceBuy нет, берем buy из quotes
+        : asset.priceSell ?? sell // если priceSell нет, берем sell из quotes
     } else {
-      pnl = (entry - currentPrice) * qty
+      // Иначе берем стандартную цену
+      currentPrice = p.type === TradeType.Buy ? buy : sell;
     }
+
+    // Гарантируем что это число
+    if (typeof currentPrice !== 'number') {
+      currentPrice = p.type === TradeType.Buy ? buy : sell;
+    }
+
+    const qty = p.quantity;
+    const entry = p.entry;
+    const pnl = p.type === TradeType.Buy
+      ? (currentPrice - entry) * qty
+      : (entry - currentPrice) * qty;
+
     return { ...p, current: currentPrice, pnl: Number(pnl.toFixed(18)) };
   });
 

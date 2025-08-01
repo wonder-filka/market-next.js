@@ -7,6 +7,7 @@ import { VolatileTable } from "./_components/tables/volatile-table";
 import { getSessionUserId } from "@/lib/session";
 import { getRates } from "@/lib/rates";
 import { getUser } from "../accounts/_actions";
+import { getUserAssets } from "../_actions";
 
 
 export default async function DashboardPage() {
@@ -24,25 +25,27 @@ export default async function DashboardPage() {
       .filter(([_, v]) => typeof v === "number" && !isNaN(v))
       .map(([k, v]) => [k, v as number])
   );
+
+  const userAssets = await getUserAssets(userId);
   return (
     <main className="p-4 space-y-4">
       <h1 className="text-2xl font-bold">{t("dashboardGreeting")}, {user.firstName}</h1>
 
       <div className="grid grid-cols-1 xl:grid-cols-5 gap-4">
         <div className="space-y-6 col-span-1 xl:col-span-2">
-          <VolatileTable />
+          <VolatileTable userAssets={userAssets}/>
         </div>
         <div className="space-y-6 col-span-1 xl:col-span-3">
-          <QuoteChartPanel accounts={user.accounts} userId={userId} rates={safeRates} />
+          <QuoteChartPanel  userAssets={userAssets} accounts={user.accounts} userId={userId} rates={safeRates} />
         </div>
       </div>
       <div className="grid grid-cols-1 xl:grid-cols-5 gap-4">
         <div className="space-y-6 col-span-1 xl:col-span-2">
-          <TopGainers />
-          <TopLosers />
+          <TopGainers  userAssets={userAssets} />
+          <TopLosers  userAssets={userAssets}/>
         </div>
         <div className="space-y-6 col-span-1 xl:col-span-3">
-          <CategoryPanel />
+          <CategoryPanel  userAssets={userAssets}/>
         </div>
       </div>
     </main>

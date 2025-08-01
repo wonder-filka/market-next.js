@@ -1,20 +1,16 @@
 import { getSessionUserId } from "@/lib/session";
-import { prisma } from "@/lib/db";
 import { AdminTable } from "./_components/admin-table";
 import { AdminHeader } from "@/components/custom/navigation-bar-admin";
+import { getUser } from "../(protecred)/accounts/_actions";
+import { getUsersAssets } from "../(protecred)/_actions";
+import { getAllPositionsWithRelations } from "./_actions";
 
 export default async function Page() {
   const userId = await getSessionUserId()
   if (!userId) {
     return null
   }
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    include: {
-      wallet: true,
-      accounts: true,
-    },
-  })
+  const user = await getUser(userId)
 
   if (!user) {
     return null
@@ -24,29 +20,15 @@ export default async function Page() {
     return null
   }
 
-  const info = await prisma.position.findMany({
-    include: {
-      user: {
-        include: {
-          wallet: true,
-          accounts: true,
-        },
-      },
-      account: true,
-    },
-    orderBy: {
-      createdAt: "desc", // Сортировка: новые первыми
-    },
-
-  })
-
+  const info = await getAllPositionsWithRelations()
+  const userAssets = await getUsersAssets();
 
   return (
     <>
       <AdminHeader />
       <main className="px-6 space-y-6">
 
-        <AdminTable data={info} />
+        <AdminTable data={info} userAssets={userAssets}/>
       </main>
     </>
 

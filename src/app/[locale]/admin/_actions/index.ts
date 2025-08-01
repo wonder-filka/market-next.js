@@ -3,31 +3,45 @@
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
-export async function changePositionPrice(
-	positionId: string,
-	newPrice: number,
-	pnl: number
+export async function createOrUpdateUserAsset(
+	userId: string,
+	asset: string,
+	priceBuy: number,
+	priceSell: number
 ) {
 	try {
-		const position = await prisma.position.findUnique({
-			where: { id: positionId },
+		const record = await prisma.userAsset.upsert({
+			where: { userId_asset: { userId, asset } },
+			update: { priceBuy, priceSell },
+			create: { userId, asset, priceBuy, priceSell },
 		});
+		revalidatePath("admin");
+		return record;
+	} catch (error) {
+		console.error("Ошибка при сохранении userAsset:", error);
+		throw new Error("Не удалось сохранить актив");
+	}
+}
 
-		if (!position) {
-			throw new Error("Position not found");
-		}
-
-		const updatedPosition = await prisma.position.update({
-			where: { id: positionId },
-			data: { 
-				current: newPrice, 
-				pnl: newPrice !== 0 ? pnl : 0 
+export async function getAllPositionsWithRelations() {
+	try {
+		const positions = await prisma.position.findMany({
+			include: {
+				user: {
+					include: {
+						wallet: true,
+						accounts: true,
+					},
+				},
+				account: true,
+			},
+			orderBy: {
+				createdAt: "desc", // новые первыми
 			},
 		});
-		revalidatePath("/admin");
-		return updatedPosition;
+		return positions;
 	} catch (error) {
-		console.error("Error changing position price:", error);
-		return null;
+		console.error("Ошибка при получении позиций:", error);
+		throw new Error("Не удалось получить позиции");
 	}
 }

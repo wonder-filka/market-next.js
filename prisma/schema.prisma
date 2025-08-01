@@ -9,33 +9,35 @@ datasource db {
 }
 
 model User {
-  id           String     @id @default(uuid())
-  email        String     @unique
-  phone        String     @unique
+  id           String           @id @default(uuid())
+  email        String           @unique
+  phone        String           @unique
   firstName    String
   lastName     String
   passwordHash String
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  isVerifed    Boolean    @default(false)
-  walletId     String     @unique
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  isVerifed    Boolean          @default(false)
+  walletId     String           @unique
   accounts     Account[]
   positions    Position[]
   trades       Trade[]
-  wallet       Wallet     @relation(fields: [walletId], references: [id])
-  supportChats     SupportChat[]
-  sentMessages     SupportMessage[] @relation("SenderMessages")
+  wallet       Wallet           @relation(fields: [walletId], references: [id])
+  supportChats SupportChat[]
+  sentMessages SupportMessage[] @relation("SenderMessages")
+  assets       UserAsset[]
 }
+
 model SupportChat {
-  id         String            @id @default(uuid())
-  userId     String
-  user       User              @relation(fields: [userId], references: [id])
-  subject    String
-  status     ChatStatus        @default(OPEN)
-  createdAt  DateTime          @default(now())
-  updatedAt  DateTime          @updatedAt
-  closedAt   DateTime?
-  messages   SupportMessage[]
+  id        String           @id @default(uuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+  subject   String
+  status    ChatStatus       @default(OPEN)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  closedAt  DateTime?
+  messages  SupportMessage[]
 
   @@index([userId])
 }
@@ -47,19 +49,19 @@ enum ChatStatus {
 }
 
 model SupportMessage {
-  id         String      @id @default(uuid())
-  chatId     String
-  chat       SupportChat @relation(fields: [chatId], references: [id])
-  senderId   String 
-  sender     User        @relation("SenderMessages", fields: [senderId], references: [id])
-  content    String      @db.Text
-  isSupport  Boolean     @default(false) 
-  isRead     Boolean     @default(false) 
-  createdAt  DateTime    @default(now())
+  id        String      @id @default(uuid())
+  chatId    String
+  chat      SupportChat @relation(fields: [chatId], references: [id])
+  senderId  String
+  sender    User        @relation("SenderMessages", fields: [senderId], references: [id])
+  content   String      @db.Text
+  isSupport Boolean     @default(false)
+  isRead    Boolean     @default(false)
+  createdAt DateTime    @default(now())
+
   @@index([chatId])
   @@index([senderId])
 }
-
 
 model Wallet {
   id        String   @id @default(uuid())
@@ -140,4 +142,18 @@ enum PositionStatus {
   Active
   Closed
   Liquidated
+}
+
+model UserAsset {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  asset     String
+  priceBuy  Float
+  priceSell Float
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@unique([userId, asset])
 }

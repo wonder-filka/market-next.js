@@ -15,10 +15,12 @@ import { Button } from '@/components/ui/button'
 import { quoteNames } from '@/lib/constants'
 import { useEffect, useState } from 'react'
 import { TradeDialog } from './trade-dialog'
-import { Account } from '@/generated/prisma'
+import { Account, UserAsset } from '@/generated/prisma'
 import { socket } from '@/socket'
 import { LiveQuote } from '@/lib/types'
 import { LoaderCircle } from 'lucide-react'
+import { onQuotesUpdate } from '../_actions/helpers'
+
 
 const Candlestick = (props: any) => {
   const {
@@ -74,9 +76,10 @@ type QuoteChartProps = {
   accounts: Account[]
   userId: string
   rates: Record<string, number>
+  userAssets: UserAsset[]
 }
 
-export function QuoteChartPanel({ accounts, userId, rates }: QuoteChartProps) {
+export function QuoteChartPanel({ accounts, userId, rates, userAssets }: QuoteChartProps) {
   const t = useI18n()
   const locale = useCurrentLocale()
   const selectedSymbol = useQuoteStore((state) => state.selectedSymbol)
@@ -88,14 +91,15 @@ export function QuoteChartPanel({ accounts, userId, rates }: QuoteChartProps) {
     if (!socket.connected) {
       socket.connect();
     }
-    function onQuotesUpdate(newQuotes: LiveQuote[]) {
-      setLiveQuotes(newQuotes);
-    }
-    socket.on("quotes-update", onQuotesUpdate);
-    return () => {
-      socket.off("quotes-update", onQuotesUpdate);
+    const onQuotesUpdates = (newQuotes: LiveQuote[]) => {
+      onQuotesUpdate(newQuotes, userAssets, setLiveQuotes);
     };
-  }, [])
+
+    socket.on("quotes-update", onQuotesUpdates);
+    return () => {
+      socket.off("quotes-update", onQuotesUpdates);
+    };
+  }, [userAssets])
 
   if (!selectedSymbol) return <div className='flex justify-center items-center space-x-2'>
     <LoaderCircle size={25} className='text-gray-500 animate-spin' />

@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useQuoteStore } from '@/stores/chart-store'
 import { cn } from '@/lib/utils'
-import { Progress } from '@/components/ui/progress'
 import { useCurrentLocale, useI18n } from '@/locales/client'
 import { LiveQuote } from '@/lib/types'
 import { quoteNames } from '@/lib/constants'
@@ -18,8 +17,10 @@ import {
   TableRow
 } from "@/components/ui/table"
 import { Card, CardContent } from "@/components/ui/card"
+import { UserAsset } from '@/generated/prisma'
+import { onQuotesUpdate } from '../../_actions/helpers'
 
-export function VolatileTable() {
+export function VolatileTable({ userAssets }: { userAssets: UserAsset[] }) {
   const t = useI18n()
   const locale = useCurrentLocale()
   const [liveQuotes, setLiveQuotes] = useState<LiveQuote[]>([]);
@@ -28,16 +29,15 @@ export function VolatileTable() {
     if (!socket.connected) {
       socket.connect();
     }
-    function onQuotesUpdate(newQuotes: LiveQuote[]) {
-      setLiveQuotes(newQuotes);
-    }
-    socket.on("quotes-update", onQuotesUpdate);
-
-    return () => {
-      socket.off("quotes-update", onQuotesUpdate);
+    const onQuotesUpdates = (newQuotes: LiveQuote[]) => {
+      onQuotesUpdate(newQuotes, userAssets, setLiveQuotes);
     };
-  }, [])
 
+    socket.on("quotes-update", onQuotesUpdates);
+    return () => {
+      socket.off("quotes-update", onQuotesUpdates);
+    };
+  }, [userAssets])
 
   const setSelectedSymbol = useQuoteStore((state) => state.setSelectedSymbol)
 

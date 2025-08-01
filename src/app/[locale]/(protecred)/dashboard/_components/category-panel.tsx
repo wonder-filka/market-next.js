@@ -7,6 +7,8 @@ import { useEffect, useState } from "react"
 import { socket } from "@/socket"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { LoaderCircle } from "lucide-react"
+import { UserAsset } from "@/generated/prisma"
+import { onQuotesUpdate } from '../_actions/helpers'
 
 const symbolCategories: Record<string, string> = {
   "^NDX": "indices",
@@ -29,7 +31,7 @@ function groupByCategory(quotes: Quote[]) {
   return categories
 }
 
-export function CategoryPanel() {
+export function CategoryPanel({ userAssets }: { userAssets: UserAsset[] }) {
   const t = useI18n()
   const [liveQuotes, setLiveQuotes] = useState<LiveQuote[]>([]);
 
@@ -37,16 +39,15 @@ export function CategoryPanel() {
     if (!socket.connected) {
       socket.connect();
     }
-    function onQuotesUpdate(newQuotes: LiveQuote[]) {
-      setLiveQuotes(newQuotes);
-    }
-    socket.on("quotes-update", onQuotesUpdate);
-
-    return () => {
-      socket.off("quotes-update", onQuotesUpdate);
+    const onQuotesUpdates = (newQuotes: LiveQuote[]) => {
+      onQuotesUpdate(newQuotes, userAssets, setLiveQuotes);
     };
-  }, [])
 
+    socket.on("quotes-update", onQuotesUpdates);
+    return () => {
+      socket.off("quotes-update", onQuotesUpdates);
+    };
+  }, [userAssets])
 
   const categories = groupByCategory(liveQuotes)
 
