@@ -1,11 +1,10 @@
 import { UserAsset } from "@/generated/prisma";
 import { LiveQuote } from "@/lib/types";
-import { Dispatch, SetStateAction } from "react";
 
 export function onQuotesUpdate(
 	newQuotes: LiveQuote[],
 	userAssets: UserAsset[],
-	setLiveQuotes: Dispatch<SetStateAction<LiveQuote[]>>
+	setLiveQuotes:  (liveQuotes: LiveQuote[]) => void
 ) {
 	// Преобразуем userAssets в Map для быстрого поиска
 	const assetMap = new Map(
@@ -44,4 +43,11 @@ export function onQuotesUpdate(
 	});
 
 	setLiveQuotes(mergedQuotes);
+}
+
+
+export function getPercent(q: { price: number; history: { price: number }[] }) {
+  const previous = q.history[q.history.length - 2]?.price ?? q.price;
+  const current = q.price;
+  return previous !== 0 ? ((current - previous) / previous) * 100 : 0;
 }

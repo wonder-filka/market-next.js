@@ -2,13 +2,10 @@
 
 import { Progress } from "@/components/ui/progress"
 import { useI18n } from "@/locales/client"
-import { LiveQuote, Quote } from "@/lib/types"
-import { useEffect, useState } from "react"
-import { socket } from "@/socket"
+import { Quote } from "@/lib/types"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { LoaderCircle } from "lucide-react"
-import { UserAsset } from "@/generated/prisma"
-import { onQuotesUpdate } from '../_actions/helpers'
+import { useQuotesStore } from "@/stores/quotes-store"
+
 
 const symbolCategories: Record<string, string> = {
   "^NDX": "indices",
@@ -31,23 +28,9 @@ function groupByCategory(quotes: Quote[]) {
   return categories
 }
 
-export function CategoryPanel({ userAssets }: { userAssets: UserAsset[] }) {
+export function CategoryPanel() {
   const t = useI18n()
-  const [liveQuotes, setLiveQuotes] = useState<LiveQuote[]>([]);
-
-  useEffect(() => {
-    if (!socket.connected) {
-      socket.connect();
-    }
-    const onQuotesUpdates = (newQuotes: LiveQuote[]) => {
-      onQuotesUpdate(newQuotes, userAssets, setLiveQuotes);
-    };
-
-    socket.on("quotes-update", onQuotesUpdates);
-    return () => {
-      socket.off("quotes-update", onQuotesUpdates);
-    };
-  }, [userAssets])
+  const { liveQuotes } = useQuotesStore()
 
   const categories = groupByCategory(liveQuotes)
 
@@ -57,11 +40,7 @@ export function CategoryPanel({ userAssets }: { userAssets: UserAsset[] }) {
     )
   )
 
-  if (Object.entries(categories).length === 0) {
-    return <div className='flex justify-center items-center space-x-2'>
-      <LoaderCircle size={25} className='text-gray-500 animate-spin' />
-    </div>
-  }
+  if (Object.entries(categories).length === 0) return null
 
   return (
     <Card>

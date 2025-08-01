@@ -205,7 +205,7 @@ export function PositionsTable({ positions, userId, accounts, rates }: { positio
 
                                     return (
                                       <option key={acc.id} value={acc.id}>
-                                        {acc.mt5Id} — {acc.currency} {converted.toFixed(2)}
+                                        {acc.mt5Id} — {acc.currency} {converted}
                                       </option>
                                     );
                                   })}

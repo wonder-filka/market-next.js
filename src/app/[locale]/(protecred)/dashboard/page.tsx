@@ -36,16 +36,16 @@ export default async function DashboardPage() {
           <VolatileTable userAssets={userAssets}/>
         </div>
         <div className="space-y-6 col-span-1 xl:col-span-3">
-          <QuoteChartPanel  userAssets={userAssets} accounts={user.accounts} userId={userId} rates={safeRates} />
+          <QuoteChartPanel accounts={user.accounts} userId={userId} rates={safeRates} />
         </div>
       </div>
       <div className="grid grid-cols-1 xl:grid-cols-5 gap-4">
         <div className="space-y-6 col-span-1 xl:col-span-2">
-          <TopGainers  userAssets={userAssets} />
-          <TopLosers  userAssets={userAssets}/>
+          <TopGainers  />
+          <TopLosers  />
         </div>
         <div className="space-y-6 col-span-1 xl:col-span-3">
-          <CategoryPanel  userAssets={userAssets}/>
+          <CategoryPanel  />
         </div>
       </div>
     </main>

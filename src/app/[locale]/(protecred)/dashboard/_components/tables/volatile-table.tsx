@@ -19,11 +19,12 @@ import {
 import { Card, CardContent } from "@/components/ui/card"
 import { UserAsset } from '@/generated/prisma'
 import { onQuotesUpdate } from '../../_actions/helpers'
+import { useQuotesStore } from '@/stores/quotes-store'
 
 export function VolatileTable({ userAssets }: { userAssets: UserAsset[] }) {
   const t = useI18n()
   const locale = useCurrentLocale()
-  const [liveQuotes, setLiveQuotes] = useState<LiveQuote[]>([]);
+  const { liveQuotes, setLiveQuotes } = useQuotesStore()
 
   useEffect(() => {
     if (!socket.connected) {
@@ -31,13 +32,14 @@ export function VolatileTable({ userAssets }: { userAssets: UserAsset[] }) {
     }
     const onQuotesUpdates = (newQuotes: LiveQuote[]) => {
       onQuotesUpdate(newQuotes, userAssets, setLiveQuotes);
+      console.log('Quotes updated:', newQuotes);
     };
 
     socket.on("quotes-update", onQuotesUpdates);
     return () => {
       socket.off("quotes-update", onQuotesUpdates);
     };
-  }, [userAssets])
+  }, [userAssets, setLiveQuotes])
 
   const setSelectedSymbol = useQuoteStore((state) => state.setSelectedSymbol)
 
@@ -51,7 +53,7 @@ export function VolatileTable({ userAssets }: { userAssets: UserAsset[] }) {
     .slice(0, 10)
 
   if (liveQuotes.length === 0) {
-    return <div className='flex justify-center items-center space-x-2'>
+    return <div className='w-full flex justify-center items-center space-x-2'>
       <LoaderCircle size={25} className='text-gray-500 animate-spin' />
     </div>
   }
@@ -87,8 +89,8 @@ export function VolatileTable({ userAssets }: { userAssets: UserAsset[] }) {
                   {/* <TableCell>
                     <Progress value={Math.min(q.volatility * 10, 100)} className="w-24 h-2" />
                   </TableCell> */}
-                  <TableCell className="text-start">{q.sell?.toFixed(4) ?? '—'}</TableCell>
-                  <TableCell className="text-start">{q.buy?.toFixed(4) ?? '—'}</TableCell>
+                  <TableCell className="text-start">{q.sell ?? '—'}</TableCell>
+                  <TableCell className="text-start">{q.buy ?? '—'}</TableCell>
                   <TableCell className={cn('text-center', isPositive ? 'text-green-600' : 'text-red-600')}>
                     {diff >= 0 ? '+' : ''}
                     {diff.toFixed(2)}

@@ -13,13 +13,11 @@ import { useQuoteStore } from '@/stores/chart-store'
 import { useCurrentLocale, useI18n } from '@/locales/client'
 import { Button } from '@/components/ui/button'
 import { quoteNames } from '@/lib/constants'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { TradeDialog } from './trade-dialog'
-import { Account, UserAsset } from '@/generated/prisma'
-import { socket } from '@/socket'
-import { LiveQuote } from '@/lib/types'
+import { Account } from '@/generated/prisma'
 import { LoaderCircle } from 'lucide-react'
-import { onQuotesUpdate } from '../_actions/helpers'
+import { useQuotesStore } from '@/stores/quotes-store'
 
 
 const Candlestick = (props: any) => {
@@ -76,30 +74,15 @@ type QuoteChartProps = {
   accounts: Account[]
   userId: string
   rates: Record<string, number>
-  userAssets: UserAsset[]
 }
 
-export function QuoteChartPanel({ accounts, userId, rates, userAssets }: QuoteChartProps) {
+export function QuoteChartPanel({ accounts, userId, rates }: QuoteChartProps) {
   const t = useI18n()
   const locale = useCurrentLocale()
   const selectedSymbol = useQuoteStore((state) => state.selectedSymbol)
   const [isDialogOpen, setDialogOpen] = useState<boolean>(false)
   const [tradeType, setTradeType] = useState<'buy' | 'sell'>('buy')
-  const [liveQuotes, setLiveQuotes] = useState<LiveQuote[]>([]);
-
-  useEffect(() => {
-    if (!socket.connected) {
-      socket.connect();
-    }
-    const onQuotesUpdates = (newQuotes: LiveQuote[]) => {
-      onQuotesUpdate(newQuotes, userAssets, setLiveQuotes);
-    };
-
-    socket.on("quotes-update", onQuotesUpdates);
-    return () => {
-      socket.off("quotes-update", onQuotesUpdates);
-    };
-  }, [userAssets])
+  const { liveQuotes } = useQuotesStore()
 
   if (!selectedSymbol) return <div className='flex justify-center items-center space-x-2'>
     <LoaderCircle size={25} className='text-gray-500 animate-spin' />
@@ -109,9 +92,7 @@ export function QuoteChartPanel({ accounts, userId, rates, userAssets }: QuoteCh
     liveQuotes.find(q => q.symbol === selectedSymbol)
     || liveQuotes.find(q => q.symbol === selectedSymbol);
 
-  if (!currentQuote) return <div className='flex justify-center items-center space-x-2'>
-    <LoaderCircle size={25} className='text-gray-500 animate-spin' />
-  </div>;
+  if (!currentQuote) return null
 
   const data = prepareCandlestickData(currentQuote.history)
 
@@ -125,7 +106,6 @@ export function QuoteChartPanel({ accounts, userId, rates, userAssets }: QuoteCh
 
   return (
     <>
-
       <div className="w-full rounded-lg border p-4 shadow-sm bg-background">
         <TradeDialog
           isOpen={isDialogOpen}

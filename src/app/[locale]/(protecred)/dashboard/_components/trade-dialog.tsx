@@ -12,6 +12,7 @@ import { LoaderCircle } from 'lucide-react'
 import { LiveQuote } from '@/lib/types'
 import { socket } from '@/socket'
 import { quoteNames } from '@/lib/constants'
+import { useQuotesStore } from '@/stores/quotes-store'
 
 type TradeDialogProps = {
   isOpen: boolean
@@ -33,19 +34,14 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
   const [pending, startTransition] = useTransition()
   const [loading, setLoading] = useState(false)
   const [currentPrice, setCurrentPrice] = useState(0)
-
+  const { liveQuotes } = useQuotesStore()
+  
   useEffect(() => {
-    function onQuotesUpdate(newQuotes: LiveQuote[]) {
-      const quote = newQuotes.find(q => q.symbol === assetName)
-      if (!quote) return;
-      if (type === 'buy') setCurrentPrice(quote.buy ?? 0);
-      else if (type === 'sell') setCurrentPrice(quote.sell ?? 0);
-    }
-    socket.on('quotes-update', onQuotesUpdate)
-    return () => {
-      socket.off('quotes-update', onQuotesUpdate)
-    }
-  }, [type, assetName, isOpen, currentPrice])
+    const quote = liveQuotes.find(q => q.symbol === assetName)
+    if (!quote) return;
+    if (type === 'buy') setCurrentPrice(quote.buy ?? 0);
+    else if (type === 'sell') setCurrentPrice(quote.sell ?? 0);
+  }, [type, assetName, isOpen, currentPrice, liveQuotes])
 
   const handleSubmit = () => {
     setLoading(true)
@@ -150,7 +146,7 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
                 placeholder="0.00"
               />
               <div className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground">{t("tableCurrentPrice")}: {currentPrice.toFixed(2)}</span>
+                <span className="text-xs text-muted-foreground">{t("tableCurrentPrice")}: {currentPrice}</span>
               </div>
               {quantity && accountId && (() => {
                 const acc = accounts.find(a => a.id === accountId)
