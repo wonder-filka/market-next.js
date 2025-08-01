@@ -1,15 +1,12 @@
-import { prisma } from "@/lib/db";
 import { ActionsPanel } from "./_components/actions-panel";
 import { PositionsTable } from "./_components/positions-table";
 import { SummaryCards } from "./_components/summary-cards";
 import { getSessionUserId } from "@/lib/session";
 import { getQuotes } from "../dashboard/_actions";
-import { nameToSymbol } from "@/lib/constants";
 import { TradeType } from "@/generated/prisma";
 import { getRates } from "@/lib/rates";
 import { getUser } from "../accounts/_actions";
-
-
+import { getUserOpenPositions } from "./_actions";
 
 export default async function PortfolioPage() {
   const userId = await getSessionUserId();
@@ -18,12 +15,7 @@ export default async function PortfolioPage() {
   const user = await getUser(userId);
   if (!user) return null;
 
-
-  const positions = await prisma.position.findMany({
-    where: { userId, status: { not: "Closed" } },
-    orderBy: { date: 'desc' },
-  })
-
+  const positions = await getUserOpenPositions(userId)
   const quotes = await getQuotes();
   const rates = await getRates([...new Set(user.accounts.map(a => a.currency))]);
 
@@ -32,7 +24,7 @@ export default async function PortfolioPage() {
 
 
   const enriched = positions.map((p) => {
-    const sym = nameToSymbol[p.asset]
+    const sym = p.asset
     const buy = buyMap[sym] ?? 0;
     const sell = sellMap[sym] ?? 0;
     const savedPnl = p.pnl;

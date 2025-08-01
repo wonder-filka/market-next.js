@@ -3,7 +3,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { useI18n } from '@/locales/client'
+import { useCurrentLocale, useI18n } from '@/locales/client'
 import { useEffect, useState, useTransition } from 'react'
 import { Account } from '@/generated/prisma'
 import { createTrade } from '../_actions'
@@ -11,6 +11,7 @@ import { toast } from 'sonner'
 import { LoaderCircle } from 'lucide-react'
 import { LiveQuote } from '@/lib/types'
 import { socket } from '@/socket'
+import { quoteNames } from '@/lib/constants'
 
 type TradeDialogProps = {
   isOpen: boolean
@@ -19,12 +20,12 @@ type TradeDialogProps = {
   assetName: string
   accounts: Account[]
   userId: string
-  symbol: string
   rates: Record<string, number>
 }
 
-export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId, rates, symbol }: TradeDialogProps) {
+export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId, rates }: TradeDialogProps) {
   const t = useI18n()
+  const locale = useCurrentLocale()
   const [quantity, setQuantity] = useState('')
   const [takeProfit, setTakeProfit] = useState('')
   const [stopLoss, setStopLoss] = useState('')
@@ -35,7 +36,7 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
 
   useEffect(() => {
     function onQuotesUpdate(newQuotes: LiveQuote[]) {
-      const quote = newQuotes.find(q => q.symbol === symbol)
+      const quote = newQuotes.find(q => q.symbol === assetName)
       if (!quote) return;
       if (type === 'buy') setCurrentPrice(quote.buy ?? 0);
       else if (type === 'sell') setCurrentPrice(quote.sell ?? 0);
@@ -44,7 +45,7 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
     return () => {
       socket.off('quotes-update', onQuotesUpdate)
     }
-  }, [symbol, type])
+  }, [type, assetName, isOpen, currentPrice])
 
   const handleSubmit = () => {
     setLoading(true)
@@ -63,7 +64,6 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
     }
     startTransition(async () => {
       try {
-
         await createTrade({
           userId,
           account,
@@ -75,7 +75,7 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
           stopLoss: stopLoss ? parseFloat(stopLoss) : null,
           rates
         })
-        await new Promise(res => setTimeout(res, 5000))
+        // await new Promise(res => setTimeout(res, 5000))
         toast.success(t(type === 'buy' ? 'buySuccess' : 'sellSuccess'), {
           style: { backgroundColor: 'green', color: 'white' },
         })
@@ -86,6 +86,7 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
         setStopLoss('')
         setAccountId('')
         setLoading(false)
+        setCurrentPrice(0)
       } catch (err: any) {
 
         toast.error(t(err.message || 'error'), {
@@ -111,7 +112,7 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
       <DialogContent className="sm:max-w-md bg-gray-900">
         <DialogHeader>
           <DialogTitle>
-            {type === 'buy' ? t('buy') : t('sell')} {assetName}
+            {type === 'buy' ? t('buy') : t('sell')} {quoteNames[assetName]?.[locale]}
           </DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>

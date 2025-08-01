@@ -4,6 +4,19 @@ import { Account, Position } from "@/generated/prisma";
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
+export async function getUserOpenPositions(userId: string): Promise<Position[]> {
+  try {
+    const positions = await prisma.position.findMany({
+      where: { userId, status: { not: "Closed" } },
+      orderBy: { date: "desc" },
+    });
+    return positions;
+  } catch (error) {
+    console.error("Ошибка получения позиций:", error);
+    return [];
+  }
+}
+
 export async function closePosition(
 	pos: Position,
 	account: Account, // account (с валютой) — лучше подтянуть заранее

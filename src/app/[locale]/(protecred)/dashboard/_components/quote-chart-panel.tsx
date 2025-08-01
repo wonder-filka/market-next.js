@@ -108,6 +108,7 @@ export function QuoteChartPanel({ accounts, userId, rates }: QuoteChartProps) {
   if (!currentQuote) return <div className='flex justify-center items-center space-x-2'>
     <LoaderCircle size={25} className='text-gray-500 animate-spin' />
   </div>;
+
   const data = prepareCandlestickData(currentQuote.history)
 
   const min = Math.min(...data.map(d => Math.min(d.low, d.openClose[0], d.openClose[1])))
@@ -126,11 +127,10 @@ export function QuoteChartPanel({ accounts, userId, rates }: QuoteChartProps) {
           isOpen={isDialogOpen}
           onClose={() => setDialogOpen(false)}
           type={tradeType}
-          assetName={quoteNames[currentQuote.symbol]?.[locale] ?? currentQuote.name}
+          assetName={currentQuote.symbol}
           accounts={accounts}
           userId={userId}
           rates={rates}
-          symbol={currentQuote.symbol}
         />
         <div className='flex justify-between'>
           <h2 className="text-lg font-semibold mb-2">{quoteNames[currentQuote.symbol]?.[locale] ?? currentQuote.name}</h2>

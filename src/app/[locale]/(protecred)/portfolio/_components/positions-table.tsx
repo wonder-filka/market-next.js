@@ -10,11 +10,10 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { ArrowUpRight, ArrowDownRight } from "lucide-react"
-import { useI18n } from "@/locales/client"
+import { useCurrentLocale, useI18n } from "@/locales/client"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -30,16 +29,7 @@ import { toast } from "sonner"
 import { createTrade } from "../../dashboard/_actions"
 import { useState } from "react"
 import { format } from "date-fns"
-
-const assetNames: Record<string, string> = {
-  BTC: "Bitcoin",
-  ETH: "Ethereum",
-  SOL: "Solana",
-  ADA: "Cardano",
-  BNB: "Binance Coin",
-  DOGE: "Dogecoin",
-  XRP: "Ripple"
-}
+import { quoteNames } from "@/lib/constants"
 
 function convert(amount: number, currency: string, rates: Record<string, number | undefined>) {
   if (currency === 'USD') return amount;
@@ -50,6 +40,7 @@ function convert(amount: number, currency: string, rates: Record<string, number 
 
 export function PositionsTable({ positions, userId, accounts, rates }: { positions: Position[], userId: string, accounts: Account[], rates: Record<string, number> }) {
   const t = useI18n()
+  const locale = useCurrentLocale()
   const [openDialogId, setOpenDialogId] = useState<string | null>(null)
   const [activeAction, setActiveAction] = useState<'buy' | 'sell' | null>(null)
   const [amount, setAmount] = useState<number | "">("")
@@ -135,7 +126,7 @@ export function PositionsTable({ positions, userId, accounts, rates }: { positio
             </TableRow>
           </TableHeader>
           <TableBody>
-            {positions.map((pos) => {
+            {positions.length > 0 ? positions.map((pos) => {
               const gain = pos.current - pos.entry
               const signedGain = pos.type === "Buy" ? gain : -gain
               const account = accounts.find(acc => acc.id === pos.accountId);
@@ -150,7 +141,7 @@ export function PositionsTable({ positions, userId, accounts, rates }: { positio
                 <TableRow key={pos.id}>
                   <TableCell>
                     <div className="font-medium flex items-center gap-1">
-                      <Badge variant="outline">{pos.asset}</Badge>
+                      <Badge variant="outline">{quoteNames[pos.asset]?.[locale]}</Badge>
                     </div>
                   </TableCell>
                   <TableCell>{format(new Date(pos.startDate), "dd.MM.yyyy, HH:mm:ss")}</TableCell>
@@ -195,7 +186,7 @@ export function PositionsTable({ positions, userId, accounts, rates }: { positio
                       {openDialogId === pos.id && (
                         <DialogContent>
                           <DialogHeader>
-                            <DialogTitle>{t("editPosition")}: {pos.asset}</DialogTitle>
+                            <DialogTitle>{t("editPosition")}: {quoteNames[pos.asset]?.[locale]}</DialogTitle>
                             <DialogDescription></DialogDescription>
                           </DialogHeader>
                           <div className="flex gap-4 mt-4">
@@ -284,7 +275,7 @@ export function PositionsTable({ positions, userId, accounts, rates }: { positio
                       <DialogContent>
                         <DialogHeader>
                           <DialogTitle>
-                            {t('closePositionText')}: {pos.asset}
+                            {t('closePositionText')}: {quoteNames[pos.asset]?.[locale]}
                           </DialogTitle>
                           <DialogDescription>
                             {t('confirmCloseText')}
@@ -298,7 +289,13 @@ export function PositionsTable({ positions, userId, accounts, rates }: { positio
                   </TableCell>
                 </TableRow>
               )
-            })}
+            }) : <TableRow>
+              <TableCell colSpan={12}>
+                <div className="p-12 w-full flex justify-center items-center text-muted-foreground">
+                  {t("noGainersData")}
+                </div>
+              </TableCell>
+            </TableRow>}
           </TableBody>
         </Table>
       </CardContent>

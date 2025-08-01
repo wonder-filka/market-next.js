@@ -7,17 +7,18 @@ import {
 } from "@/components/ui/table"
 import { formatCurrency } from "@/lib/helpers"
 import { Badge } from "@/components/ui/badge"
-import { useI18n } from "@/locales/client"
+import { useCurrentLocale, useI18n } from "@/locales/client"
 import {
   ToggleGroup, ToggleGroupItem
 } from "@/components/ui/toggle-group"
-import { isWithinInterval, isSameDay, parse, subDays } from "date-fns"
+import { isWithinInterval, isSameDay, subDays } from "date-fns"
 import { X, CalendarIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import { format } from "date-fns"
-import { Account, Position, Trade } from "@/generated/prisma"
+import { Position } from "@/generated/prisma"
+import { quoteNames } from "@/lib/constants"
 
 const statusVariant: Record<Position["status"], "default" | "secondary" | "destructive"> = {
   Active: "default",
@@ -28,19 +29,19 @@ const statusVariant: Record<Position["status"], "default" | "secondary" | "destr
 export function PositionsTableReport({
   positions,
 }: {
-  // Массив позиций с подгруженным account.mt5Id
   positions: Array<Position & { account: { mt5Id: string } }>
 }) {
   const t = useI18n()
+  const locale = useCurrentLocale()
   const [filter, setFilter] = useState<'day' | 'week' | 'month' | null>(null)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
 
   const now = new Date()
-const enriched = positions.map(p => ({
-  ...p,
-  _start: format(p.startDate, "dd.MM.yyyy, HH:mm:ss"),
-  _end:   format(p.endDate  ?? new Date(), "dd.MM.yyyy, HH:mm:ss"),
-}))
+  const enriched = positions.map(p => ({
+    ...p,
+    _start: format(p.startDate, "dd.MM.yyyy, HH:mm:ss"),
+    _end: format(p.endDate ?? new Date(), "dd.MM.yyyy, HH:mm:ss"),
+  }))
   const filteredTrades = enriched.filter((trade) => {
     const end = trade.startDate
 
@@ -142,8 +143,8 @@ const enriched = positions.map(p => ({
             {filteredTrades.map((trade) => (
               <TableRow key={trade.id}>
                 <TableCell>{trade.account.mt5Id}</TableCell>
-                <TableCell>  {new Date(trade.startDate).toLocaleString()} – { trade.endDate ? new Date(trade.endDate).toLocaleString() : null}</TableCell>
-                <TableCell>{trade.asset}</TableCell>
+                <TableCell>  {new Date(trade.startDate).toLocaleString()} – {trade.endDate ? new Date(trade.endDate).toLocaleString() : null}</TableCell>
+                <TableCell>{quoteNames[trade.asset]?.[locale]}</TableCell>
                 <TableCell>{t(`type${trade.type}`)}</TableCell>
                 <TableCell>{trade.quantity}</TableCell>
                 <TableCell>{formatCurrency(trade.entry)}</TableCell>
