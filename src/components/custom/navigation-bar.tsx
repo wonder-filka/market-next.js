@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useI18n } from "@/locales/client";
 import { LangToggle } from "./toggle-language";
-import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
+import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetClose } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -16,21 +16,43 @@ import {
 export function UnprotectedHeader() {
   const t = useI18n();
   return (
-    <header className="flex  justify-between items-center p-4 max-w-screen">
+    <header className="relative flex justify-between items-center p-4 w-full max-w-screen">
       <Sheet>
         <SheetTrigger className="md:hidden"><MenuIcon /></SheetTrigger>
-        <SheetContent>
+        <SheetContent  side="left">
           <SheetHeader>
             <SheetTitle>2TradeIn</SheetTitle>
             <div className="grid gap-4 p-4">
-              <Link href="/">{t('home')}</Link>
-              <Link href="/services">{t('services')}</Link>
-              <Link href="/education">{t('education')}</Link>
-              <Link href="/news">{t('news')}</Link>
-              <Link href="/about">{t('about')}</Link>
-              <Link href="/reviews">{t('reviews')}</Link>
-              <Link href="/contacts">{t('contacts')}</Link>
-              <Link href="/faq">{t('faq')}</Link>
+              <SheetClose asChild>
+                <Link href="/">{t('home')}</Link>
+              </SheetClose>
+              <SheetClose asChild>
+
+                <Link href="/services">{t('services')}</Link>
+              </SheetClose>
+              <SheetClose asChild>
+                <Link href="/education">{t('education')}</Link>
+              </SheetClose>
+              <SheetClose asChild>
+                <Link href="/news">{t('news')}</Link>
+              </SheetClose>
+              <SheetClose asChild>
+                <Link href="/about">{t('about')}</Link>
+              </SheetClose>
+              <SheetClose asChild>
+                <Link href="/faq">{t('faq')}</Link>
+              </SheetClose>
+              <SheetClose asChild>
+                <Link href="/contacts">{t('contacts')}</Link>
+              </SheetClose>
+
+
+
+
+              {/* <Link href="/reviews">{t('reviews')}</Link> */}
+
+
+
             </div>
           </SheetHeader>
           <SheetFooter>
@@ -39,7 +61,7 @@ export function UnprotectedHeader() {
         </SheetContent>
       </Sheet>
       <Link href="/" className="hidden md:flex font-bold text-xl items-center">2TradeIn</Link>
-      <div className="" >
+      <div className="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0">
         <NavigationMenu className="hidden md:flex flex-grow">
           <NavigationMenuList className="flex flex-wrap justify-center">
             <NavigationMenuItem>
@@ -67,19 +89,20 @@ export function UnprotectedHeader() {
                 <Link href="/about">{t('about')}</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
-            <NavigationMenuItem>
+            {/* <NavigationMenuItem>
               <NavigationMenuLink asChild>
                 <Link href="/reviews">{t('reviews')}</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem> */}
+
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link href="/faq">{t('faq')}</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
                 <Link href="/contacts">{t('contacts')}</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <Link href="/faq">{t('faq')}</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>

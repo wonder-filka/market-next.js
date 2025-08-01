@@ -1,8 +1,8 @@
 'use client'
 
-import { useI18n } from "@/locales/client";
-import Link from "next/link";
-import { useRef, useLayoutEffect, useState } from "react";
+import Link from "next/link"
+import { useI18n } from "@/locales/client"
+import { useRef, useLayoutEffect, useState } from "react"
 
 const prices = [
   { symbol: "BTCUSD", price: 118256.9, change: -0.56 },
@@ -16,15 +16,14 @@ const prices = [
 export const MainBlock = () => {
   const t = useI18n();
   const trackRef = useRef<HTMLDivElement>(null);
-  const [repeat, setRepeat] = useState(2); // повторов по умолчанию
+  const [repeat, setRepeat] = useState(2);
 
-  // Автоматически вычислять количество повторов для бесшовности
   useLayoutEffect(() => {
     function updateRepeats() {
       if (!trackRef.current) return;
       const containerWidth = trackRef.current.parentElement?.offsetWidth || 1;
       const trackWidth = trackRef.current.scrollWidth / repeat;
-      const needed = Math.ceil(containerWidth / trackWidth) + 2; // +2 для 100% бесшовности
+      const needed = Math.ceil(containerWidth / trackWidth) + 2;
       setRepeat(needed);
     }
     updateRepeats();
@@ -48,19 +47,20 @@ export const MainBlock = () => {
         <source src="/home.mp4" type="video/mp4" />
       </video>
       <div className="absolute inset-0 bg-black/70 z-10" />
+
       {/* Центрированная секция */}
       <div className="relative z-20 flex flex-col items-center justify-center h-[65vh] text-center">
         <h1 className="max-w-3xl text-4xl md:text-6xl font-bold text-white drop-shadow-lg mb-6">
-          Лучший брокер для стран СНГ и Восточной Европы
+          {t("mainTitle")}
         </h1>
         <p className="text-lg md:text-2xl text-gray-100 mb-8 font-medium">
-          Нам доверяют миллионы трейдеров по всему миру
+          {t("mainSubtitle")}
         </p>
         <Link
           href="/registration"
           className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-8 py-4 text-xl font-semibold transition"
         >
-          Начать торговать
+          {t("mainCtaBtn")}
         </Link>
       </div>
 
@@ -69,10 +69,7 @@ export const MainBlock = () => {
         <div
           ref={trackRef}
           className="marquee-track flex gap-12 px-6"
-          style={{
-            // Позволяет сделать 1 loop на всё содержимое
-            width: 'max-content',
-          }}
+          style={{ width: 'max-content' }}
         >
           {fullPrices.map(({ symbol, price, change }, i) => (
             <span

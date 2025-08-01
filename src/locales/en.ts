@@ -289,4 +289,152 @@ export default {
 	create: "Create",
 	demoAccountCreated: "Demo account created successfully!",
 	demoAccountCreationFailed: "Failed to create demo account",
+	ctaTitle: "Ready to join a leading broker?",
+	ctaSubtitle: "Join our global trading community and start earning today.",
+	ctaStep1: "Create an account",
+	ctaStep2: "Make your first deposit",
+	ctaStep3: "Start trading",
+	ctaBtn: "Join now",
+	mainTitle: "The best broker for CIS and Eastern Europe",
+	mainSubtitle: "Trusted by millions of traders worldwide",
+	mainCtaBtn: "Start trading",
+	whyChooseUs: {
+		title: "Why do traders choose our platform?",
+		features: {
+			platform: {
+				title: "An intuitive platform for everyone",
+				description:
+					"The platform is suitable for both experienced traders and those just starting out in financial markets. Simple, visual, and no unnecessary complications.",
+				cta: "Learn more",
+			},
+			registration: {
+				title: "Register in 2 minutes",
+				description:
+					"Create an account in minutes and start trading right away. Minimal documents, maximum convenience — no bureaucracy or waiting.",
+				cta: "Learn more",
+			},
+			support: {
+				title: "24/7 support in Russian and English",
+				description:
+					"Professional support in your native language. Our experts will help with any question — day or night, no days off.",
+				cta: "Learn more",
+			},
+			mobile: {
+				title: "Trade from your phone — anytime, anywhere",
+				description:
+					"Open trades, track the market, and manage your portfolio right from your mobile phone. Full control over your investments — in your pocket, anytime.",
+				cta: "Learn more",
+			},
+			zeroFee: {
+				title: "0% trading commission",
+				description:
+					"Trade with no extra costs. No hidden fees — transparent conditions for all users. Deposit and withdraw funds without additional charges.",
+				cta: "Learn more",
+			},
+			instantWithdraw: {
+				title: "Instant deposits and withdrawals",
+				description:
+					"Deposit and withdraw to your card or crypto wallet in minutes. Manage your funds quickly and conveniently.",
+				cta: "Learn more",
+			},
+		},
+	},
+	reviewsBlock: {
+		title: "What do our users say?",
+		subtitle:
+			"Check out reviews from our clients — both beginners and experienced traders — to see why we are trusted around the world.",
+		aleksei: {
+			name: "Alexey, Moscow",
+			experience: "Trader with 2 years of experience",
+			text: "Very satisfied with the platform — fast order execution, user-friendly interface, clear analytics.",
+		},
+		ekaterina: {
+			name: "Ekaterina, Rostov",
+			experience: "Beginner",
+			text: "At first I was afraid to try, but everything turned out to be very simple. Registration took a couple of minutes, and the deposit went through without delays. Now I control my portfolio right from my phone.",
+		},
+		igor: {
+			name: "Igor, Almaty",
+			experience: "Professional investor",
+			text: "I trade on different markets. I liked that the commissions are zero, and withdrawals happen quickly. Support really answers 24/7 and in Russian.",
+		},
+		olga: {
+			name: "Olga, Minsk",
+			experience: "Amateur trader",
+			text: "Very convenient and intuitive platform. Even if questions arise, support is always in touch. I recommend it to both beginners and those who have been on the market for a long time.",
+		},
+	},
+	welcomeSupportBlock: {
+		gift: "Gift for new clients",
+		title: "2 weeks of personal support for free",
+		description:
+			"Just after registration, you will receive a personal assistant who will guide you through all your trades for the first two weeks.\nPlatform help, individual tips, trade recommendations, and support with any questions — all included as a gift for new traders!",
+		item1: "Personal trading advisor",
+		item2: "Assistance with all your trades",
+		item3: "24/7 support",
+		item4: "Can be canceled or extended at any time",
+		cta: "Get free support",
+	},
+	footer: {
+		slogan: "The best broker for CIS and Eastern Europe",
+		navigation: "Navigation",
+		register: "Register",
+		login: "Login",
+		about: "About platform",
+		contacts: "Contacts",
+		copyright: "All rights reserved.",
+	},
+	servicesBlock: {
+		title: "Our Services",
+		platformTitle: "Reliable and User-Friendly Trading Platform",
+		platformDesc1:
+			"Our platform is designed for traders of any level: intuitive interface, fast market access, real-time analytics.",
+		platformDesc2:
+			"You can open trades, monitor your portfolio, deposit and withdraw funds without limits – from any device, anytime.",
+		platformDesc3:
+			"We charge no hidden fees — just transparent conditions so you can focus on your strategy.",
+		operatorsTitle: "Work with Professional Operators",
+		operatorsDesc1: "Every client gets support from experienced operators:",
+		operatorsList: [
+			"Help with opening and managing trades",
+			"Personalized recommendations and training",
+			"Answers to any questions about the platform and markets",
+		],
+		operatorsDesc2:
+			"Your success is our goal. We support you from your first steps and stay with you along your journey.",
+		supportTitle: "24/7 Support",
+		supportDesc1:
+			"Our support team works around the clock. Ask your question in chat or by phone — we will help quickly and professionally.",
+		supportDesc2:
+			"You can always count on assistance in Russian and English, any time, day or night.",
+		cta: "Join now",
+	},
+	educationBlock: {
+		title: "Education",
+		intro:
+			"Success in trading begins with quality education. We offer a structured program, useful materials, and expert support for your confident start in financial markets.",
+		sections: [
+			{
+				title: "Beginner Course",
+				desc: "A step-by-step introduction to trading: from basic concepts and market terminology to your first deals. Ideal for newcomers.",
+			},
+			{
+				title: "Personal Training",
+				desc: "Receive individual training from our experts — get a learning plan tailored to you, practical guidance, and answers to all your questions.",
+			},
+			{
+				title: "FAQ and Support",
+				desc: "Never feel lost — our FAQ and live support will help you understand any topic quickly and clearly.",
+			},
+			{
+				title: "Personal Consultant",
+				desc: "Every new client receives a personal trading consultant for two weeks, absolutely free. Your expert will help you avoid common mistakes and accelerate your growth.",
+			},
+			{
+				title: "Advanced Education",
+				desc: "Dive into technical and fundamental analysis, explore trading strategies, and practice with various market instruments.",
+			},
+		],
+		cta: "Start learning",
+	},
 } as const;
