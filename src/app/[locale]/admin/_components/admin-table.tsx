@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
-import { createOrUpdateUserAsset } from "../_actions"
+import { createOrUpdateUserAsset, deleteUserAsset } from "../_actions"
 import { toast } from "sonner"
 import { PositionWithRelations } from "../_actions/types"
 import { useReactTable, getCoreRowModel, ColumnDef, flexRender, ColumnFiltersState, getFilteredRowModel } from "@tanstack/react-table"
@@ -24,6 +24,9 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 	const [isDialogOpen, setIsDialogOpen] = useState(false)
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 	const [globalFilter, setGlobalFilter] = useState('')
+	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+	const [deleteTarget, setDeleteTarget] = useState<{ userId: string; asset: string } | null>(null)
+
 	const columns: ColumnDef<PositionWithRelations>[] = [
 		{
 			accessorKey: "userName",
@@ -147,8 +150,14 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 			accessorKey: "status",
 			header: () => "Статус",
 			cell: ({ row }) => row.original.status,
-		},
+		}
 	]
+
+	function openDeleteDialog(userId: string, asset: string) {
+		setDeleteTarget({ userId, asset });
+		setDeleteDialogOpen(true);
+	}
+
 	const handleSave = async () => {
 		if (!selectedPosition || !newSellPrice) return
 		try {
@@ -212,6 +221,19 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 		setResult(calculateResult((v).toString()));
 	};
 
+	async function handleDeletePrice() {
+		if (!deleteTarget) return
+		try {
+			await deleteUserAsset(deleteTarget.userId, deleteTarget.asset);
+			toast.success("Цена удалена");
+			setDeleteDialogOpen(false);
+			setDeleteTarget(null);
+			// Если нужно — обновить userAssets (setUserAssets или refetch)
+		} catch (error) {
+			toast.error("Ошибка при удалении цены");
+		}
+	}
+
 	function getUserAssetPrice(
 		asset: string,
 		userId: string,
@@ -242,6 +264,22 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 					) : null
 				},
 			},
+			{
+				id: "deletePrice",
+				header: () => "Удалить цену",
+				cell: ({ row }) => {
+					const pos = row.original;
+					return pos.status === "Active" ? (
+						<Button
+							variant="destructive"
+							size="sm"
+							onClick={() => openDeleteDialog(pos.userId, pos.asset)}
+						>
+							Удалить
+						</Button>
+					) : null;
+				},
+			}
 		],
 
 		state: {
@@ -359,6 +397,24 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 							</Button>
 						</div>
 					</form>
+				</DialogContent>
+			</Dialog>
+			<Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Подтвердить удаление</DialogTitle>
+						<DialogDescription>
+							Вы уверены, что хотите удалить цену для выбранного актива?
+						</DialogDescription>
+					</DialogHeader>
+					<div className="flex gap-2 mt-4">
+						<Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+							Отмена
+						</Button>
+						<Button variant="destructive" onClick={handleDeletePrice}>
+							Удалить
+						</Button>
+					</div>
 				</DialogContent>
 			</Dialog>
 		</>

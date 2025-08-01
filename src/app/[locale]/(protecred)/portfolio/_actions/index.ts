@@ -20,14 +20,14 @@ export async function getUserOpenPositions(userId: string): Promise<Position[]> 
 export async function closePosition(
 	pos: Position,
 	account: Account, // account (с валютой) — лучше подтянуть заранее
-	rates: Record<string, number> // USD/EUR = 0.91 и т.д.
+	rates: Record<string, number> ,// USD/EUR = 0.91 и т.д.
+	currentPrice: number // цена закрытия позиции
 ) {
 	try {
 		if (!pos) throw new Error("positionNotFound");
 		if (pos.status !== "Active") throw new Error("alreadyClosed");
 
 		// 1. Рассчитываем pnl в USD:
-		const currentPrice = pos.current;
 		const pnlUsd =
 			pos.type === "Buy"
 				? (currentPrice - pos.entry) * pos.quantity

@@ -45,3 +45,22 @@ export async function getAllPositionsWithRelations() {
 		throw new Error("Не удалось получить позиции");
 	}
 }
+
+export async function deleteUserAsset(userId: string, asset: string) {
+  try {
+    await prisma.userAsset.updateMany({
+      where: {
+        userId,
+        asset,
+        deletedAt: null, // Только активные
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+    return true;
+  } catch (error) {
+    console.error("Ошибка при удалении userAsset:", error);
+    throw error;
+  }
+}

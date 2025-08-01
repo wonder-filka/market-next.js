@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useQuoteStore } from '@/stores/chart-store'
 import { cn } from '@/lib/utils'
 import { useCurrentLocale, useI18n } from '@/locales/client'

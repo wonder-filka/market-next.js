@@ -9,7 +9,7 @@ import {
   TableRow
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { ArrowUpRight, ArrowDownRight } from "lucide-react"
+import { ArrowUpRight, ArrowDownRight, LoaderCircle } from "lucide-react"
 import { useCurrentLocale, useI18n } from "@/locales/client"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -24,12 +24,16 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { closePosition } from "../_actions"
-import { Account, Position } from "@/generated/prisma"
+import { Account, Position, UserAsset } from "@/generated/prisma"
 import { toast } from "sonner"
 import { createTrade } from "../../dashboard/_actions"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { format } from "date-fns"
 import { quoteNames } from "@/lib/constants"
+import { useQuotesStore } from '@/stores/quotes-store'
+import { socket } from "@/socket"
+import { LiveQuote } from "@/lib/types"
+import { onQuotesUpdate } from "../../dashboard/_actions/helpers"
 
 function convert(amount: number, currency: string, rates: Record<string, number | undefined>) {
   if (currency === 'USD') return amount;
@@ -38,7 +42,7 @@ function convert(amount: number, currency: string, rates: Record<string, number 
 }
 
 
-export function PositionsTable({ positions, userId, accounts, rates }: { positions: Position[], userId: string, accounts: Account[], rates: Record<string, number> }) {
+export function PositionsTable({ positions, userId, accounts, rates, userAssets }: { positions: Position[], userId: string, accounts: Account[], rates: Record<string, number>, userAssets: UserAsset[] }) {
   const t = useI18n()
   const locale = useCurrentLocale()
   const [openDialogId, setOpenDialogId] = useState<string | null>(null)
@@ -48,6 +52,7 @@ export function PositionsTable({ positions, userId, accounts, rates }: { positio
   const [accountId, setAccountId] = useState("");
   const [takeProfit, setTakeProfit] = useState("");
   const [stopLoss, setStopLoss] = useState("");
+  const { liveQuotes, setLiveQuotes } = useQuotesStore()
 
   const handleSubmit = async () => {
     console.log("Submit action:", activeAction, "amount:", amount, selectedPosition)
@@ -90,15 +95,41 @@ export function PositionsTable({ positions, userId, accounts, rates }: { positio
     setOpenDialogId(null)
   }
 
+  useEffect(() => {
+    if (!socket.connected) {
+      socket.connect();
+    }
+    const onQuotesUpdates = (newQuotes: LiveQuote[]) => {
+      onQuotesUpdate(newQuotes, userAssets, setLiveQuotes);
+    };
+
+    socket.on("quotes-update", onQuotesUpdates);
+    return () => {
+      socket.off("quotes-update", onQuotesUpdates);
+    };
+  }, [userAssets, setLiveQuotes])
+
   const handleClose = async (pos: Position) => {
-    console.log("pos:", pos)
+    const quote = liveQuotes.find(q => q.symbol === pos.asset);
+    const currentPrice =
+      pos.type === "Buy"
+        ? (quote?.buy ?? pos.current)
+        : (quote?.sell ?? pos.current);
     const account = accounts.find(a => a.id === pos.accountId)!;
     try {
-      await closePosition(pos, account, rates)
-      toast.success(t("positionClosed"))
+      console.log("currentPrice", currentPrice)
+            console.log("pos.entry", pos.entry)
+      await closePosition(pos, account, rates, currentPrice); 
+      toast.success(t("positionClosed"));
     } catch (error) {
-      toast.error(t("positionCloseError"))
+      toast.error(t("positionCloseError"));
     }
+  }
+
+  if (liveQuotes.length === 0) {
+    return <div className='w-full flex justify-center items-center space-x-2'>
+      <LoaderCircle size={25} className='text-gray-500 animate-spin' />
+    </div>
   }
 
   return (
@@ -123,7 +154,12 @@ export function PositionsTable({ positions, userId, accounts, rates }: { positio
           </TableHeader>
           <TableBody>
             {positions.length > 0 ? positions.map((pos) => {
-              const gain = pos.current - pos.entry
+              const quote = liveQuotes.find(q => q.symbol === pos.asset);
+              const currentPrice =
+                pos.type === "Buy"
+                  ? (quote?.buy ?? pos.current)
+                  : (quote?.sell ?? pos.current);
+              const gain = currentPrice - pos.entry
               const signedGain = pos.type === "Buy" ? gain : -gain
               const account = accounts.find(acc => acc.id === pos.accountId);
               const displayMt5Id = account ? account.mt5Id : "N/A"; // Показываем MT5 ID или "N/A" если не найдено
@@ -133,6 +169,9 @@ export function PositionsTable({ positions, userId, accounts, rates }: { positio
               const pctDisplay = pct.toFixed(2) + '%'
               const isUp = pos.type === "Buy" ? gain >= 0 : gain <= 0
               const type = pos.type === "Buy" ? "typeBuy" : "typeSell"
+              const pnl = pos.type === "Buy"
+                ? (currentPrice - pos.entry) * pos.quantity
+                : (pos.entry - currentPrice) * pos.quantity;
               return (
                 <TableRow key={pos.id}>
                   <TableCell>
@@ -145,17 +184,17 @@ export function PositionsTable({ positions, userId, accounts, rates }: { positio
                   <TableCell>{displayMt5Id}</TableCell>
                   <TableCell>{pos.quantity}</TableCell>
                   <TableCell>{(pos.entry)}</TableCell>
-                  <TableCell>{(pos.current)}</TableCell>
+                  <TableCell>{(currentPrice)}</TableCell>
                   <TableCell>
-                    <span className={`flex items-center gap-1 font-medium ${(pos.current - pos.entry) >= 0 ? "text-green-500" : "text-red-500"}`}>
-                      {(pos.current - pos.entry) >= 0 ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
-                      {(pos.current - pos.entry).toFixed(8)}
+                    <span className={`flex items-center gap-1 font-medium ${(currentPrice - pos.entry) >= 0 ? "text-green-500" : "text-red-500"}`}>
+                      {(currentPrice - pos.entry) >= 0 ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
+                      {(currentPrice - pos.entry)}
                     </span>
                   </TableCell>
                   <TableCell>
-                    <span className={`flex items-center gap-1 font-medium ${pos.pnl >= 0 ? "text-green-500" : "text-red-500"}`}>
-                      {pos.pnl >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={16} />}
-                      {(pos.pnl.toFixed(8))}
+                    <span className={`flex items-center gap-1 font-medium ${pnl >= 0 ? "text-green-500" : "text-red-500"}`}>
+                      {pnl >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={16} />}
+                      {(pnl.toFixed(8))}
                     </span>
                   </TableCell>
                   <TableCell className={isUp ? "text-green-600" : "text-red-600"}>
