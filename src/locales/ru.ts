@@ -279,12 +279,12 @@ export default {
 	willBeCredited: "Будет зачислено",
 	admin: "Админка",
 	chat: "Диалоги",
-	demoAccountsTitle: "Демо-кошельки",
-	openDemoAccount: "Открыть демо-кошелек",
-	demoAccountTitle: "Создание демо-кошелька",
+	demoAccountsTitle: "Демо-cчет",
+	openDemoAccount: "Открыть демо-счет",
+	demoAccountTitle: "Создание демо-счета",
 	demoAccountConfirmation:
-		"Вы уверены, что хотите создать демо-кошелек? Баланс будет 200,000 USD.",
+		"Вы уверены, что хотите создать демо-счет? Баланс будет 200,000 USD.",
 	create: "Создать",
-	demoAccountCreated: "Демо-кошелек успешно создан!",
-	demoAccountCreationFailed: "Ошибка при создании демо-кошелька",
+	demoAccountCreated: "Демо-счет успешно создан!",
+	demoAccountCreationFailed: "Ошибка при создании демо-счета",
 } as const;
