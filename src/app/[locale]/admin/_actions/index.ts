@@ -10,13 +10,26 @@ export async function createOrUpdateUserAsset(
 	priceSell: number
 ) {
 	try {
-		const record = await prisma.userAsset.upsert({
+		// 1. Пытаемся найти любой актив (в т.ч. "удалённый")
+		const existing = await prisma.userAsset.findUnique({
 			where: { userId_asset: { userId, asset } },
-			update: { priceBuy, priceSell },
-			create: { userId, asset, priceBuy, priceSell },
 		});
-		revalidatePath("admin");
-		return record;
+		if (existing) {
+			// Если "удалённый" — реанимируем, если нет — просто апдейтим
+			const updated = await prisma.userAsset.update({
+				where: { userId_asset: { userId, asset } },
+				data: { priceBuy, priceSell, deletedAt: null },
+			});
+			revalidatePath("/admin");
+			return updated;
+		} else {
+			// Нет — создаём
+			const created = await prisma.userAsset.create({
+				data: { userId, asset, priceBuy, priceSell },
+			});
+			revalidatePath("/admin");
+			return created;
+		}
 	} catch (error) {
 		console.error("Ошибка при сохранении userAsset:", error);
 		throw new Error("Не удалось сохранить актив");
@@ -47,20 +60,21 @@ export async function getAllPositionsWithRelations() {
 }
 
 export async function deleteUserAsset(userId: string, asset: string) {
-  try {
-    await prisma.userAsset.updateMany({
-      where: {
-        userId,
-        asset,
-        deletedAt: null, // Только активные
-      },
-      data: {
-        deletedAt: new Date(),
-      },
-    });
-    return true;
-  } catch (error) {
-    console.error("Ошибка при удалении userAsset:", error);
-    throw error;
-  }
+	try {
+		await prisma.userAsset.updateMany({
+			where: {
+				userId,
+				asset,
+				deletedAt: null,
+			},
+			data: {
+				deletedAt: new Date(),
+			},
+		});
+		revalidatePath("admin");
+		return true;
+	} catch (error) {
+		console.error("Ошибка при удалении userAsset:", error);
+		throw error;
+	}
 }

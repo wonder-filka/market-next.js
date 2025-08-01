@@ -17,29 +17,13 @@ import {
   TableRow
 } from "@/components/ui/table"
 import { Card, CardContent } from "@/components/ui/card"
-import { UserAsset } from '@/generated/prisma'
-import { onQuotesUpdate } from '../../_actions/helpers'
 import { useQuotesStore } from '@/stores/quotes-store'
 
-export function VolatileTable({ userAssets }: { userAssets: UserAsset[] }) {
+export function VolatileTable() {
   const t = useI18n()
   const locale = useCurrentLocale()
-  const { liveQuotes, setLiveQuotes } = useQuotesStore()
+  const { liveQuotes } = useQuotesStore()
 
-  useEffect(() => {
-    if (!socket.connected) {
-      socket.connect();
-    }
-    const onQuotesUpdates = (newQuotes: LiveQuote[]) => {
-      onQuotesUpdate(newQuotes, userAssets, setLiveQuotes);
-      console.log('Quotes updated:', newQuotes);
-    };
-
-    socket.on("quotes-update", onQuotesUpdates);
-    return () => {
-      socket.off("quotes-update", onQuotesUpdates);
-    };
-  }, [userAssets, setLiveQuotes])
 
   const setSelectedSymbol = useQuoteStore((state) => state.setSelectedSymbol)
 
@@ -52,11 +36,7 @@ export function VolatileTable({ userAssets }: { userAssets: UserAsset[] }) {
     .sort((a, b) => b.volatility - a.volatility)
     .slice(0, 10)
 
-  if (liveQuotes.length === 0) {
-    return <div className='w-full flex justify-center items-center space-x-2'>
-      <LoaderCircle size={25} className='text-gray-500 animate-spin' />
-    </div>
-  }
+  if (liveQuotes.length === 0) return null
   return (
     <Card>
       <CardContent>

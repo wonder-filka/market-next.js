@@ -1,3 +1,5 @@
+import { Prisma } from "@/generated/prisma"
+
 export type Quote = {
   symbol: string
   name: string
@@ -64,3 +66,7 @@ export type LiveQuote = {
   sell: number;
   history: QuoteHistoryItem[];
 };
+
+export type UserWithWalletAndAccounts = Prisma.UserGetPayload<{
+  include: { wallet: true, accounts: true }
+}>

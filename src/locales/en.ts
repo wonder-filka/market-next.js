@@ -281,4 +281,12 @@ export default {
 	willBeCredited: "Will be credited",
 	admin: "Admin Panel",
 	chat: "Dialogs",
+	demoAccountsTitle: "Demo Accounts",
+	openDemoAccount: "Open Demo Account",
+	demoAccountTitle: "Create Demo Account",
+	demoAccountConfirmation:
+		"Are you sure you want to create a demo account? The balance will be 200,000 USD.",
+	create: "Create",
+	demoAccountCreated: "Demo account created successfully!",
+	demoAccountCreationFailed: "Failed to create demo account",
 } as const;

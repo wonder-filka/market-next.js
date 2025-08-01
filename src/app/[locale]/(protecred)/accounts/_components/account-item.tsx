@@ -86,9 +86,16 @@ export function AccountItem({ account, userId, rates }: AccountProps) {
             </div>
           </div>
           <div className="flex flex-col md:flex-row gap-8">
-            <Button variant="outline">{t('deposit')}</Button>
-            <Button variant="outline" onClick={handleDialogOpen}>{t('withdrawToWallet')}</Button>
-            <Button variant="default" onClick={() => router.push('/dashboard')}>{t('trade')}</Button>
+            {account.isDemo ?
+            <div className="min-w-[20vw] flex justify-end">
+               <Button variant="default" onClick={() => router.push('/dashboard')}>{t('trade')}</Button>
+            </div>  
+              : <>
+                <Button variant="outline">{t('deposit')}</Button>
+                <Button variant="outline" onClick={handleDialogOpen}>{t('withdrawToWallet')}</Button>
+                <Button variant="default" onClick={() => router.push('/dashboard')}>{t('trade')}</Button>
+              </>}
+
           </div>
         </CardContent>
       </Card>

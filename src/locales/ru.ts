@@ -278,5 +278,13 @@ export default {
 	currentRate: "Текущий курс",
 	willBeCredited: "Будет зачислено",
 	admin: "Админка",
-	chat: "Диалоги"
+	chat: "Диалоги",
+	demoAccountsTitle: "Демо-кошельки",
+	openDemoAccount: "Открыть демо-кошелек",
+	demoAccountTitle: "Создание демо-кошелька",
+	demoAccountConfirmation:
+		"Вы уверены, что хотите создать демо-кошелек? Баланс будет 200,000 USD.",
+	create: "Создать",
+	demoAccountCreated: "Демо-кошелек успешно создан!",
+	demoAccountCreationFailed: "Ошибка при создании демо-кошелька",
 } as const;

@@ -19,7 +19,7 @@ type WalletProps = {
 export default function WalletInterface({ wallet, userId, accounts, rates }: WalletProps) {
   const t = useI18n()
   const [isTransferOpen, setIsTransferOpen] = useState(false);
-
+  const realAccounts = accounts.filter((acc) => !acc.isDemo)
 
   return (
     <div className="flex flex-col gap-4 p-8">
@@ -35,12 +35,12 @@ export default function WalletInterface({ wallet, userId, accounts, rates }: Wal
               {getCurrencySymbol(wallet.currency)} {wallet.balance.toLocaleString()}
             </p>
           </div>
-            <div>
+          <div>
             <p className="text-sm text-muted-foreground">{t("freeMargin")}</p>
             <p className="text-3xl font-bold">
-               {getCurrencySymbol(wallet.currency)}   {wallet.balance - wallet.withdrawn > 0
-    ? formatter.format(wallet.balance - wallet.withdrawn)
-    : formatter.format(0)}
+              {getCurrencySymbol(wallet.currency)}   {wallet.balance - wallet.withdrawn > 0
+                ? formatter.format(wallet.balance - wallet.withdrawn)
+                : formatter.format(0)}
             </p>
           </div>
           <div className="flex flex-col gap-8 md:flex-row ">
@@ -62,7 +62,7 @@ export default function WalletInterface({ wallet, userId, accounts, rates }: Wal
       <TransferDialog
         isOpen={isTransferOpen}
         onClose={() => setIsTransferOpen(false)}
-        accounts={accounts}
+        accounts={realAccounts}
         userId={userId}
         wallet={wallet}
         rates={rates}

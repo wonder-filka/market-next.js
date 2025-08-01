@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { createOrUpdateUserAsset, deleteUserAsset } from "../_actions"
 import { toast } from "sonner"
 import { PositionWithRelations } from "../_actions/types"
@@ -13,6 +13,11 @@ import { useReactTable, getCoreRowModel, ColumnDef, flexRender, ColumnFiltersSta
 import { format } from "date-fns"
 import { UserAsset } from "@/generated/prisma"
 import { quoteNames } from "@/lib/constants"
+import { socket } from "@/socket"
+import { onQuotesUpdate } from "../../(protecred)/dashboard/_actions/helpers"
+import { LiveQuote } from "@/lib/types"
+import { useQuotesStore } from "@/stores/quotes-store"
+import { LoaderCircle } from "lucide-react"
 
 
 
@@ -26,6 +31,22 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 	const [globalFilter, setGlobalFilter] = useState('')
 	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 	const [deleteTarget, setDeleteTarget] = useState<{ userId: string; asset: string } | null>(null)
+	const { liveQuotes, setLiveQuotes } = useQuotesStore()
+
+	useEffect(() => {
+		if (!socket.connected) {
+			socket.connect();
+		}
+		const onQuotesUpdates = (newQuotes: LiveQuote[]) => {
+			onQuotesUpdate(newQuotes, userAssets, setLiveQuotes);
+			console.log('Quotes updated:', newQuotes);
+		};
+
+		socket.on("quotes-update", onQuotesUpdates);
+		return () => {
+			socket.off("quotes-update", onQuotesUpdates);
+		};
+	}, [userAssets, setLiveQuotes])
 
 	const columns: ColumnDef<PositionWithRelations>[] = [
 		{
@@ -95,9 +116,14 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 			cell: ({ row }) => {
 				const pos = row.original;
 				const userSellPrice = getUserAssetPrice(pos.asset, pos.userId, userAssets, "Sell");
-				return userSellPrice !== null ? (
-					<span className="text-blue-600 font-semibold">{userSellPrice}</span>
-				) : 0;
+				const apiSellPrice = liveQuotes.find(q => q.symbol === pos.asset)?.sell ?? 0;
+				const manual = userSellPrice !== null && userSellPrice !== undefined;
+				const show = manual ? userSellPrice : apiSellPrice;
+				return (
+					<span className={manual ? "text-blue-600 font-semibold" : ""}>
+						{show}
+					</span>
+				);
 			},
 		},
 		{
@@ -106,10 +132,28 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 			cell: ({ row }) => {
 				const pos = row.original;
 				const userBuyPrice = getUserAssetPrice(pos.asset, pos.userId, userAssets, "Buy");
-				return userBuyPrice !== null ? (
-					<span className="text-blue-600 font-semibold">{userBuyPrice}</span>
-				) : 0;
+				const apiBuyPrice = liveQuotes.find(q => q.symbol === pos.asset)?.buy ?? 0;
+				const manual = userBuyPrice !== null && userBuyPrice !== undefined;
+				const show = manual ? userBuyPrice : apiBuyPrice;
+				return (
+					<span className={manual ? "text-blue-600 font-semibold" : ""}>
+						{show}
+					</span>
+				);
 			},
+		},
+		{
+			id: "priceSource",
+			header: () => "Источник цены",
+			cell: ({ row }) => {
+				const pos = row.original;
+				const userBuyPrice = getUserAssetPrice(pos.asset, pos.userId, userAssets, "Buy");
+				const userSellPrice = getUserAssetPrice(pos.asset, pos.userId, userAssets, "Sell");
+				const manual = (userBuyPrice !== null && userBuyPrice !== undefined) || (userSellPrice !== null && userSellPrice !== undefined);
+				return manual
+					? <span className="text-blue-600">🖐 Ручная</span>
+					: <span className="text-gray-500">🌐 API</span>;
+			}
 		},
 		{
 			accessorKey: "pnl",
@@ -119,21 +163,22 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 				const userBuy = getUserAssetPrice(pos.asset, pos.userId, userAssets, "Buy");
 				const userSell = getUserAssetPrice(pos.asset, pos.userId, userAssets, "Sell");
 				// Получаем значения buy/sell из quotes для этого актива (нужно передать buyMap, sellMap в компонент)
-				const buy = 0;
-				const sell = 0;
+				const sell = liveQuotes.find(q => q.symbol === pos.asset)?.sell ?? 0;
+				const buy = liveQuotes.find(q => q.symbol === pos.asset)?.buy ?? 0;
+
 
 				let currentPrice: number;
 				if (pos.type === "Buy") {
-					currentPrice = userBuy !== null ? userBuy : sell;
+					currentPrice = userBuy !== null ? userBuy : buy;
 				} else {
-					currentPrice = userSell !== null ? userSell : buy;
+					currentPrice = userSell !== null ? userSell : sell;
 				}
 				const pnl = pos.type === "Buy"
 					? (currentPrice - pos.entry) * pos.quantity
 					: (pos.entry - currentPrice) * pos.quantity;
 				return (
 					<span className={pnl >= 0 ? "text-green-600" : "text-red-600"}>
-						{pnl}
+						{pnl.toFixed(8)}
 					</span>
 				);
 			},
@@ -300,6 +345,11 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 		onGlobalFilterChange: setGlobalFilter,
 	})
 
+	if (liveQuotes.length === 0) {
+		return <div className='w-full min-h-[90vh] flex justify-center items-center space-x-2'>
+			<LoaderCircle size={25} className='text-gray-500 animate-spin' />
+		</div>
+	}
 	return (
 		<>
 			<Card>
