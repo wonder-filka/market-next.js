@@ -1,4 +1,4 @@
-import { Home, BarChart, Wallet, Settings, FileCheck } from "lucide-react"
+import { Home, BarChart, Wallet, Settings, FileCheck, MessageCircle, Folder } from "lucide-react"
 
 export const sidebarItems = [
   {
@@ -27,6 +27,35 @@ export const sidebarItems = [
     icon: Settings,
   },
 
+]
+
+
+export const sidebarItemsAdmin = [
+  {
+    key: "sidebar.accounts",
+    url: "/accounts",
+    icon: Wallet,
+  },
+  {
+    key: "sidebar.portfolio",
+    url: "/portfolio",
+    icon: Home,
+  },
+  {
+    key: "sidebar.quotes",
+    url: "/dashboard",
+    icon: BarChart,
+  },
+  {
+    key: "sidebar.report",
+    url: "/report",
+    icon: FileCheck,
+  },
+  {
+    key: "sidebar.settings",
+    url: "/settings",
+    icon: Settings,
+  },
 ]
 
 

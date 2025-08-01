@@ -1,7 +1,7 @@
 import { createI18nMiddleware } from "next-international/middleware";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { decrypt, encrypt, updateSession } from "./lib/session";
+import { decrypt, encrypt } from "./lib/session";
 
 const I18nMiddleware = createI18nMiddleware({
 	locales: ["ru", "en"],
@@ -57,10 +57,12 @@ export async function middleware(request: NextRequest) {
 	const requiresAdminSupportAuth = adminSupportRoutesPrefixes.some(
 		(prefix) => path.startsWith(prefix) || path === prefix
 	);
+
+	 const adminId = process.env.ADMIN_ID;
 	if (requiresAdminSupportAuth) {
 		if (
 			!session?.userId ||
-			(session.userId !== "b053ba43-e577-44d6-8ae3-787fd53bf078")
+			(session.userId !== adminId)
 		) {
 			const redirectToHome = NextResponse.redirect(
 				new URL("/", request.nextUrl)

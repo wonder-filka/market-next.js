@@ -177,7 +177,7 @@ export function ChatMessages({ chatId, currentUserId, data }: ChatMessagesProps)
     }
 
     return (
-        <Card className="flex flex-col h-[90vh] w-3xl mx-auto">
+        <Card className="flex flex-col h-[90vh] mb-12  md:mb-0 max-w-[80vw] w-3xl mx-auto">
             <CardHeader className="border-b flex flex-row items-center justify-between">
                 <div>
                     <CardTitle>Пользователь: {chat.user.firstName} {chat.user.lastName}</CardTitle>
@@ -192,7 +192,7 @@ export function ChatMessages({ chatId, currentUserId, data }: ChatMessagesProps)
                     {chat.status === 'CLOSED' ? "Чат закрыт" : "Закрыть чат"}
                 </Button>
             </CardHeader>
-            <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
+            <CardContent className="flex-1 overflow-y-auto p-4 space-y-4 ">
                 {chat.messages.length === 0 ? (
                     <p className="text-center text-muted-foreground">Нет сообщений</p>
                 ) : (

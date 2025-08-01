@@ -30,7 +30,7 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 	const columns: ColumnDef<PositionWithRelations>[] = [
 		{
 			accessorKey: "userName",
-			header: () => "Имя пользователя",
+			header: () => "Имя поль-ля",
 			cell: ({ row }) =>
 				`${row.original.user.firstName} ${row.original.user.lastName}`,
 			enableGlobalFilter: true,
@@ -38,14 +38,14 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 		},
 		{
 			accessorKey: "userEmail",
-			header: () => "Имеил пользователя",
+			header: () => "Имеил поль-ля",
 			cell: ({ row }) => row.original.user.email,
 			enableGlobalFilter: true,
 			accessorFn: row => row.user.email,
 		},
 		{
 			accessorKey: "mt5Id",
-			header: () => "Номер кошелька",
+			header: () => "Номер кошел.",
 			cell: ({ row }) => row.original.account.mt5Id,
 			enableGlobalFilter: true,
 			accessorFn: row => row.account.mt5Id,
@@ -74,8 +74,15 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 		},
 		{
 			accessorKey: "quantity",
-			header: () => "Количество",
-			cell: ({ row }) => row.original.quantity,
+			header: () => "Кол-во",
+			cell: ({ row }) => {
+				return (
+					<span className="max-w-[20px]">
+						{row.original.quantity}
+					</span>
+				)
+
+			}
 		},
 		{
 			accessorKey: "entry",
@@ -84,7 +91,7 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 		},
 		{
 			accessorKey: "currentSell",
-			header: () => "Текущая цена продажи",
+			header: () => "Цена прод.",
 			cell: ({ row }) => {
 				const pos = row.original;
 				const userSellPrice = getUserAssetPrice(pos.asset, pos.userId, userAssets, "Sell");
@@ -95,7 +102,7 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 		},
 		{
 			accessorKey: "currentBuy",
-			header: () => "Текущая цена покупки",
+			header: () => "Цена покуп.",
 			cell: ({ row }) => {
 				const pos = row.original;
 				const userBuyPrice = getUserAssetPrice(pos.asset, pos.userId, userAssets, "Buy");
@@ -259,7 +266,7 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 							variant="link"
 							onClick={() => handleOpenDialog(item)}
 						>
-							Редактировать
+							Редакт.
 						</Button>
 					) : null
 				},
@@ -271,8 +278,9 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 					const pos = row.original;
 					return pos.status === "Active" ? (
 						<Button
-							variant="destructive"
+							variant="link"
 							size="sm"
+							className="text-red-500"
 							onClick={() => openDeleteDialog(pos.userId, pos.asset)}
 						>
 							Удалить
@@ -305,7 +313,7 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 						/>
 
 					</div>
-					<Table>
+					<Table className="">
 						<TableHeader>
 							{table.getHeaderGroups().map((headerGroup) => (
 								<TableRow key={headerGroup.id}>

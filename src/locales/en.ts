@@ -278,5 +278,7 @@ export default {
 	withdrawError: "Withdrawal error",
 	cancel: "Cancel",
 	currentRate: "Current rate",
-	"willBeCredited": "Will be credited",
+	willBeCredited: "Will be credited",
+	admin: "Admin Panel",
+	chat: "Dialogs",
 } as const;

@@ -1,5 +1,4 @@
 import { getSessionUserId } from "@/lib/session";
-import { AdminHeader } from "@/components/custom/navigation-bar-admin";
 import { ChatList } from "./_components/chat-list";;
 import { getChatsAdmin } from "./_actions";
 import { getUser } from "../(protecred)/accounts/_actions";
@@ -15,19 +14,17 @@ export default async function Page() {
     return null
   }
 
-  if (user.id !== "5f463fba-4745-4a67-9358-fcd5d2509d4d" && user.email !== "111@test.com") {
+  const adminId = process.env.ADMIN_ID;
+  if (user.id !== adminId) {
     return null
   }
 
   const chats = await getChatsAdmin()
 
   return (
-    <>
-      <AdminHeader />
-      <div className="px-8">
-        <ChatList userId={user.id} data={chats}/>
-      </div>
-    </>
+    <main className="p-4 space-y-4">
+      <ChatList userId={user.id} data={chats} />
+    </main>
 
   )
 }

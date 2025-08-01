@@ -277,4 +277,6 @@ export default {
 	confirm: "Подтвердить",
 	currentRate: "Текущий курс",
 	willBeCredited: "Будет зачислено",
+	admin: "Админка",
+	chat: "Диалоги"
 } as const;

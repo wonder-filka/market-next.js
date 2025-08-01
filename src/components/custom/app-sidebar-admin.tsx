@@ -12,17 +12,17 @@ import {
   SidebarSeparator,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { LogOut, Send } from "lucide-react"
+import { Folder, LogOut, MessageCircle, Send } from "lucide-react"
 import Link from "next/link"
 import { useI18n } from "@/locales/client"
 import { useTransition } from "react"
 import { deleteSession } from "@/lib/session"
 import { redirect } from "next/navigation"
-import { sidebarItems } from "@/lib/constants"
+import { sidebarItemsAdmin } from "@/lib/constants"
 import { SupportComponent } from "./support-component"
 
 
-export function AppSidebar({ userId, ...props }: React.ComponentProps<typeof Sidebar>  & { userId: string | null }) {
+export function AppSidebarAdmin({ userId, ...props }: React.ComponentProps<typeof Sidebar>  & { userId: string | null }) {
   const t = useI18n();
   const [pending, startTransition] = useTransition()
 
@@ -55,7 +55,7 @@ export function AppSidebar({ userId, ...props }: React.ComponentProps<typeof Sid
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu >
-            {sidebarItems.map((item) => (
+            {sidebarItemsAdmin.map((item) => (
               <SidebarMenuItem key={item.key} >
                 <SidebarMenuButton asChild 
              >
@@ -66,12 +66,40 @@ export function AppSidebar({ userId, ...props }: React.ComponentProps<typeof Sid
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
+            <SidebarSeparator />
+             <SidebarMenuItem >
+                <SidebarMenuButton asChild 
+             >
+                  <Link href="/admin" >
+                    <Folder />
+                    <span className="">{t("admin")}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+               <SidebarMenuItem >
+                <SidebarMenuButton asChild 
+             >
+                  <Link href="/chat" >
+                    <MessageCircle />
+                    <span className="">{t("chat")}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup >
       </SidebarContent>
       <SidebarFooter hidden={false}>
         <SidebarMenu >
           <SidebarMenuItem>
+             {userId && <SupportComponent userId={userId} />} 
+            {!userId && ( 
+              <SidebarMenuButton asChild>
+                <Link href="/support">
+                  <Send />
+                  <span className="">{t('sidebar.support')}</span>
+                </Link>
+              </SidebarMenuButton>
+            )}
           </SidebarMenuItem>
           <SidebarSeparator />
           <SidebarMenuItem>
