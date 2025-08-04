@@ -83,6 +83,6 @@ export async function closePosition(
 		return { success: true, message: "Position closed successfully" };
 	} catch (error) {
 		console.error("❌ Error closing position:", error);
-		return null;
+		return { message: "positionCloseError" };
 	}
 }
