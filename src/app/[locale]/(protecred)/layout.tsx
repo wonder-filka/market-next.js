@@ -21,12 +21,12 @@ export default async function Layout({
   return (
     <SidebarProvider defaultOpen={true}>
       {
-        userId !== adminId ? <AppSidebar className="hidden md:flex" />
+        userId !== adminId ? <AppSidebar className="hidden md:flex"  userId={userId} />
           : <AppSidebarAdmin className="hidden md:flex" userId={userId} />
       }
 
       <SidebarInset>
-        <ProtectedHeader data={userBasicSettings} />
+        <ProtectedHeader data={userBasicSettings} userId={userId} />
         <main className="flex-1 p-4 pt-0">{children}</main>
       </SidebarInset>
     </SidebarProvider>

@@ -172,7 +172,7 @@ export const SupportComponent = ({ userId }: SupportComponentProps) => {
 						{t('sidebar.support')}
 					</Button>
 				</DialogTrigger>
-				<DialogContent className="sm:max-w-[425px] flex flex-col h-[630px] left-[20%] top-[60%] translate-x-[-50%] translate-y-[-50%]">
+				<DialogContent className="sm:max-w-[425px] flex flex-col h-[630px] md:left-[20%] top-[60%] translate-x-[-50%] translate-y-[-50%]">
 					<DialogHeader>
 						<DialogTitle>{t('support.chatTitle')}</DialogTitle>
 						<DialogDescription>{t('support.chatDescription')}</DialogDescription>
@@ -196,7 +196,7 @@ export const SupportComponent = ({ userId }: SupportComponentProps) => {
 			<DialogContent
 				onPointerDownOutside={(e) => e.preventDefault()}
 				onEscapeKeyDown={(e) => e.preventDefault()}
-				className="sm:max-w-[425px] flex flex-col h-[630px] left-[20%] top-[60%] translate-x-[-50%] translate-y-[-50%]"
+				className="sm:max-w-[425px] flex flex-col h-[630px] md:left-[20%] top-[60%] translate-x-[-50%] translate-y-[-50%]"
 			>
 				<DialogHeader>
 					<DialogTitle>{t('support.chatTitle')}</DialogTitle>

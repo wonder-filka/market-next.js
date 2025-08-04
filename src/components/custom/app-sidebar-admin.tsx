@@ -92,14 +92,6 @@ export function AppSidebarAdmin({ userId, ...props }: React.ComponentProps<typeo
         <SidebarMenu >
           <SidebarMenuItem>
              {userId && <SupportComponent userId={userId} />} 
-            {!userId && ( 
-              <SidebarMenuButton asChild>
-                <Link href="/support">
-                  <Send />
-                  <span className="">{t('sidebar.support')}</span>
-                </Link>
-              </SidebarMenuButton>
-            )}
           </SidebarMenuItem>
           <SidebarSeparator />
           <SidebarMenuItem>

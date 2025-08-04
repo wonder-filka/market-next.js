@@ -1,21 +1,14 @@
 
 export NODE_OPTIONS="--max-old-space-size=8192"
 
-docker build -f Dockerfile-dev -t dev-cad .
-docker run --name dev-cad-container -p 8000:8000 -d dev-cad
+npx prisma db pull 
+npx prisma generate 
 
+docker-compose build --no-cache
+docker-compose down 
+ docker-compose build
+docker-compose up
 
-bunx prisma db pull --schema prisma/cad.prisma
-bunx prisma generate --schema prisma/cad.prisma
+docker ps
 
-bunx prisma db pull --schema prisma/angebot.prisma
-bunx prisma generate --schema prisma/angebot.prisma
-
-bunx prisma db pull --schema prisma/formular.prisma
-bunx prisma generate --schema prisma/formular.prisma
-
-bunx prisma db pull --schema prisma/new-cad.prisma
-bunx prisma generate --schema prisma/new-cad.prisma
-
-bunx prisma migrate dev --name init --schema prisma/new-cad.prisma
-bunx prisma migrate dev --name init --schema prisma/formular.prisma
+ docker-compose down -v

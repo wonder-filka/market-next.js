@@ -19,8 +19,9 @@ import { useTransition } from "react"
 import { deleteSession } from "@/lib/session"
 import { redirect } from "next/navigation"
 import { sidebarItems } from "@/lib/constants"
+import { SupportComponent } from "./support-component"
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar> ) {
+export function AppSidebar({ userId, ...props }: React.ComponentProps<typeof Sidebar> & { userId: string | null }) {
   const t = useI18n();
   const [pending, startTransition] = useTransition()
 
@@ -37,9 +38,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar> ) 
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton 
-           >
-              <Link href="/"  hidden={state !== "collapsed"}>
+            <SidebarMenuButton
+            >
+              <Link href="/" hidden={state !== "collapsed"}>
                 2T
               </Link>
               <div className="grid flex-1 text-left leading-tight ">
@@ -55,8 +56,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar> ) 
           <SidebarMenu >
             {sidebarItems.map((item) => (
               <SidebarMenuItem key={item.key} >
-                <SidebarMenuButton asChild 
-             >
+                <SidebarMenuButton asChild
+                >
                   <Link href={item.url} >
                     <item.icon />
                     <span className="">{t(item.key as keyof typeof t)}</span>
@@ -70,6 +71,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar> ) 
       <SidebarFooter hidden={false}>
         <SidebarMenu >
           <SidebarMenuItem>
+            {userId && <SupportComponent userId={userId} />}
           </SidebarMenuItem>
           <SidebarSeparator />
           <SidebarMenuItem>

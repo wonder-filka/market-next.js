@@ -13,18 +13,19 @@ import { redirect } from "next/navigation";
 import { useTransition } from "react";
 import { useI18n } from "@/locales/client";
 import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 
 export function AdminHeader() {
-   const [pending, startTransition] = useTransition()
-    const t = useI18n();
-    async function logout() {
-        startTransition(async () => {
-            await deleteSession()
-            redirect('/login')
-        })
-    }
+  const [pending, startTransition] = useTransition()
+  const t = useI18n();
+  async function logout() {
+    startTransition(async () => {
+      await deleteSession()
+      redirect('/login')
+    })
+  }
   return (
-  <header className="flex min-w-[80vw] justify-between items-center p-2 border-b">
+    <header className="flex min-w-[80vw] justify-between items-center p-2 border-b">
       <Sheet >
         <SheetTrigger className="md:hidden"><MenuIcon /></SheetTrigger>
         <SheetContent side="left">
@@ -36,10 +37,17 @@ export function AdminHeader() {
                   <Link key={item.key} href={item.url}>{t(item.key as keyof typeof t)}</Link>
                 )
               })}
-
+              <Separator />
+              <Link href="/admin" >
+                <span className="">{t("admin")}</span>
+              </Link>
+              <Link href="/chat" >
+                <span className="">{t("chat")}</span>
+              </Link>
             </div>
           </SheetHeader>
           <SheetFooter>
+
             <LangToggle />
           </SheetFooter>
         </SheetContent>

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useI18n } from "@/locales/client";
 import { LangToggle } from "./toggle-language";
-import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
+import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetClose } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { sidebarItems } from "@/lib/constants";
@@ -13,12 +13,11 @@ import { deleteSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { UpdateUserBasicSettingsInput } from "@/lib/types";
 import { Button } from "../ui/button";
-
-
+import { SupportComponent } from "./support-component";
 
 function MenuIcon() {
     return (
-        <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
             strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="4" x2="20" y1="12" y2="12" />
             <line x1="4" x2="20" y1="6" y2="6" />
@@ -29,9 +28,10 @@ function MenuIcon() {
 
 interface UserBasicSettingsProps {
     data: UpdateUserBasicSettingsInput
+    userId: string
 }
 
-export function ProtectedHeader({ data }: UserBasicSettingsProps) {
+export function ProtectedHeader({ data, userId }: UserBasicSettingsProps) {
     const t = useI18n();
     const [pending, startTransition] = useTransition()
 
@@ -52,13 +52,19 @@ export function ProtectedHeader({ data }: UserBasicSettingsProps) {
                         <div className="grid gap-4 p-4">
                             {sidebarItems.map((item) => {
                                 return (
-                                    <Link key={item.key} href={item.url}>{t(item.key as keyof typeof t)}</Link>
+                                    <SheetClose key={item.key} asChild className="text-start">
+                                        <Link key={item.key} href={item.url}>{t(item.key as keyof typeof t)}</Link>
+                                    </SheetClose>
                                 )
                             })}
 
                         </div>
                     </SheetHeader>
                     <SheetFooter>
+                        <SheetClose asChild className="text-start">
+                            {userId && <SupportComponent userId={userId} />}
+                        </SheetClose>
+
                         <LangToggle />
                     </SheetFooter>
                 </SheetContent>
@@ -91,7 +97,7 @@ export function ProtectedHeader({ data }: UserBasicSettingsProps) {
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
-                               <Button type="submit" variant="ghost" disabled={pending} className="w-full text-start" onClick={logout}>{t('logout')}</Button>
+                            <Button type="submit" variant="ghost" disabled={pending} className="w-full text-start" onClick={logout}>{t('logout')}</Button>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
