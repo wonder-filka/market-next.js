@@ -439,4 +439,5 @@ export default {
 		],
 		cta: "Начать обучение",
 	},
+	"transferFailed": "Перевод не удался",
 } as const;

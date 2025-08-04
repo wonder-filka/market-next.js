@@ -49,19 +49,12 @@ export function AccountItem({ account, rates }: AccountProps) {
       return
     }
     setIsLoading(true)
-    try {
-      // Передаём не только сумму, но и курс на сервер!
-      await withdrawFromAccountToWallet({ accountId: account.id, amount: num, rateToUSD })
-      toast.success(t('withdrawSuccess'))
-      setDialogOpen(false)
-      setWithdrawAmount("")
-      router.refresh()
-    } catch (e: unknown) {
-      console.error("[WithdrawFromAccountToWallet]", e)
-      toast.error(t('withdrawError'))
-    } finally {
-      setIsLoading(false)
-    }
+    await withdrawFromAccountToWallet({ accountId: account.id, amount: num, rateToUSD })
+    toast.success(t('withdrawSuccess'))
+    setDialogOpen(false)
+    setWithdrawAmount("")
+    router.refresh()
+    setIsLoading(false)
   }
 
 
@@ -87,9 +80,9 @@ export function AccountItem({ account, rates }: AccountProps) {
           </div>
           <div className="flex flex-col md:flex-row gap-8">
             {account.isDemo ?
-            <div className="min-w-[20vw] flex justify-end">
-               <Button variant="default" onClick={() => router.push('/dashboard')}>{t('trade')}</Button>
-            </div>  
+              <div className="min-w-[20vw] flex justify-end">
+                <Button variant="default" onClick={() => router.push('/dashboard')}>{t('trade')}</Button>
+              </div>
               : <>
                 <Button variant="outline">{t('deposit')}</Button>
                 <Button variant="outline" onClick={handleDialogOpen}>{t('withdrawToWallet')}</Button>

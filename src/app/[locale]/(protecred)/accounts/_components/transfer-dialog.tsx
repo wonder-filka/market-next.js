@@ -44,13 +44,15 @@ export function TransferDialog({ isOpen, onClose, accounts, wallet, rates }: Tra
 			return
 		}
 		startTransition(async () => {
-			try {
-				await transferFundsToAccount({
-					wallet,
-					account: selectedAccount,
-					amount: parseFloat(amount),
-					rates, // обязательно!
-				})
+			const result = await transferFundsToAccount({
+				wallet,
+				account: selectedAccount,
+				amount: parseFloat(amount),
+				rates, // обязательно!
+			})
+			if (result?.message === "transferFailed") {
+				toast.error(t("transferFailed"), { style: { backgroundColor: "red", color: "white" } })
+			} else {
 				toast.success(t('transferSuccess'), {
 					style: { backgroundColor: 'green', color: 'white' }
 				})
@@ -58,20 +60,6 @@ export function TransferDialog({ isOpen, onClose, accounts, wallet, rates }: Tra
 				onClose()
 				setAmount('')
 				setAccountId('')
-			} catch (err: unknown) {
-				let msg = t('error');
-				if (
-					err &&
-					typeof err === 'object' &&
-					'message' in err &&
-					typeof (err as { message?: unknown }).message === 'string'
-				) {
-					const errorMsg = (err as { message: string }).message;
-					msg = t(errorMsg as keyof typeof t) ?? errorMsg;
-				}
-				toast.error(msg, {
-					style: { backgroundColor: 'red', color: 'white' }
-				});
 			}
 		}
 		)

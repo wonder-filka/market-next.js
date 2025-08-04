@@ -32,7 +32,7 @@ export async function createAccount(currency: string, userId: string) {
 		return account;
 	} catch (error) {
 		console.error("❌ Ошибка при создании аккаунта:", error);
-		throw new Error("accountCreationFailed");
+		return { message: "accountCreationFailed" };
 	}
 }
 
@@ -76,13 +76,8 @@ export async function transferFundsToAccount({
 			}),
 		]);
 		revalidatePath("/accounts");
-	} catch (error: unknown) {
-		console.error("[TransferFundsToAccount]", error);
-		if (error instanceof Error) {
-			throw new Error(error.message || "unexpectedError");
-		} else {
-			throw new Error("unexpectedError");
-		}
+	} catch {
+		return { message: "transferFailed" };
 	}
 }
 
@@ -115,10 +110,7 @@ export async function withdrawFromAccountToWallet({
 
 	if (!account) throw new Error("accountNotFound");
 	const wallet = account.user.wallet;
-
 	if (account.freeMargin < amount) throw new Error("insufficientFunds");
-
-	// Рассчитываем сумму в USD для зачисления на кошелек
 	const amountInUSD = +(amount * (rateToUSD ?? 1)).toFixed(2);
 
 	await prisma.$transaction([
@@ -136,7 +128,6 @@ export async function withdrawFromAccountToWallet({
 			},
 		}),
 	]);
-
 	revalidatePath("/accounts");
 }
 

@@ -437,4 +437,5 @@ export default {
 		],
 		cta: "Start learning",
 	},
+	"transferFailed": "Transfer failed",
 } as const;

@@ -55,10 +55,15 @@ export function PositionsTable({ positions, userId, accounts, rates, userAssets 
   const { liveQuotes, setLiveQuotes } = useQuotesStore()
 
   const handleSubmit = async () => {
-    console.log("Submit action:", activeAction, "amount:", amount, selectedPosition)
     if (!amount || !selectedPosition || !accountId) return
     const account = accounts.find(a => a.id === accountId)!;
-    const usdValue = Number(amount) * selectedPosition.current;
+    const quote = liveQuotes.find(q => q.symbol === selectedPosition.asset);
+    const currentPrice =
+      activeAction === "buy"
+        ? (quote?.buy ?? selectedPosition.current)
+        : (quote?.sell ?? selectedPosition.current);
+    const usdValue = Number(amount) * currentPrice;
+
     const rate = account.currency === 'USD' ? 1 : (rates[account.currency] ?? 1);
     const requiredInAccountCurrency = usdValue * rate;
     if (account.freeMargin < requiredInAccountCurrency) {
@@ -66,32 +71,22 @@ export function PositionsTable({ positions, userId, accounts, rates, userAssets 
         style: { backgroundColor: 'red', color: 'white' },
       })
     }
-    try {
-      await createTrade({
-        userId,
-        account,
-        asset: selectedPosition.asset,
-        type: activeAction === 'buy' ? 'buy' : 'sell',
-        price: selectedPosition.current,
-        quantity: parseFloat(amount.toString()),
-        takeProfit: takeProfit ? parseFloat(takeProfit) : null,
-        stopLoss: stopLoss ? parseFloat(stopLoss) : null,
-        rates
-      })
+    await createTrade({
+      userId,
+      account,
+      asset: selectedPosition.asset,
+      type: activeAction === 'buy' ? 'buy' : 'sell',
+      price: currentPrice,
+      quantity: parseFloat(amount.toString()),
+      takeProfit: takeProfit ? parseFloat(takeProfit) : null,
+      stopLoss: stopLoss ? parseFloat(stopLoss) : null,
+      rates
+    })
 
-      toast.success(t(selectedPosition.type === 'Buy' ? 'buySuccess' : 'sellSuccess'), {
-        style: { backgroundColor: 'green', color: 'white' },
-      })
-    } catch (error: unknown) {
-      console.error("Error creating trade:", error);
-      let msg = t('error');
-      if (error instanceof Error) {
-        msg = t(error.message as keyof typeof t) ?? error.message;
-      }
-      toast.error(msg, {
-        style: { backgroundColor: 'red', color: 'white' },
-      });
-    }
+    toast.success(t(selectedPosition.type === 'Buy' ? 'buySuccess' : 'sellSuccess'), {
+      style: { backgroundColor: 'green', color: 'white' },
+    })
+
     setAccountId("")
     setTakeProfit("")
     setStopLoss("")
@@ -272,9 +267,12 @@ export function PositionsTable({ positions, userId, accounts, rates, userAssets 
                                 const acc = accounts.find(a => a.id === accountId)
                                 if (!acc) return null
                                 const rate = acc.currency === 'USD' ? 1 : (rates[acc.currency] ?? 1)
-                                const usdValue = Number(amount) * selectedPosition!.current
+                                const currentPrice =
+                                  activeAction === "buy"
+                                    ? (quote?.buy ?? pos.current)
+                                    : (quote?.sell ?? pos.current);
+                                const usdValue = Number(amount) * currentPrice
                                 const total = usdValue * rate
-
                                 return (
                                   <p className="mt-1 text-xs text-muted-foreground">
                                     {t('tradeAmount')}: {(acc.currency)} {total.toFixed(2)}
