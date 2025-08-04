@@ -27,15 +27,12 @@ export const LoginForm = () => {
 
     const onSubmit: SubmitHandler<z.infer<typeof LoginSchema>> = async data => {
         startTransition(async () => {
-            try {
-                await login(data);
-            } catch (error) {
-                 if (error instanceof Error && error.message === "incorrectCredentials") {
-                    form.setError('email', {
-                        type: 'manual',
-                        message: "incorrectCredentials", 
-                    });
-                }
+            const result = await login(data);
+            if (result?.message === 'incorrectCredentials') {
+                form.setError('email', {
+                    type: 'manual',
+                    message: "incorrectCredentials",
+                });
             }
         });
     };
