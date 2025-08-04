@@ -15,6 +15,7 @@ export default async function DashboardPage() {
   const rates = await getRates([...new Set(user.accounts.map(a => a.currency))]);
   const safeRates: Record<string, number> = Object.fromEntries(
     Object.entries(rates)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .filter(([_, v]) => typeof v === "number" && !isNaN(v))
       .map(([k, v]) => [k, v as number])
   );

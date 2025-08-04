@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useI18n } from "@/locales/client"
 import { useQuotesStore } from "@/stores/quotes-store"
-import { Position } from "@/generated/prisma"
+import { Position } from "../../../../../../prisma/generated/prisma"
 
 interface Props {
   balance: number,

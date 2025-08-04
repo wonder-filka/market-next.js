@@ -21,7 +21,7 @@ export default async function Layout({
   return (
     <SidebarProvider defaultOpen={true}>
       {
-        userId !== adminId ? <AppSidebar className="hidden md:flex" userId={userId} />
+        userId !== adminId ? <AppSidebar className="hidden md:flex" />
           : <AppSidebarAdmin className="hidden md:flex" userId={userId} />
       }
 

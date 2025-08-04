@@ -1,8 +1,8 @@
 "use server";
 
-import { Account, Wallet } from "@/generated/prisma";
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { Account, Wallet } from "../../../../../../prisma/generated/prisma";
 
 function genMt5Id() {
 	// 9 случайных цифр + префикс "mt"
@@ -76,9 +76,13 @@ export async function transferFundsToAccount({
 			}),
 		]);
 		revalidatePath("/accounts");
-	} catch (error: any) {
+	} catch (error: unknown) {
 		console.error("[TransferFundsToAccount]", error);
-		throw new Error(error.message || "unexpectedError");
+		if (error instanceof Error) {
+			throw new Error(error.message || "unexpectedError");
+		} else {
+			throw new Error("unexpectedError");
+		}
 	}
 }
 

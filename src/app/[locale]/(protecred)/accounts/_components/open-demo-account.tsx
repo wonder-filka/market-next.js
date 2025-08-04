@@ -30,7 +30,8 @@ export const OpenDemoAccount = ({ userId }: OpenAccountProps) => {
           style: { color: 'white', backgroundColor: 'green' }
         })
         setOpen(false)
-      } catch (error) {
+      } catch (error:unknown) {
+        console.error("[CreateDemoAccount]", error)
         toast.error(t("demoAccountCreationFailed"), {
           style: { color: 'white', backgroundColor: 'red' }
         })

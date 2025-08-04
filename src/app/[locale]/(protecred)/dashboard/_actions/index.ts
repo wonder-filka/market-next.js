@@ -1,9 +1,9 @@
 "use server";
 
-import { Account, TradeType } from "@/generated/prisma";
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import yahooFinance from "yahoo-finance2";
+import { Account, TradeType } from "../../../../../../prisma/generated/prisma";
 
 const symbols = [
 	"^NDX",

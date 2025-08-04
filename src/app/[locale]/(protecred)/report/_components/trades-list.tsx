@@ -17,8 +17,8 @@ import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import { format } from "date-fns"
-import { Position } from "@/generated/prisma"
 import { quoteNames } from "@/lib/constants"
+import { Position } from "../../../../../../prisma/generated/prisma"
 
 const statusVariant: Record<Position["status"], "default" | "secondary" | "destructive"> = {
   Active: "default",

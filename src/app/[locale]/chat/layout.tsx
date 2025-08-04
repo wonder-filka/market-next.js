@@ -1,12 +1,9 @@
 
 
-import { AppSidebar } from "@/components/custom/app-sidebar";
 import { AppSidebarAdmin } from "@/components/custom/app-sidebar-admin";
 import { AdminHeader } from "@/components/custom/navigation-bar-admin";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { getSessionUserId } from "@/lib/session";
-
-
 
 export default async function Layout({
   children,

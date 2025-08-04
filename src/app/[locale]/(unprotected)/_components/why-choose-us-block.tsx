@@ -39,17 +39,17 @@ export function WhyChooseUsBlock() {
         {t("whyChooseUs.title")}
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        {features.map((f, idx) => (
+        {features.map((f) => (
           <div
             key={f.key}
             className="bg-black/80 rounded-2xl shadow p-6 flex flex-col items-center text-center transition hover:shadow-lg hover:-translate-y-1"
           >
             <div className="mb-4 flex justify-center items-center">
-              <Image src={f.img} alt={t(`whyChooseUs.features.${f.key}.title`)} width={300} height={100} className="rounded-xl" />
+              <Image src={f.img} alt={t(`whyChooseUs.features.${f.key}.title` as keyof typeof t)} width={300} height={100} className="rounded-xl" />
             </div>
-            <h3 className="text-lg md:text-xl font-semibold mb-3 text-white">{t(`whyChooseUs.features.${f.key}.title`)}</h3>
-            <p className="text-sm text-gray-300 mb-4">{t(`whyChooseUs.features.${f.key}.description`)}</p>
-            <Link href="/registration" className="text-blue-500 font-medium text-sm cursor-pointer hover:underline">{t(`whyChooseUs.features.${f.key}.cta`)}</Link>
+            <h3 className="text-lg md:text-xl font-semibold mb-3 text-white">{t(`whyChooseUs.features.${f.key}.title` as keyof typeof t)}</h3>
+            <p className="text-sm text-gray-300 mb-4">{t(`whyChooseUs.features.${f.key}.description` as keyof typeof t)}</p>
+            <Link href="/registration" className="text-blue-500 font-medium text-sm cursor-pointer hover:underline">{t(`whyChooseUs.features.${f.key}.cta` as keyof typeof t)}</Link>
           </div>
         ))}
       </div>

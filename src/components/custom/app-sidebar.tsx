@@ -12,17 +12,15 @@ import {
   SidebarSeparator,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { LogOut, Send } from "lucide-react"
+import { LogOut } from "lucide-react"
 import Link from "next/link"
 import { useI18n } from "@/locales/client"
 import { useTransition } from "react"
 import { deleteSession } from "@/lib/session"
 import { redirect } from "next/navigation"
 import { sidebarItems } from "@/lib/constants"
-import { SupportComponent } from "./support-component"
 
-
-export function AppSidebar({ userId, ...props }: React.ComponentProps<typeof Sidebar>  & { userId: string | null }) {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar> ) {
   const t = useI18n();
   const [pending, startTransition] = useTransition()
 

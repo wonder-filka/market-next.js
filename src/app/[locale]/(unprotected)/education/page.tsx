@@ -17,8 +17,8 @@ export default function EducationPage() {
   const t = useI18n()
   const sectionCount = 5
   const sections = Array.from({ length: sectionCount }).map((_, i) => ({
-    title: t(`educationBlock.sections.${i}.title`),
-    desc: t(`educationBlock.sections.${i}.desc`),
+    title: t(`educationBlock.sections.${i}.title` as keyof typeof t),
+    desc: t(`educationBlock.sections.${i}.desc` as keyof typeof t),
   })).filter(s => s.title && s.desc)
 
   return (

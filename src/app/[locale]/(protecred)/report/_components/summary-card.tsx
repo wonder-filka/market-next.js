@@ -15,7 +15,7 @@ export function SummaryCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t(label)}</CardTitle>
+        <CardTitle>{t(label as keyof typeof t)}</CardTitle>
       </CardHeader>
       <CardContent>
         <span>{value}</span>

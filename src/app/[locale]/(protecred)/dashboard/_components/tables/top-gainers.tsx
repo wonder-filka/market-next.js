@@ -4,7 +4,6 @@ import { useQuoteStore } from "@/stores/chart-store"
 import { useCurrentLocale, useI18n } from "@/locales/client"
 import { quoteNames } from "@/lib/constants"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { LoaderCircle } from "lucide-react"
 import { useQuotesStore } from "@/stores/quotes-store"
 import { getPercent } from "../../_actions/helpers"
 

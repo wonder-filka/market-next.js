@@ -40,7 +40,8 @@ export const OpenAccount = ({ userId }: OpenAccountProps) => {
         })
         setOpen(false)
         setCurrency("")
-      } catch (error) {
+      } catch (error: unknown) {
+        console.error("[CreateAccount]", error)
         toast.error(t("accountCreationFailed"), {
           style: { color: 'white', backgroundColor: 'red' }
         })

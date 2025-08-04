@@ -1,4 +1,5 @@
-import { Prisma } from "@/generated/prisma"
+import { Prisma } from "../../prisma/generated/prisma"
+
 
 export type Quote = {
   symbol: string

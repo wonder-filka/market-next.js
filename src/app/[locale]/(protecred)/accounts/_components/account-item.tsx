@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Account } from "@/generated/prisma"
 import { formatter, getCurrencySymbol } from "@/lib/helpers"
 import { useI18n } from "@/locales/client"
 import { useRouter } from "next/navigation"
@@ -11,15 +10,15 @@ import { toast } from "sonner"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { withdrawFromAccountToWallet } from "../_actions"
+import { Account } from "../../../../../../prisma/generated/prisma"
 
 interface AccountProps {
   account: Account
-  userId: string
   rates: Record<string, number>
 }
 
 
-export function AccountItem({ account, userId, rates }: AccountProps) {
+export function AccountItem({ account, rates }: AccountProps) {
   const t = useI18n()
   const router = useRouter()
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -57,7 +56,8 @@ export function AccountItem({ account, userId, rates }: AccountProps) {
       setDialogOpen(false)
       setWithdrawAmount("")
       router.refresh()
-    } catch (e: any) {
+    } catch (e: unknown) {
+      console.error("[WithdrawFromAccountToWallet]", e)
       toast.error(t('withdrawError'))
     } finally {
       setIsLoading(false)

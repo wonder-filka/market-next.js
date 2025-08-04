@@ -1,6 +1,5 @@
 'use client'
 
-import { Account, UserAsset } from "@/generated/prisma"
 import { VolatileTable } from "./tables/volatile-table"
 import { QuoteChartPanel } from "./quote-chart-panel"
 import { TopGainers } from "./tables/top-gainers"
@@ -13,6 +12,7 @@ import { socket } from "@/socket"
 import { onQuotesUpdate } from "../_actions/helpers"
 import { LoaderCircle } from "lucide-react"
 import { useI18n } from "@/locales/client"
+import { UserAsset } from "../../../../../../prisma/generated/prisma"
 
 type OverviewProps = {
 	user: UserWithWalletAndAccounts

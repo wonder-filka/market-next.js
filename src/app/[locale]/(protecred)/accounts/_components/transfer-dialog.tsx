@@ -5,20 +5,19 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useI18n } from "@/locales/client"
-import { Account, Wallet } from "@/generated/prisma"
 import { toast } from "sonner"
 import { transferFundsToAccount } from "../_actions"
+import { Account, Wallet } from "../../../../../../prisma/generated/prisma"
 
 type TransferDialogProps = {
 	isOpen: boolean
 	onClose: () => void
 	accounts: Account[]
-	userId: string
 	wallet: Wallet
 	rates: Record<string, number>
 }
 
-export function TransferDialog({ isOpen, onClose, accounts, userId, wallet, rates }: TransferDialogProps) {
+export function TransferDialog({ isOpen, onClose, accounts, wallet, rates }: TransferDialogProps) {
 	const t = useI18n()
 	const [amount, setAmount] = useState('')
 	const [accountId, setAccountId] = useState('')
@@ -59,12 +58,23 @@ export function TransferDialog({ isOpen, onClose, accounts, userId, wallet, rate
 				onClose()
 				setAmount('')
 				setAccountId('')
-			} catch (err: any) {
-				toast.error(t(err.message || 'error'), {
+			} catch (err: unknown) {
+				let msg = t('error');
+				if (
+					err &&
+					typeof err === 'object' &&
+					'message' in err &&
+					typeof (err as { message?: unknown }).message === 'string'
+				) {
+					const errorMsg = (err as { message: string }).message;
+					msg = t(errorMsg as keyof typeof t) ?? errorMsg;
+				}
+				toast.error(msg, {
 					style: { backgroundColor: 'red', color: 'white' }
-				})
+				});
 			}
-		})
+		}
+		)
 	}
 
 	return (

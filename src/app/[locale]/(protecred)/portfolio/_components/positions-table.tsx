@@ -24,7 +24,6 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { closePosition } from "../_actions"
-import { Account, Position, UserAsset } from "@/generated/prisma"
 import { toast } from "sonner"
 import { createTrade } from "../../dashboard/_actions"
 import { useEffect, useState } from "react"
@@ -34,6 +33,7 @@ import { useQuotesStore } from '@/stores/quotes-store'
 import { socket } from "@/socket"
 import { LiveQuote } from "@/lib/types"
 import { onQuotesUpdate } from "../../dashboard/_actions/helpers"
+import { Position, Account, UserAsset } from "../../../../../../prisma/generated/prisma"
 
 function convert(amount: number, currency: string, rates: Record<string, number | undefined>) {
   if (currency === 'USD') return amount;
@@ -82,10 +82,15 @@ export function PositionsTable({ positions, userId, accounts, rates, userAssets 
       toast.success(t(selectedPosition.type === 'Buy' ? 'buySuccess' : 'sellSuccess'), {
         style: { backgroundColor: 'green', color: 'white' },
       })
-    } catch (error) {
-      toast.error(t(error.message || 'error'), {
+    } catch (error: unknown) {
+      console.error("Error creating trade:", error);
+      let msg = t('error');
+      if (error instanceof Error) {
+        msg = t(error.message as keyof typeof t) ?? error.message;
+      }
+      toast.error(msg, {
         style: { backgroundColor: 'red', color: 'white' },
-      })
+      });
     }
     setAccountId("")
     setTakeProfit("")
@@ -118,10 +123,11 @@ export function PositionsTable({ positions, userId, accounts, rates, userAssets 
     const account = accounts.find(a => a.id === pos.accountId)!;
     try {
       console.log("currentPrice", currentPrice)
-            console.log("pos.entry", pos.entry)
-      await closePosition(pos, account, rates, currentPrice); 
+      console.log("pos.entry", pos.entry)
+      await closePosition(pos, account, rates, currentPrice);
       toast.success(t("positionClosed"));
     } catch (error) {
+      console.error("Error closing position:", error);
       toast.error(t("positionCloseError"));
     }
   }

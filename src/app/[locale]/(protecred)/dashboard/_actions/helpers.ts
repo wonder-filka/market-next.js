@@ -1,5 +1,6 @@
-import { UserAsset } from "@/generated/prisma";
+
 import { LiveQuote } from "@/lib/types";
+import { UserAsset } from "../../../../../../prisma/generated/prisma";
 
 export function onQuotesUpdate(
 	newQuotes: LiveQuote[],

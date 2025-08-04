@@ -41,9 +41,9 @@ export function ReviewsBlock() {
             <Avatar className="mb-3 w-16 h-16">
               <AvatarFallback className="bg-blue-700 text-white text-xl">{review.initials}</AvatarFallback>
             </Avatar>
-            <div className="text-white text-lg font-semibold mb-1">{t(`reviewsBlock.${review.key}.name`)}</div>
-            <div className="text-xs text-blue-300 mb-2">{t(`reviewsBlock.${review.key}.experience`)}</div>
-            <p className="text-gray-200 text-sm">{t(`reviewsBlock.${review.key}.text`)}</p>
+            <div className="text-white text-lg font-semibold mb-1">{t(`reviewsBlock.${review.key}.name` as keyof typeof t)}</div>
+            <div className="text-xs text-blue-300 mb-2">{t(`reviewsBlock.${review.key}.experience` as keyof typeof t)}</div>
+            <p className="text-gray-200 text-sm">{t(`reviewsBlock.${review.key}.text` as keyof typeof t)}</p>
           </div>
         ))}
       </div>

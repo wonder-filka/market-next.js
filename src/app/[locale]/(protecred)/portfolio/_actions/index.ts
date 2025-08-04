@@ -1,8 +1,8 @@
 "use server";
 
-import { Account, Position } from "@/generated/prisma";
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { Account, Position } from "../../../../../../prisma/generated/prisma";
 
 export async function getUserOpenPositions(
 	userId: string

@@ -15,12 +15,21 @@ import { Button } from '@/components/ui/button'
 import { quoteNames } from '@/lib/constants'
 import { useState } from 'react'
 import { TradeDialog } from './trade-dialog'
-import { Account } from '@/generated/prisma'
 import { LoaderCircle } from 'lucide-react'
 import { useQuotesStore } from '@/stores/quotes-store'
+import { Account } from '../../../../../../prisma/generated/prisma'
 
+interface CandlestickProps {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  low: number;
+  high: number;
+  openClose: [number, number];
+}
 
-const Candlestick = (props: any) => {
+const Candlestick = (props: CandlestickProps) => {
   const {
     x,
     y,
@@ -157,7 +166,7 @@ export function QuoteChartPanel({ accounts, userId, rates }: QuoteChartProps) {
                   )
                 }}
               />
-              <Bar dataKey="openClose" shape={<Candlestick />} />
+              <Bar dataKey="openClose" shape={Candlestick as unknown as CandlestickProps} />
             </BarChart>
           </ResponsiveContainer>
         </div>

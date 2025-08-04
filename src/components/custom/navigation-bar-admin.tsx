@@ -12,6 +12,7 @@ import { deleteSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { useTransition } from "react";
 import { useI18n } from "@/locales/client";
+import { Button } from "../ui/button";
 
 export function AdminHeader() {
    const [pending, startTransition] = useTransition()
@@ -62,9 +63,7 @@ export function AdminHeader() {
             <DropdownMenuLabel>Админ</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-
-              <button type="submit" className="w-full text-left" onClick={logout}>{t('logout')}</button>
-
+              <Button type="submit" variant="ghost" disabled={pending} className="w-full" onClick={logout}>{t('logout')}</Button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

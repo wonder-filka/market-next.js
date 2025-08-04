@@ -11,15 +11,13 @@ import { toast } from "sonner"
 import { PositionWithRelations } from "../_actions/types"
 import { useReactTable, getCoreRowModel, ColumnDef, flexRender, ColumnFiltersState, getFilteredRowModel } from "@tanstack/react-table"
 import { format } from "date-fns"
-import { UserAsset } from "@/generated/prisma"
 import { quoteNames } from "@/lib/constants"
 import { socket } from "@/socket"
 import { onQuotesUpdate } from "../../(protecred)/dashboard/_actions/helpers"
 import { LiveQuote } from "@/lib/types"
 import { useQuotesStore } from "@/stores/quotes-store"
 import { LoaderCircle } from "lucide-react"
-
-
+import { UserAsset } from "../../../../../prisma/generated/prisma"
 
 export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[], userAssets: UserAsset[] }) => {
 	const [newSellPrice, setNewSellPrice] = useState("");
@@ -225,7 +223,8 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 			setNewBuyPrice("");
 			setResult(0)
 			setSelectedPosition(null)
-		} catch (error) {
+		} catch (error: unknown) {
+			console.error("Error updating price:", error);
 			toast.error("Ошибка при изменении цены позиции")
 		}
 	}
@@ -281,7 +280,8 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 			setDeleteDialogOpen(false);
 			setDeleteTarget(null);
 			// Если нужно — обновить userAssets (setUserAssets или refetch)
-		} catch (error) {
+		} catch (error: unknown) {
+			console.error("Error deleting price:", error);
 			toast.error("Ошибка при удалении цены");
 		}
 	}

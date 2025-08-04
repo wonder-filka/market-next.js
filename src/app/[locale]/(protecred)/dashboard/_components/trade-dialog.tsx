@@ -5,14 +5,12 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useCurrentLocale, useI18n } from '@/locales/client'
 import { useEffect, useState, useTransition } from 'react'
-import { Account } from '@/generated/prisma'
 import { createTrade } from '../_actions'
 import { toast } from 'sonner'
 import { LoaderCircle } from 'lucide-react'
-import { LiveQuote } from '@/lib/types'
-import { socket } from '@/socket'
 import { quoteNames } from '@/lib/constants'
 import { useQuotesStore } from '@/stores/quotes-store'
+import { Account } from '../../../../../../prisma/generated/prisma'
 
 type TradeDialogProps = {
   isOpen: boolean
@@ -35,7 +33,7 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
   const [loading, setLoading] = useState(false)
   const [currentPrice, setCurrentPrice] = useState(0)
   const { liveQuotes } = useQuotesStore()
-  
+
   useEffect(() => {
     const quote = liveQuotes.find(q => q.symbol === assetName)
     if (!quote) return;
@@ -83,14 +81,13 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
         setAccountId('')
         setLoading(false)
         setCurrentPrice(0)
-      } catch (err: any) {
-
-        toast.error(t(err.message || 'error'), {
+      } catch (err: unknown) {
+        const message = (err as Error).message || t('error')
+        toast.error(message, {
           style: { backgroundColor: 'red', color: 'white' },
         })
         setLoading(false)
       }
-
     })
   }
 

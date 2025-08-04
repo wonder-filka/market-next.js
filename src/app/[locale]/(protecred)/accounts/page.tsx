@@ -17,13 +17,14 @@ export default async function Page() {
 
   const safeRates: Record<string, number> = Object.fromEntries(
     Object.entries(rates)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .filter(([_, v]) => typeof v === "number" && !isNaN(v))
       .map(([k, v]) => [k, v as number])
   );
 
   return (
     <>
-      <WalletInterface wallet={user.wallet} userId={userId} accounts={ user.accounts}  rates={safeRates}/>
+      <WalletInterface wallet={user.wallet} accounts={ user.accounts}  rates={safeRates}/>
       <AccountCard accounts={ user.accounts} userId={userId} rates={safeRates} />
     </>
   );

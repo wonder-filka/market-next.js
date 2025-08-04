@@ -22,7 +22,7 @@ export async function getPostitions() {
 			orderBy: { date: "desc" },
 		});
 		return positions;
-	} catch (e: any) {
+	} catch (e: unknown) {
 		console.error("getReportData error", e);
 		return [];
 	}

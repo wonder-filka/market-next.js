@@ -5,18 +5,17 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useI18n } from "@/locales/client"
 import { formatter, getCurrencySymbol } from "@/lib/helpers"
-import { Account, Wallet } from "@/generated/prisma"
 import { TransferDialog } from "./transfer-dialog"
 import { useState } from "react"
+import { Account, Wallet } from "../../../../../../prisma/generated/prisma"
 
 type WalletProps = {
   wallet: Wallet,
-  userId: string,
   accounts: Account[]
   rates: Record<string, number>
 }
 
-export default function WalletInterface({ wallet, userId, accounts, rates }: WalletProps) {
+export default function WalletInterface({ wallet, accounts, rates }: WalletProps) {
   const t = useI18n()
   const [isTransferOpen, setIsTransferOpen] = useState(false);
   const realAccounts = accounts.filter((acc) => !acc.isDemo)
@@ -63,7 +62,6 @@ export default function WalletInterface({ wallet, userId, accounts, rates }: Wal
         isOpen={isTransferOpen}
         onClose={() => setIsTransferOpen(false)}
         accounts={realAccounts}
-        userId={userId}
         wallet={wallet}
         rates={rates}
       />

@@ -16,7 +16,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
@@ -105,7 +104,7 @@ export function VerificationForm({ isVerifed, userId }: VerificationFormProps) {
                         <SelectGroup>
                           {documentTypes.map((type) => (
                             <SelectItem key={type.value} value={type.value}>
-                              {t(type.value)}
+                              {t(type.value as keyof typeof t) || type.label}
                             </SelectItem>
                           ))}
                         </SelectGroup>

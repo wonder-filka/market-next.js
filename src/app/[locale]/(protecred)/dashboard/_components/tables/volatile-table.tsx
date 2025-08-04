@@ -1,21 +1,10 @@
 'use client'
 
-import { useEffect } from 'react'
 import { useQuoteStore } from '@/stores/chart-store'
 import { cn } from '@/lib/utils'
 import { useCurrentLocale, useI18n } from '@/locales/client'
-import { LiveQuote } from '@/lib/types'
 import { quoteNames } from '@/lib/constants'
-import { socket } from '@/socket'
-import { LoaderCircle } from 'lucide-react'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent } from "@/components/ui/card"
 import { useQuotesStore } from '@/stores/quotes-store'
 

@@ -3,8 +3,8 @@
 import { useI18n } from "@/locales/client"
 import { AccountItem } from "./account-item"
 import { OpenAccount } from "./open-account"
-import { Account } from "@/generated/prisma"
 import { OpenDemoAccount } from "./open-demo-account"
+import { Account } from "../../../../../../prisma/generated/prisma"
 
 type AccountProps = {
   accounts: Account[]
@@ -33,7 +33,7 @@ export function AccountCard({ accounts, userId, rates }: AccountProps) {
       {realAccounts.length > 0 ? (
         <div className="flex flex-col gap-4 my-8">
           {realAccounts.map((account) => (
-            <AccountItem key={account.id} account={account} userId={userId} rates={rates} />
+            <AccountItem key={account.id} account={account} rates={rates} />
           ))}
         </div>
       ) : (
@@ -46,7 +46,7 @@ export function AccountCard({ accounts, userId, rates }: AccountProps) {
           <div className="text-lg font-semibold mb-2">{t("demoAccountsTitle")}</div>
           <div className="flex flex-col gap-4 my-4">
             {demoAccounts.map((account) => (
-              <AccountItem key={account.id} account={account} userId={userId} rates={rates} />
+              <AccountItem key={account.id} account={account} rates={rates} />
             ))}
           </div>
         </>

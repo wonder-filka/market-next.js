@@ -4,21 +4,21 @@ import Link from "next/link";
 import { useI18n } from "@/locales/client";
 import { LangToggle } from "./toggle-language";
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
 import { sidebarItems } from "@/lib/constants";
 import { SidebarTrigger } from "../ui/sidebar";
 import { useTransition } from "react";
 import { deleteSession } from "@/lib/session";
 import { redirect } from "next/navigation";
-import { UpdateUserBasicSettingsInput, UserBasicSettingsInput } from "@/lib/types";
+import { UpdateUserBasicSettingsInput } from "@/lib/types";
+import { Button } from "../ui/button";
 
 
 
-function MenuIcon(props: any) {
+function MenuIcon() {
     return (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
+        <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
             strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="4" x2="20" y1="12" y2="12" />
             <line x1="4" x2="20" y1="6" y2="6" />
@@ -91,9 +91,7 @@ export function ProtectedHeader({ data }: UserBasicSettingsProps) {
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
-
-                            <button type="submit" className="w-full text-left" onClick={logout}>{t('logout')}</button>
-
+                               <Button type="submit" variant="ghost" disabled={pending} className="w-full text-start" onClick={logout}>{t('logout')}</Button>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
