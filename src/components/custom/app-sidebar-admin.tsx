@@ -12,7 +12,7 @@ import {
   SidebarSeparator,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { Folder, LogOut, MessageCircle, Send } from "lucide-react"
+import { Folder, LogOut, MessageCircle } from "lucide-react"
 import Link from "next/link"
 import { useI18n } from "@/locales/client"
 import { useTransition } from "react"
