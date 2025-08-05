@@ -100,15 +100,14 @@ export async function createTrade(input: CreateTradeInput) {
 
 	const isBuy = type === "buy";
 	const tradeType: TradeType = isBuy ? "Buy" : "Sell";
+	if (account.userId !== userId) throw new Error("unauthorized");
 
+	// Проверяем хватает ли денег на счёте (уже в валюте счета!)
+	if (isBuy && account.freeMargin < totalInAccountCurrency) {
+		return { message: "insufficientFunds" };
+	}
 	await prisma.$transaction(async (tx) => {
 		// Проверка что аккаунт принадлежит пользователю
-		if (account.userId !== userId) throw new Error("unauthorized");
-
-		// Проверяем хватает ли денег на счёте (уже в валюте счета!)
-		if (isBuy && account.freeMargin < totalInAccountCurrency) {
-			throw new Error("insufficientFunds");
-		}
 
 		// Записываем Trade (total всегда в USD, для истории/аналитики)
 		const trade = await tx.trade.create({

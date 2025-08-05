@@ -57,7 +57,6 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
       })
     }
     startTransition(async () => {
-      try {
         await createTrade({
           userId,
           account,
@@ -81,13 +80,6 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
         setAccountId('')
         setLoading(false)
         setCurrentPrice(0)
-      } catch (err: unknown) {
-        const message = (err as Error).message || t('error')
-        toast.error(message, {
-          style: { backgroundColor: 'red', color: 'white' },
-        })
-        setLoading(false)
-      }
     })
   }
 
