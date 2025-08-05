@@ -1,5 +1,3 @@
-import { sub } from "date-fns";
-
 export default {
 	home: "Home",
 	services: "Services",

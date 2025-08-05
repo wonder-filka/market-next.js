@@ -14,7 +14,6 @@ export function NewsListBlock() {
   const locale = useCurrentLocale()
   const t = useI18n()
   const [news, setNews] = useState<HackerNewsItem[]>([])
-  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     async function fetchTopNews() {
@@ -39,7 +38,6 @@ export function NewsListBlock() {
         setNews(formatted)
       } catch (e) {
         console.error(e)
-        setError("newsLoadFailed")
       }
     }
 
@@ -51,9 +49,6 @@ export function NewsListBlock() {
       <h2 className="text-3xl md:text-5xl font-bold text-white mb-10">
         {t("newsBlock.title")}
       </h2>
-
-      {error && <div className="text-red-500 font-medium mb-6">{t(error)}</div>}
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {news.map((n, i) => (
           <a
