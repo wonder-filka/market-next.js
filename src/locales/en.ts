@@ -440,4 +440,9 @@ export default {
 	"transferFailed": "Transfer failed",
 	"signupFailed": "Signup failed",
 	"withdrawFailed": "Withdrawal failed",
+	"manualError": "Data retrieval error",
+	"tradeCreationFailed": "Trade creation failed",
+	"updateFailed": "Update failed",
+	"verificationFailed": "Verification failed",
+	"changePasswordFailed": "Change password failed",
 } as const;

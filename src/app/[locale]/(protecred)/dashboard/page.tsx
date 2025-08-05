@@ -10,7 +10,7 @@ export default async function DashboardPage() {
   if (!userId) return null;
 
   const user = await getUser(userId);
-  if (!user) return null;
+  if ("message" in user) return null;
 
   const rates = await getRates([...new Set(user.accounts.map(a => a.currency))]);
   const safeRates: Record<string, number> = Object.fromEntries(

@@ -51,7 +51,6 @@ export async function getQuotes() {
 				};
 			})
 		);
-
 		return result;
 	} catch (error) {
 		console.log(error);
@@ -84,75 +83,79 @@ export async function createTrade(input: CreateTradeInput) {
 		rates,
 	} = input;
 
-	// price всегда в USD (или USDT), quantity — сколько лотов
-	// Надо узнать, сколько это будет в валюте аккаунта
 	const totalUSD = price * quantity;
 
-	// Получаем курс: СКОЛЬКО USD в 1 account.currency (например, EUR)
-	// rates = { EUR: 0.92, ... } — это USD -> EUR
-	let rate = 1;
-	if (account.currency !== "USD") {
-		rate = rates[account.currency];
-		if (!rate) throw new Error("noRate");
+	try {
+		let rate = 1;
+		if (account.currency !== "USD") {
+			rate = rates[account.currency];
+			if (!rate) return { message: "noRate" };
+		}
+		// Сколько нужно списать с аккаунта (например, EUR)
+		const totalInAccountCurrency = totalUSD * rate;
+
+		const isBuy = type === "buy";
+		const tradeType: TradeType = isBuy ? "Buy" : "Sell";
+
+		if (account.userId !== userId)
+			return { message: "tradunauthorizedeCreationFailed" };
+
+		// Проверяем хватает ли денег на счёте (уже в валюте счета!)
+		if (isBuy && account.freeMargin < totalInAccountCurrency) {
+			return { message: "insufficientFunds" };
+		}
+		const positionData = await prisma.$transaction(async (tx) => {
+			// Проверка что аккаунт принадлежит пользователю
+
+			// Записываем Trade (total всегда в USD, для истории/аналитики)
+			await tx.trade.create({
+				data: {
+					userId,
+					accountId: account.id,
+					asset,
+					type: tradeType,
+					quantity,
+					price,
+					total: isBuy ? -totalUSD : totalUSD, // для истории — всегда в USD
+					status: "Completed",
+					startDate: new Date(),
+					endDate: new Date(),
+					takeProfit,
+					stopLoss,
+				},
+			});
+
+			// Создаём новую позицию
+			const position = await tx.position.create({
+				data: {
+					accountId: account.id,
+					userId,
+					asset,
+					type: tradeType,
+					quantity,
+					entry: price,
+					current: 0,
+					pnl: 0,
+					status: "Active",
+					date: new Date(),
+					startDate: new Date(),
+				},
+			});
+
+			// Обновляем баланс аккаунта — списываем именно в валюте аккаунта!
+			await tx.account.update({
+				where: { id: account.id },
+				data: {
+					freeMargin: { increment: -totalInAccountCurrency },
+				},
+			});
+
+			revalidatePath("/dashboard");
+			return position;
+		});
+		return positionData;
+	} catch (error) {
+		console.error("❌ Ошибка при создании сделки:", error);
+		return { message: "tradeCreationFailed" };
 	}
-	// Сколько нужно списать с аккаунта (например, EUR)
-	const totalInAccountCurrency = totalUSD * rate;
-
-	const isBuy = type === "buy";
-	const tradeType: TradeType = isBuy ? "Buy" : "Sell";
-	if (account.userId !== userId) throw new Error("unauthorized");
-
-	// Проверяем хватает ли денег на счёте (уже в валюте счета!)
-	if (isBuy && account.freeMargin < totalInAccountCurrency) {
-		return { message: "insufficientFunds" };
-	}
-	await prisma.$transaction(async (tx) => {
-		// Проверка что аккаунт принадлежит пользователю
-
-		// Записываем Trade (total всегда в USD, для истории/аналитики)
-		const trade = await tx.trade.create({
-			data: {
-				userId,
-				accountId: account.id,
-				asset,
-				type: tradeType,
-				quantity,
-				price,
-				total: isBuy ? -totalUSD : totalUSD, // для истории — всегда в USD
-				status: "Completed",
-				startDate: new Date(),
-				endDate: new Date(),
-				takeProfit,
-				stopLoss,
-			},
-		});
-
-		// Создаём новую позицию
-		await tx.position.create({
-			data: {
-				accountId: account.id,
-				userId,
-				asset,
-				type: tradeType,
-				quantity,
-				entry: price,
-				current: 0,
-				pnl: 0,
-				status: "Active",
-				date: new Date(),
-				startDate: new Date(),
-			},
-		});
-
-		// Обновляем баланс аккаунта — списываем именно в валюте аккаунта!
-		await tx.account.update({
-			where: { id: account.id },
-			data: {
-				freeMargin: { increment: -totalInAccountCurrency },
-			},
-		});
-
-		revalidatePath("/dashboard");
-		return trade;
-	});
 }

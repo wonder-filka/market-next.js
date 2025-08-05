@@ -48,10 +48,16 @@ export function BasicSettingsForm({ data }: UserBasicSettingsProps) {
         id: data.id,
         ...values
       }
-      await updateUserBasicSettings(val)
-      toast.success(t("basicSettingsUpdated"), {
-        style: { color: 'white', backgroundColor: 'green' },
-      })
+      const result = await updateUserBasicSettings(val)
+      if ("message" in result) {
+        toast.error(t("updateFailed"), {
+          style: { color: 'white', backgroundColor: 'red' },
+        })
+      } else {
+        toast.success(t("basicSettingsUpdated"), {
+          style: { color: 'white', backgroundColor: 'green' },
+        })
+      }
     })
   }
 

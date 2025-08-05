@@ -57,17 +57,23 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
       })
     }
     startTransition(async () => {
-        await createTrade({
-          userId,
-          account,
-          asset: assetName,
-          type,
-          price: currentPrice,
-          quantity: parseFloat(quantity),
-          takeProfit: takeProfit ? parseFloat(takeProfit) : null,
-          stopLoss: stopLoss ? parseFloat(stopLoss) : null,
-          rates
+      const result = await createTrade({
+        userId,
+        account,
+        asset: assetName,
+        type,
+        price: currentPrice,
+        quantity: parseFloat(quantity),
+        takeProfit: takeProfit ? parseFloat(takeProfit) : null,
+        stopLoss: stopLoss ? parseFloat(stopLoss) : null,
+        rates
+      })
+
+      if ("message" in result) {
+        toast.error(t("tradeCreationFailed"), {
+          style: { backgroundColor: 'red', color: 'white' },
         })
+      } else {
         // await new Promise(res => setTimeout(res, 5000))
         toast.success(t(type === 'buy' ? 'buySuccess' : 'sellSuccess'), {
           style: { backgroundColor: 'green', color: 'white' },
@@ -80,6 +86,7 @@ export function TradeDialog({ isOpen, onClose, type, assetName, accounts, userId
         setAccountId('')
         setLoading(false)
         setCurrentPrice(0)
+      }
     })
   }
 

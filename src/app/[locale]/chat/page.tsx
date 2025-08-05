@@ -9,10 +9,7 @@ export default async function Page() {
     return null
   }
   const user = await getUser(userId)
-
-  if (!user) {
-    return null
-  }
+  if ("message" in user) return null;
 
   const adminId = process.env.ADMIN_ID;
   if (user.id !== adminId) {

@@ -24,17 +24,16 @@ export const OpenDemoAccount = ({ userId }: OpenAccountProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     startTransition(async () => {
-      try {
-        await createDemoAccount({ userId });
+      const result = await createDemoAccount({ userId });
+      if ("message" in result) {
+        toast.error(t("demoAccountCreationFailed"), {
+          style: { color: 'white', backgroundColor: 'red' }
+        })
+      } else {
         toast.success(t("demoAccountCreated"), {
           style: { color: 'white', backgroundColor: 'green' }
         })
         setOpen(false)
-      } catch (error:unknown) {
-        console.error("[CreateDemoAccount]", error)
-        toast.error(t("demoAccountCreationFailed"), {
-          style: { color: 'white', backgroundColor: 'red' }
-        })
       }
     })
   }

@@ -39,7 +39,6 @@ export async function createSession(userId: string) {
 		sameSite: "lax",
 		path: "/",
 	});
-	redirect("/account");
 }
 
 export async function updateSession() {

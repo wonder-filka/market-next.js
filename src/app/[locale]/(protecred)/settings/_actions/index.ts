@@ -16,16 +16,20 @@ export async function updateUserBasicSettings(
 	input: UpdateUserBasicSettingsInput
 ) {
 	const { id, firstName, lastName, email, phone } = input;
-
-	return prisma.user.update({
-		where: { id },
-		data: {
-			firstName,
-			lastName,
-			email,
-			phone,
-		},
-	});
+	try {
+		return prisma.user.update({
+			where: { id },
+			data: {
+				firstName,
+				lastName,
+				email,
+				phone,
+			},
+		});
+	} catch (error) {
+		console.error("Error updating user settings:", error);
+		return { message: "updateFailed" };
+	}
 }
 
 /**
@@ -34,17 +38,26 @@ export async function updateUserBasicSettings(
  * @returns The user object.
  */
 export async function getUserBasicSettings(userId: string) {
-	return prisma.user.findUnique({
-		where: { id: userId },
-		select: {
-			id: true,
-			firstName: true,
-			lastName: true,
-			email: true,
-			phone: true,
-			isVerifed: true,
-		},
-	});
+	try {
+		const result = await prisma.user.findUnique({
+			where: { id: userId },
+			select: {
+				id: true,
+				firstName: true,
+				lastName: true,
+				email: true,
+				phone: true,
+				isVerifed: true,
+			},
+		});
+		if (!result) {
+			return { message: "userNotFound" };
+		}
+		return result;
+	} catch (error) {
+		console.error("Error fetching user settings:", error);
+		return { message: "manualError" };
+	}
 }
 
 /**
@@ -60,49 +73,53 @@ export const verifyUser = async (
 	documentType: string,
 	file: File
 ) => {
-	let fileBuffer: Buffer;
-	let fileExt = "jpg";
+	try {
+		let fileBuffer: Buffer;
+		let fileExt = "jpg";
 
-	if (file instanceof Buffer) {
-		fileBuffer = file;
-	} else {
-		fileBuffer = Buffer.from(await file.arrayBuffer());
-
-		// Расширенная проверка типа
-		const mimeType = file.type;
-		const match = mimeType.match(/\/(jpeg|jpg|png|webp|heic|heif|pdf)$/);
-
-		if (match) {
-			const ext = match[1];
-			fileExt = ext === "jpeg" ? "jpg" : ext; // нормализуем .jpeg → .jpg
+		if (file instanceof Buffer) {
+			fileBuffer = file;
 		} else {
-			throw new Error("Unsupported file type");
+			fileBuffer = Buffer.from(await file.arrayBuffer());
+
+			// Расширенная проверка типа
+			const mimeType = file.type;
+			const match = mimeType.match(/\/(jpeg|jpg|png|webp|heic|heif|pdf)$/);
+
+			if (match) {
+				const ext = match[1];
+				fileExt = ext === "jpeg" ? "jpg" : ext; // нормализуем .jpeg → .jpg
+			} else {
+				throw new Error("Unsupported file type");
+			}
 		}
+
+		const fileName = `${userId}_${documentType}.${fileExt}`;
+		console.log("fileName", fileName);
+
+		const dirPath = path.join(process.cwd(), "public", "verification");
+		await fs.mkdir(dirPath, { recursive: true });
+
+		const filePath = path.join(dirPath, fileName);
+		await writeFile(filePath, fileBuffer);
+
+		return prisma.user.update({
+			where: { id: userId },
+			data: { isVerifed: true },
+			select: {
+				id: true,
+				isVerifed: true,
+				firstName: true,
+				lastName: true,
+				email: true,
+				phone: true,
+			},
+		});
+	} catch (error) {
+		console.error("Error verifying user:", error);
+		return { message: "verificationFailed" };
 	}
-
-	const fileName = `${userId}_${documentType}.${fileExt}`;
-	console.log("fileName", fileName);
-
-	const dirPath = path.join(process.cwd(), "public", "verification");
-	await fs.mkdir(dirPath, { recursive: true });
-
-	const filePath = path.join(dirPath, fileName);
-	await writeFile(filePath, fileBuffer);
-
-	return prisma.user.update({
-		where: { id: userId },
-		data: { isVerifed: true },
-		select: {
-			id: true,
-			isVerifed: true,
-			firstName: true,
-			lastName: true,
-			email: true,
-			phone: true,
-		},
-	});
 };
-
 
 /**
  * Changes the user's password.
@@ -116,26 +133,30 @@ export const changeUserPassword = async (
 	currentPassword: string,
 	newPassword: string
 ) => {
-	const user = await prisma.user.findUnique({
-		where: { id: userId },
-		select: { passwordHash: true },
-	});
+	try {
+		const user = await prisma.user.findUnique({
+			where: { id: userId },
+			select: { passwordHash: true },
+		});
 
-	if (!user || !user.passwordHash) {
-		throw new Error("User not found");
+		if (!user || !user.passwordHash) {
+			throw new Error("User not found");
+		}
+
+		const isMatch = await bcrypt.compare(currentPassword, user.passwordHash);
+		if (!isMatch) {
+			throw new Error("Current password is incorrect");
+		}
+
+		const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+		await prisma.user.update({
+			where: { id: userId },
+			data: { passwordHash: hashedPassword },
+		});
+		return { success: true };
+	} catch (error) {
+		console.error("Error changing user password:", error);
+		return { message: "passwordChangeFailed" };
 	}
-
-	const isMatch = await bcrypt.compare(currentPassword, user.passwordHash);
-	if (!isMatch) {
-		throw new Error("Current password is incorrect");
-	}
-
-	const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-	await prisma.user.update({
-		where: { id: userId },
-		data: { passwordHash: hashedPassword },
-	});
-
-	return true;
 };

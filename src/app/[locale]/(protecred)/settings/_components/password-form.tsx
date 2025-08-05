@@ -39,11 +39,16 @@ export function ChangePasswordForm({ userId }: ChangePasswordProps) {
 
   const onSubmit: SubmitHandler<PasswordFormValues> = async (values) => {
     startTransition(async () => {
-      await changeUserPassword(userId, values.currentPassword, values.newPassword)
-      console.log("Password update:", values)
-      toast.success(t("passwordUpdated"), {
-        style: { color: 'white', backgroundColor: 'green' },
-      })
+      const result = await changeUserPassword(userId, values.currentPassword, values.newPassword)
+      if ("message" in result) {
+        toast.error(t("changePasswordFailed"), {
+          style: { color: 'white', backgroundColor: 'red' },
+        })
+      } else {
+        toast.success(t("passwordUpdated"), {
+          style: { color: 'white', backgroundColor: 'green' },
+        })
+      }
     })
   }
 

@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { FormErrorMessage } from "@/components/custom/form-error-message";
+import { redirect } from "next/navigation";
 
 
 export const RegistrationForm = () => {
@@ -50,6 +51,13 @@ export const RegistrationForm = () => {
                     type: "manual",
                     message: "signupFailed",
                 });
+            } else if (result?.message) {
+                form.setError("email", {
+                    type: "manual",
+                    message: "manualError",
+                });
+            } else {
+                redirect("/account");
             }
         })
     }

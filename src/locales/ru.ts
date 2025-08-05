@@ -442,4 +442,9 @@ export default {
 	"transferFailed": "Перевод не удался",
 	"signupFailed": "Регистрация не удалась",
 	"withdrawFailed": "Вывод средств не удался",
+	"manualError": "Ошибка получения данных",
+	"tradeCreationFailed": "Не удалось создать сделку",
+	"updateFailed": "Не удалось обновить данные",
+	"verificationFailed": "Ошибка верификации",
+	"changePasswordFailed": "Не удалось изменить пароль",
 } as const;

@@ -12,6 +12,7 @@ import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/
 import { Button } from "@/components/ui/button";
 import { login } from "../_actions";
 import { FormErrorMessage } from "@/components/custom/form-error-message";
+import { redirect } from "next/navigation";
 
 export const LoginForm = () => {
     const [pending, startTransition] = useTransition();
@@ -33,6 +34,13 @@ export const LoginForm = () => {
                     type: 'manual',
                     message: "incorrectCredentials",
                 });
+            } else if (result?.message) {
+               form.setError('email', {
+                    type: 'manual',
+                    message: "manualError",
+                });
+            } else {
+                redirect("/account");
             }
         });
     };

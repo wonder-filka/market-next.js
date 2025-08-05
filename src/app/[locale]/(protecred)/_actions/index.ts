@@ -27,6 +27,6 @@ export async function getUserAssets(userId: string): Promise<UserAsset[]> {
     return assets;
   } catch (error) {
     console.error("Ошибка получения активов пользователя:", error);
-    throw new Error("Ошибка получения активов пользователя");
+    return []
   }
 }

@@ -88,10 +88,13 @@ export async function getUser(userId: string) {
 			where: { id: userId },
 			include: { wallet: true, accounts: true },
 		});
+		if (!user) {
+			return { message: "userNotFound" };
+		}
 		return user;
 	} catch (error) {
 		console.error("[GetUser]", error);
-		throw new Error("userFetchFailed");
+		return { message: "userFetchFailed" };
 	}
 }
 
@@ -142,33 +145,34 @@ type CreateDemoAccountInput = {
 };
 
 export async function createDemoAccount({ userId }: CreateDemoAccountInput) {
-	if (!userId) {
-		throw new Error("User ID is required");
+	try {
+		if (!userId) {
+			throw new Error("User ID is required");
+		}
+		const existingDemo = await prisma.account.findFirst({
+			where: { userId, isDemo: true },
+		});
+
+		if (existingDemo) {
+			throw new Error("Demo account already exists");
+		}
+
+		const account = await prisma.account.create({
+			data: {
+				userId,
+				balance: 200000,
+				currency: "USD",
+				isDemo: true,
+				freeMargin: 200000, // если есть поле freeMargin
+				mt5Id: genMt5Id(),
+				type: "demo",
+				// добавь здесь другие нужные поля, например, mt5Id, если нужно
+			},
+		});
+		revalidatePath("/accounts");
+		return account;
+	} catch (error) {
+		console.error("[CreateDemoAccount]", error);
+		return { message: "demoAccountCreationFailed" };
 	}
-
-	const existingDemo = await prisma.account.findFirst({
-		where: { userId, isDemo: true },
-	});
-
-	if (existingDemo) {
-		throw new Error("Demo account already exists");
-	}
-
-	const account = await prisma.account.create({
-		data: {
-			userId,
-			balance: 200000,
-			currency: "USD",
-			isDemo: true,
-			freeMargin: 200000, // если есть поле freeMargin
-			mt5Id: genMt5Id(),
-			type: "demo",
-			// добавь здесь другие нужные поля, например, mt5Id, если нужно
-		},
-	});
-
-	// Можно сбросить кеш, если используется SSR/ISR:
-	revalidatePath("/accounts");
-
-	return account;
 }

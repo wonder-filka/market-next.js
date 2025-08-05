@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { verifyUser } from "../_actions"
+import { toast } from "sonner"
 
 const documentTypes = [
   { value: "passport", label: "Passport" },
@@ -57,13 +58,13 @@ export function VerificationForm({ isVerifed, userId }: VerificationFormProps) {
     startTransition(async () => {
       const file = data.file?.[0]
       if (!file) return
-
-      try {
-        const updatedUser = await verifyUser(userId, data.documentType, file)
-        console.log("✅ Verification success:", updatedUser)
+      const updatedUser = await verifyUser(userId, data.documentType, file)
+      if ("message" in updatedUser) {
+        toast.error(t("verificationFailed"), {
+          style: { color: 'white', backgroundColor: 'red' },
+        })
+      } else {
         setIsVerifedUser(true)
-      } catch (err) {
-        console.error("❌ Verification error:", err)
       }
     })
   }

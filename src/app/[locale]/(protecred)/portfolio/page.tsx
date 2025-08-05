@@ -12,7 +12,7 @@ export default async function PortfolioPage() {
   if (!userId) return null;
 
   const user = await getUser(userId);
-  if (!user) return null;
+  if ("message" in user) return null;
 
   const positions = await getUserOpenPositions(userId)
   const rates = await getRates([...new Set(user.accounts.map(a => a.currency))]);
@@ -28,8 +28,8 @@ export default async function PortfolioPage() {
     <div className="p-8 flex flex-col gap-8">
       <SummaryCards balance={user?.wallet.balance}
         openPositions={positions}
-     />
-   
+      />
+
       <ActionsPanel />
       <PositionsTable
         positions={positions}

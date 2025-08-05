@@ -8,6 +8,7 @@ import { z } from "zod";
 import bcrypt from "bcryptjs";
 
 export async function signup(data: z.infer<typeof RegistrationSchema>) {
+	try {
 		const parsed = RegistrationSchema.safeParse(data);
 		if (!parsed.success) {
 			throw new Error("Invalid form data");
@@ -44,4 +45,8 @@ export async function signup(data: z.infer<typeof RegistrationSchema>) {
 			return { message: "signupFailed" };
 		}
 		await createSession(user.id);
+	} catch (error) {
+		console.error(error);
+		return { message: "Error db" };
+	}
 }
