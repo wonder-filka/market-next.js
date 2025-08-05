@@ -34,18 +34,23 @@ export const RegistrationForm = () => {
 
     const onSubmit: SubmitHandler<z.infer<typeof RegistrationSchema>> = async data => {
         startTransition(async () => {
-                const result = await signup(data);
-                if (result?.message === "emailExists") {
-                    form.setError("email", {
-                        type: "manual",
-                        message: "emailExists",
-                    });
-                } else if (result?.message === "phoneExists") {
-                    form.setError("phone", {
-                        type: "manual",
-                        message: "phoneExists",
-                    });
-                }
+            const result = await signup(data);
+            if (result?.message === "emailExists") {
+                form.setError("email", {
+                    type: "manual",
+                    message: "emailExists",
+                });
+            } else if (result?.message === "phoneExists") {
+                form.setError("phone", {
+                    type: "manual",
+                    message: "phoneExists",
+                });
+            } else if (result?.message === "signupFailed") {
+                form.setError("email", {
+                    type: "manual",
+                    message: "signupFailed",
+                });
+            }
         })
     }
 

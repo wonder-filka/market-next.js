@@ -40,5 +40,8 @@ export async function signup(data: z.infer<typeof RegistrationSchema>) {
 				},
 			},
 		});
+		if (!user) {
+			return { message: "signupFailed" };
+		}
 		await createSession(user.id);
 }

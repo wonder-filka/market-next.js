@@ -17,7 +17,6 @@ interface AccountProps {
   rates: Record<string, number>
 }
 
-
 export function AccountItem({ account, rates }: AccountProps) {
   const t = useI18n()
   const router = useRouter()
@@ -49,12 +48,15 @@ export function AccountItem({ account, rates }: AccountProps) {
       return
     }
     setIsLoading(true)
-    await withdrawFromAccountToWallet({ accountId: account.id, amount: num, rateToUSD })
-    toast.success(t('withdrawSuccess'))
-    setDialogOpen(false)
-    setWithdrawAmount("")
-    router.refresh()
-    setIsLoading(false)
+    const result = await withdrawFromAccountToWallet({ accountId: account.id, amount: num, rateToUSD })
+    if (result?.message === "withdrawFailed") {
+      toast.error(t('withdrawFailed'))
+    } else {
+      toast.success(t('withdrawSuccess'))
+      setDialogOpen(false)
+      setWithdrawAmount("")
+      setIsLoading(false)
+    }
   }
 
 

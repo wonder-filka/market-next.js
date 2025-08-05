@@ -12,10 +12,11 @@ function genMt5Id() {
 	return `mt${num}`; // например: "mt004582371"
 }
 
-export async function createAccount(currency: string, userId: string) {
+export async function createAccount(
+	currency: string,
+	userId: string
+): Promise<Account | { message: string }> {
 	try {
-		if (!userId) throw new Error("Unauthorized");
-
 		const account = await prisma.account.create({
 			data: {
 				userId,
@@ -27,7 +28,7 @@ export async function createAccount(currency: string, userId: string) {
 				freeMargin: 0,
 			},
 		});
-
+		console.log("✅ Account created:", account);
 		revalidatePath("/accounts");
 		return account;
 	} catch (error) {
@@ -103,32 +104,37 @@ export async function withdrawFromAccountToWallet({
 	amount: number;
 	rateToUSD: number;
 }) {
-	const account = await prisma.account.findUnique({
-		where: { id: accountId },
-		include: { user: { include: { wallet: true } } },
-	});
-
-	if (!account) throw new Error("accountNotFound");
-	const wallet = account.user.wallet;
-	if (account.freeMargin < amount) throw new Error("insufficientFunds");
-	const amountInUSD = +(amount * (rateToUSD ?? 1)).toFixed(2);
-
-	await prisma.$transaction([
-		prisma.account.update({
+	try {
+		const account = await prisma.account.findUnique({
 			where: { id: accountId },
-			data: {
-				balance: account.balance - amount,
-				freeMargin: account.freeMargin - amount,
-			},
-		}),
-		prisma.wallet.update({
-			where: { id: wallet.id },
-			data: {
-				balance: wallet.balance + amountInUSD,
-			},
-		}),
-	]);
-	revalidatePath("/accounts");
+			include: { user: { include: { wallet: true } } },
+		});
+
+		if (!account) throw new Error("accountNotFound");
+		const wallet = account.user.wallet;
+		if (account.freeMargin < amount) throw new Error("insufficientFunds");
+		const amountInUSD = +(amount * (rateToUSD ?? 1)).toFixed(2);
+
+		await prisma.$transaction([
+			prisma.account.update({
+				where: { id: accountId },
+				data: {
+					balance: account.balance - amount,
+					freeMargin: account.freeMargin - amount,
+				},
+			}),
+			prisma.wallet.update({
+				where: { id: wallet.id },
+				data: {
+					balance: wallet.balance + amountInUSD,
+				},
+			}),
+		]);
+		revalidatePath("/accounts");
+	} catch (error) {
+		console.error("[WithdrawFromAccountToWallet]", error);
+		return { message: "withdrawFailed" };
+	}
 }
 
 type CreateDemoAccountInput = {

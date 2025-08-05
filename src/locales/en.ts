@@ -438,4 +438,6 @@ export default {
 		cta: "Start learning",
 	},
 	"transferFailed": "Transfer failed",
+	"signupFailed": "Signup failed",
+	"withdrawFailed": "Withdrawal failed",
 } as const;

@@ -33,19 +33,19 @@ export const OpenAccount = ({ userId }: OpenAccountProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     startTransition(async () => {
-      try {
-        await createAccount(currency, userId)
+      const result = await createAccount(currency, userId)
+      if ("id" in result) {
         toast.success(t("accountCreated"), {
           style: { color: 'white', backgroundColor: 'green' }
         })
-        setOpen(false)
-        setCurrency("")
-      } catch (error: unknown) {
-        console.error("[CreateAccount]", error)
+
+      } else {
         toast.error(t("accountCreationFailed"), {
           style: { color: 'white', backgroundColor: 'red' }
         })
       }
+      setOpen(false)
+      setCurrency("")
     })
   }
 

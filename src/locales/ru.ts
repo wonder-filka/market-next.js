@@ -440,4 +440,6 @@ export default {
 		cta: "Начать обучение",
 	},
 	"transferFailed": "Перевод не удался",
+	"signupFailed": "Регистрация не удалась",
+	"withdrawFailed": "Вывод средств не удался",
 } as const;

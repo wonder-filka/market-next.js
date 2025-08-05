@@ -56,7 +56,6 @@ export function TransferDialog({ isOpen, onClose, accounts, wallet, rates }: Tra
 				toast.success(t('transferSuccess'), {
 					style: { backgroundColor: 'green', color: 'white' }
 				})
-
 				onClose()
 				setAmount('')
 				setAccountId('')

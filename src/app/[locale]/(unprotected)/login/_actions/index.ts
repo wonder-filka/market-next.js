@@ -9,7 +9,6 @@ import { z } from "zod";
 export async function login(data: z.infer<typeof LoginSchema>) {
 	const parsed = LoginSchema.safeParse(data);
 	if (!parsed.success) {
-    console.error("Invalid form data", parsed.error);
 		return { message: "Invalid form data" };
 	}
 
