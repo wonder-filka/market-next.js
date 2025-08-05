@@ -16,7 +16,7 @@ export default async function Layout({
   const userId = await getSessionUserId()
   if (!userId) return
   const userBasicSettings = await getUserBasicSettings(userId)
-  if (!userBasicSettings) return
+  if ("message" in userBasicSettings) return
   	 const adminId = process.env.ADMIN_ID;
   return (
     <SidebarProvider defaultOpen={true}>

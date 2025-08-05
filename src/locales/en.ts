@@ -1,3 +1,5 @@
+import { sub } from "date-fns";
+
 export default {
 	home: "Home",
 	services: "Services",
@@ -437,12 +439,78 @@ export default {
 		],
 		cta: "Start learning",
 	},
-	"transferFailed": "Transfer failed",
-	"signupFailed": "Signup failed",
-	"withdrawFailed": "Withdrawal failed",
-	"manualError": "Data retrieval error",
-	"tradeCreationFailed": "Trade creation failed",
-	"updateFailed": "Update failed",
-	"verificationFailed": "Verification failed",
-	"changePasswordFailed": "Change password failed",
+	transferFailed: "Transfer failed",
+	signupFailed: "Signup failed",
+	withdrawFailed: "Withdrawal failed",
+	manualError: "Data retrieval error",
+	tradeCreationFailed: "Trade creation failed",
+	updateFailed: "Update failed",
+	verificationFailed: "Verification failed",
+	changePasswordFailed: "Change password failed",
+	faqTitle: "Frequently Asked Questions",
+	"faqList.0.q": "How do I register on the platform?",
+	"faqList.0.a":
+		"Click “Register” in the top menu, fill out the form, and confirm your email. After that, you can start trading right away.",
+	"faqList.1.q": "When and how can I manage my funds?",
+	"faqList.1.a":
+		"Our platform operates 24/7, allowing you to manage your funds whenever it’s convenient for you. Everything is designed to be as simple and transparent as possible.",
+	"faqList.2.q": "What are the deposit and withdrawal methods?",
+	"faqList.2.a":
+		"You can deposit using a bank card, e-wallets, or cryptocurrency. Withdrawals are available to a card, wallet, or exchange—whatever is convenient for you.",
+	"faqList.3.q": "Are there any commissions on trades?",
+	"faqList.3.a":
+		"No! All trades are commission-free. We offer transparency and favorable conditions.",
+	"faqList.4.q": "What if I have a question about the platform?",
+	"faqList.4.a":
+		"Write to our online support chat — we are available 24/7 and ready to help with any question.",
+	"faqList.5.q": "How can I get trader support?",
+	"faqList.5.a":
+		"After registration, you get personal support for two weeks—our specialists will help you with your first trades and explain all the details.",
+	aboutBlock: {
+		intro: {
+			title: "About Our Company",
+			description:
+				"We create secure and user-friendly financial solutions for people around the world. Our priorities are trust, speed, and cutting-edge technology.",
+		},
+		values: {
+			title: "Our Core Values",
+			innovation: {
+				title: "Innovation",
+				desc: "We constantly improve the platform and implement modern technologies.",
+			},
+			security: {
+				title: "Security",
+				desc: "Your data and funds are under reliable protection.",
+			},
+			speed: {
+				title: "Speed",
+				desc: "Instant transactions and fast support for every user.",
+			},
+		},
+		team: {
+			title: "Our Team",
+			ceo: "Chief Executive Officer",
+			cto: "Chief Technology Officer",
+			support: "Head of Support",
+		},
+		stats: {
+			title: "Trusted by Thousands",
+			rating: "Average Rating",
+			countries: "Countries Covered",
+			uptime: "Guaranteed Uptime",
+		},
+	},
+	newsBlock: {
+		title: "Latest Trading News",
+	},
+	contactsBlock: {
+		title: "Contact Us",
+		emailTitle: "Email",
+		socialTitle: "Social Media",
+		addressTitle: "Our Address",
+		address: "1 Example St., Office 101, Moscow",
+		feedbackTitle: "Feedback",
+	},
+	message: "Message",
+	submit: "Submit",
 } as const;
