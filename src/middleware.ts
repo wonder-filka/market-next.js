@@ -14,6 +14,8 @@ const protectedRoutes = [
 	"/en/report",
 	"/en/accounts",
 	"/ru/accounts",
+	"/en/accounts/deposit",
+	"/ru/accounts/deposit",
 	"/en/portfolio",
 	"/ru/portfolio",
 	"/en/settings",
@@ -47,6 +49,8 @@ export async function middleware(request: NextRequest) {
 	const adminSupportRoutesPrefixes = [
 		"/ru/admin",
 		"/en/admin",
+		"/ru/wallets_ad",
+		"/en/wallets_ad",
 		"/ru/chat",
 		"/en/chat",
 		// These need to specifically check for startsWith for dynamic segments
@@ -58,12 +62,9 @@ export async function middleware(request: NextRequest) {
 		(prefix) => path.startsWith(prefix) || path === prefix
 	);
 
-	 const adminId = process.env.ADMIN_ID;
+	const adminId = process.env.ADMIN_ID;
 	if (requiresAdminSupportAuth) {
-		if (
-			!session?.userId ||
-			(session.userId !== adminId)
-		) {
+		if (!session?.userId || session.userId !== adminId) {
 			const redirectToHome = NextResponse.redirect(
 				new URL("/", request.nextUrl)
 			);

@@ -149,7 +149,9 @@ export function PositionsTable({ positions, userId, accounts, rates, userAssets 
               <TableHead>{t("account")}</TableHead>
               <TableHead>{t("tableShares")}</TableHead>
               <TableHead>{t("tablePrice")}</TableHead>
+              <TableHead>{t("tableTradeSumm")}</TableHead>
               <TableHead>{t("tableCurrentPrice")}</TableHead>
+
               <TableHead>{t("tableChange")}</TableHead>
               <TableHead>{t("tableGain")}</TableHead>
               <TableHead>{t("tableReturn")}</TableHead>
@@ -189,6 +191,7 @@ export function PositionsTable({ positions, userId, accounts, rates, userAssets 
                   <TableCell>{displayMt5Id}</TableCell>
                   <TableCell>{pos.quantity}</TableCell>
                   <TableCell>{(pos.entry)}</TableCell>
+                  <TableCell>{(pos.quantity * pos.entry)}</TableCell>
                   <TableCell>{(currentPrice)}</TableCell>
                   <TableCell>
                     <span className={`flex items-center gap-1 font-medium ${(currentPrice - pos.entry) >= 0 ? "text-green-500" : "text-red-500"}`}>
@@ -196,6 +199,7 @@ export function PositionsTable({ positions, userId, accounts, rates, userAssets 
                       {(currentPrice - pos.entry)}
                     </span>
                   </TableCell>
+
                   <TableCell>
                     <span className={`flex items-center gap-1 font-medium ${pnl >= 0 ? "text-green-500" : "text-red-500"}`}>
                       {pnl >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={16} />}

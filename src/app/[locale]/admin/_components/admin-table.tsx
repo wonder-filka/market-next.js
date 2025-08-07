@@ -109,6 +109,11 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 			cell: ({ row }) => row.original.entry,
 		},
 		{
+			accessorKey: "tableTradeSumm",
+			header: () => "Сумма сделки",
+			cell: ({ row }) => row.original.quantity * row.original.entry,
+		},
+		{
 			accessorKey: "currentSell",
 			header: () => "Цена прод.",
 			cell: ({ row }) => {
@@ -306,14 +311,12 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 				header: () => null,
 				cell: ({ row }) => {
 					const item = row.original
-					return item.status === "Active" ? (
-						<Button
+					return <Button
 							variant="link"
 							onClick={() => handleOpenDialog(item)}
 						>
 							Редакт.
 						</Button>
-					) : null
 				},
 			},
 			{
@@ -321,8 +324,7 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 				header: () => "Удалить цену",
 				cell: ({ row }) => {
 					const pos = row.original;
-					return pos.status === "Active" ? (
-						<Button
+					return <Button
 							variant="link"
 							size="sm"
 							className="text-red-500"
@@ -330,7 +332,6 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 						>
 							Удалить
 						</Button>
-					) : null;
 				},
 			}
 		],

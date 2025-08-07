@@ -44,6 +44,9 @@ export function AdminHeader() {
               <Link href="/chat" >
                 <span className="">{t("chat")}</span>
               </Link>
+                   <Link href="/wallets_ad" >
+                <span className="">Кошельки</span>
+              </Link>
             </div>
           </SheetHeader>
           <SheetFooter>

@@ -129,6 +129,7 @@ export default {
 	tableTradeType: "Type",
 	tableTradeQuantity: "Quantity",
 	tableTradePrice: "Price/Unit",
+	tableTradeSumm: "Trade Amount",
 	tableTradeTotal: "Total",
 	tableTradeStatus: "Status",
 

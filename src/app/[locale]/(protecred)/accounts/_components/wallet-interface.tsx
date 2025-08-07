@@ -8,6 +8,7 @@ import { formatter, getCurrencySymbol } from "@/lib/helpers"
 import { TransferDialog } from "./transfer-dialog"
 import { useState } from "react"
 import { Account, Wallet } from "../../../../../../prisma/generated/prisma"
+import { useRouter } from "next/navigation"
 
 type WalletProps = {
   wallet: Wallet,
@@ -19,7 +20,7 @@ export default function WalletInterface({ wallet, accounts, rates }: WalletProps
   const t = useI18n()
   const [isTransferOpen, setIsTransferOpen] = useState(false);
   const realAccounts = accounts.filter((acc) => !acc.isDemo)
-
+const router = useRouter()
   return (
     <div className="flex flex-col gap-4 p-8">
       <div className="flex justify-start">
@@ -51,7 +52,7 @@ export default function WalletInterface({ wallet, accounts, rates }: WalletProps
               <ArrowUpRight className="h-4 w-4" />
               {t("transferFunds")}
             </Button>
-            <Button>
+            <Button onClick={() => router.push('/accounts/deposit')}>
               <Plus className="h-4 w-4" />
               {t("depositFunds")}
             </Button>

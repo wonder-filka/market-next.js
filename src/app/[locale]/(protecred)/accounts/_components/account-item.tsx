@@ -86,7 +86,7 @@ export function AccountItem({ account, rates }: AccountProps) {
                 <Button variant="default" onClick={() => router.push('/dashboard')}>{t('trade')}</Button>
               </div>
               : <>
-                <Button variant="outline">{t('deposit')}</Button>
+                <Button variant="outline" onClick={() => router.push('/accounts/deposit')}>{t('deposit')}</Button>
                 <Button variant="outline" onClick={handleDialogOpen}>{t('withdrawToWallet')}</Button>
                 <Button variant="default" onClick={() => router.push('/dashboard')}>{t('trade')}</Button>
               </>}

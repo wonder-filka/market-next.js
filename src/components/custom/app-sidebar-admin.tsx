@@ -12,7 +12,7 @@ import {
   SidebarSeparator,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { Folder, LogOut, MessageCircle } from "lucide-react"
+import { Folder, LogOut, MessageCircle, Wallet } from "lucide-react"
 import Link from "next/link"
 import { useI18n } from "@/locales/client"
 import { useTransition } from "react"
@@ -82,6 +82,15 @@ export function AppSidebarAdmin({ userId, ...props }: React.ComponentProps<typeo
                   <Link href="/chat" >
                     <MessageCircle />
                     <span className="">{t("chat")}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+                <SidebarMenuItem >
+                <SidebarMenuButton asChild 
+             >
+                  <Link href="/wallets_ad" >
+                    <Wallet />
+                    <span className="">Кошельки</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

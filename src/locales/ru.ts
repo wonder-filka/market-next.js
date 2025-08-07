@@ -130,6 +130,7 @@ export default {
 	tableTradeType: "Тип",
 	tableTradeQuantity: "Количество",
 	tableTradePrice: "Цена/ед.",
+	tableTradeSumm: "Сумма сделки",
 	tableTradeTotal: "Итого",
 	tableTradeStatus: "Статус",
 
