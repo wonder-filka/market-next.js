@@ -18,10 +18,9 @@ type TopUpDialogProps = {
 	open: boolean
 	onOpenChange: (v: boolean) => void
 	wallet: WalletWithUser
-	onSuccess?: () => void
 }
 
-export function TopUpWalletDialog({ open, onOpenChange, wallet, onSuccess }: TopUpDialogProps) {
+export function TopUpWalletDialog({ open, onOpenChange, wallet }: TopUpDialogProps) {
 	const [amount, setAmount] = useState("")
 	const [loading, setLoading] = useState(false)
 
@@ -34,7 +33,6 @@ export function TopUpWalletDialog({ open, onOpenChange, wallet, onSuccess }: Top
 		if ("message" in result) {
 			setAmount("")
 			onOpenChange(false)
-			onSuccess?.()
 			toast.error("Ошибка при пополнении")
 		} else {
 			toast.success("Баланс успешно пополнен")
