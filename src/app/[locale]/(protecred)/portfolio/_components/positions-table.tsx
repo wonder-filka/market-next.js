@@ -196,14 +196,14 @@ export function PositionsTable({ positions, userId, accounts, rates, userAssets 
                   <TableCell>
                     <span className={`flex items-center gap-1 font-medium ${(currentPrice - pos.entry) >= 0 ? "text-green-500" : "text-red-500"}`}>
                       {(currentPrice - pos.entry) >= 0 ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
-                      {(currentPrice - pos.entry)}
+                      {(currentPrice - pos.entry).toFixed(3)}
                     </span>
                   </TableCell>
 
                   <TableCell>
                     <span className={`flex items-center gap-1 font-medium ${pnl >= 0 ? "text-green-500" : "text-red-500"}`}>
                       {pnl >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={16} />}
-                      {(pnl.toFixed(8))}
+                      {(pnl.toFixed(3))}
                     </span>
                   </TableCell>
                   <TableCell className={isUp ? "text-green-600" : "text-red-600"}>

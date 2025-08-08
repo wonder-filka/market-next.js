@@ -13,7 +13,7 @@ export default async function Page() {
   const user = await getUser(userId);
   if ("message" in user) return null;
 
-  const rates = await getRates([...new Set(user.accounts.map(a => a.currency))]);
+  const rates = await getRates();
 
   const safeRates: Record<string, number> = Object.fromEntries(
     Object.entries(rates)

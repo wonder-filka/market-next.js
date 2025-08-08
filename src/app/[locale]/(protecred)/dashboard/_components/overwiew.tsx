@@ -35,7 +35,7 @@ export function Overview({
 		}
 		const onQuotesUpdates = (newQuotes: LiveQuote[]) => {
 			onQuotesUpdate(newQuotes, userAssets, setLiveQuotes);
-			console.log('Quotes updated:', newQuotes);
+		
 		};
 
 		socket.on("quotes-update", onQuotesUpdates);

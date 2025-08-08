@@ -15,7 +15,7 @@ export default async function PortfolioPage() {
   if ("message" in user) return null;
 
   const positions = await getUserOpenPositions(userId)
-  const rates = await getRates([...new Set(user.accounts.map(a => a.currency))]);
+  const rates = await getRates();
   const userAssets = await getUserAssets(userId);
 
   const safeRates: Record<string, number> = Object.fromEntries(
