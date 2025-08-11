@@ -3,6 +3,7 @@ import { getSessionUserId } from "@/lib/session";
 import { getUser } from "../(protecred)/accounts/_actions";
 import { getAllWallets } from "./_actions";
 import { WalletsTable } from "./_components/wallets-table";
+import { getRates } from "@/lib/rates";
 
 
 export default async function Page() {
@@ -19,11 +20,18 @@ export default async function Page() {
 	}
 
 	const info = await getAllWallets()
+	const rates = await getRates();
 
+	const safeRates: Record<string, number> = Object.fromEntries(
+		Object.entries(rates)
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			.filter(([_, v]) => typeof v === "number" && !isNaN(v))
+			.map(([k, v]) => [k, v as number])
+	);
 	return (
 		<main className="p-4 space-y-4">
 			<div className="grid grid-cols-1">
-				<WalletsTable wallets={info} />
+				<WalletsTable wallets={info} safeRates={safeRates}/>
 			</div>
 		</main>
 

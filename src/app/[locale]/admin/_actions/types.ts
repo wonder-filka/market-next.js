@@ -34,7 +34,7 @@ export interface PositionWithRelations {
     passwordHash: string;
     createdAt: Date;
     updatedAt: Date;
-    isVerifed: boolean;
+    verificationStatus: VerificationStatus;
     walletId: string;
     wallet: {
       id: string;
@@ -59,3 +59,8 @@ export interface PositionWithRelations {
   };
 }
 
+enum VerificationStatus {
+  UNVERIFIED, // не верифицировано
+  VERIFIED, // верифицировано
+  PENDING // в процессе верификации
+}

@@ -9,24 +9,24 @@ datasource db {
 }
 
 model User {
-  id           String           @id @default(uuid())
-  email        String           @unique
-  phone        String           @unique
-  firstName    String
-  lastName     String
-  passwordHash String
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
-  isVerifed    Boolean          @default(false)
-  walletId     String           @unique
-  accounts     Account[]
-  CryptoWallet CryptoWallet[]
-  positions    Position[]
-  supportChats SupportChat[]
-  sentMessages SupportMessage[] @relation("SenderMessages")
-  trades       Trade[]
-  wallet       Wallet           @relation(fields: [walletId], references: [id])
-  assets       UserAsset[]
+  id                 String             @id @default(uuid())
+  email              String             @unique
+  phone              String             @unique
+  firstName          String
+  lastName           String
+  passwordHash       String
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  walletId           String             @unique
+  verificationStatus VerificationStatus @default(UNVERIFIED)
+  accounts           Account[]
+  CryptoWallet       CryptoWallet[]
+  positions          Position[]
+  supportChats       SupportChat[]
+  sentMessages       SupportMessage[]   @relation("SenderMessages")
+  trades             Trade[]
+  wallet             Wallet             @relation(fields: [walletId], references: [id])
+  assets             UserAsset[]
 }
 
 model SupportChat {
@@ -183,4 +183,10 @@ enum CryptoCurrency {
   BTC
   USDT
   ETH
+}
+
+enum VerificationStatus {
+  UNVERIFIED
+  VERIFIED
+  PENDING
 }

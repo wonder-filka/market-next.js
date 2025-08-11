@@ -1,19 +1,23 @@
 "use server";
 
 import { prisma } from "@/lib/db";
-import { User, Wallet } from "../../../../../prisma/generated/prisma";
+import { Account, User, Wallet } from "../../../../../prisma/generated/prisma";
 import { revalidatePath } from "next/cache";
 
 /**
  * Получить все кошельки всех пользователей
  */
 export async function getAllWallets(): Promise<
-	(Wallet & { user: User | null })[]
+	(Wallet & { user: (User & { accounts: Account[] }) | null })[]
 > {
 	try {
 		const wallets = await prisma.wallet.findMany({
 			include: {
-				user: true, // чтобы сразу получать и юзера, если нужно
+				user: {
+					include: {
+						accounts: true
+					}
+				}, 
 			},
 			orderBy: { createdAt: "desc" }, // опционально: сортировка по дате
 		});

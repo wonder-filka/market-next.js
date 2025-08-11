@@ -35,6 +35,7 @@ export function TopUpWalletDialog({ open, onOpenChange, wallet }: TopUpDialogPro
 			onOpenChange(false)
 			toast.error("Ошибка при пополнении")
 		} else {
+			onOpenChange(false)
 			toast.success("Баланс успешно пополнен")
 		}
 		setLoading(false)

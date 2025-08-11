@@ -20,7 +20,7 @@ export default async function SettingsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <BasicSettingsForm data={userBasicSettings} />
         <ChangePasswordForm userId={userId}/>
-        <VerificationForm isVerifed={userBasicSettings.isVerifed} userId={userId}/>
+        <VerificationForm verificationStatus={userBasicSettings.verificationStatus} userId={userId}/>
       </div>
 
     </div>

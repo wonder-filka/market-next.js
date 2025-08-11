@@ -8,21 +8,23 @@ import {
 import { Input } from "@/components/ui/input"
 import { useReactTable, getCoreRowModel, ColumnDef, flexRender, ColumnFiltersState, getFilteredRowModel } from "@tanstack/react-table"
 import { format } from "date-fns"
-import { Wallet, User } from "../../../../../prisma/generated/prisma"
+import { Wallet, User, Account } from "../../../../../prisma/generated/prisma"
 import { Button } from "@/components/ui/button"
 import { TopUpWalletDialog } from "./top-up-wallet-dialog"
+import { AccountsDialog } from "./accounts-dialog"
 
-type WalletWithUser = Wallet & {
-	user: User | null;
-}
+type WalletWithUserAndAccounts = Wallet & {
+	user: (User & { accounts: Account[] }) | null;
+};
 
-export const WalletsTable = ({ wallets }: { wallets: WalletWithUser[] }) => {
+export const WalletsTable = ({ wallets, safeRates }: { wallets: WalletWithUserAndAccounts[], safeRates: Record<string, number>; }) => {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 	const [globalFilter, setGlobalFilter] = useState('')
 	const [topUpDialogOpen, setTopUpDialogOpen] = useState(false)
-	const [selectedWallet, setSelectedWallet] = useState<WalletWithUser | null>(null)
+	const [selectedWallet, setSelectedWallet] = useState<WalletWithUserAndAccounts | null>(null)
+	const [accountsDialogOpen, setAccountsDialogOpen] = useState(false);
 
-	const columns: ColumnDef<WalletWithUser>[] = [
+	const columns: ColumnDef<WalletWithUserAndAccounts>[] = [
 		{
 			accessorKey: "user",
 			header: () => "Пользователь",
@@ -80,7 +82,22 @@ export const WalletsTable = ({ wallets }: { wallets: WalletWithUser[] }) => {
 							setTopUpDialogOpen(true)
 						}}
 					>
-						Редакт.
+						Пополнить
+					</Button>
+				},
+			},
+			{
+				id: "openAcccounts",
+				header: () => null,
+				cell: ({ row }) => {
+					return <Button
+						variant="default"
+						onClick={() => {
+							setSelectedWallet(row.original);
+							setAccountsDialogOpen(true);
+						}}
+					>
+						Посмотреть аккаунты
 					</Button>
 				},
 			},
@@ -131,11 +148,20 @@ export const WalletsTable = ({ wallets }: { wallets: WalletWithUser[] }) => {
 					</TableBody>
 				</Table>
 				{
-					selectedWallet && <TopUpWalletDialog
-						open={topUpDialogOpen}
-						onOpenChange={setTopUpDialogOpen}
-						wallet={selectedWallet}
-					/>
+					selectedWallet &&
+					<>
+						<TopUpWalletDialog
+							open={topUpDialogOpen}
+							onOpenChange={setTopUpDialogOpen}
+							wallet={selectedWallet}
+						/>
+						<AccountsDialog
+							open={accountsDialogOpen}
+							onOpenChange={setAccountsDialogOpen}
+							wallet={selectedWallet}
+							safeRates={safeRates}
+						/>
+					</>
 				}
 
 			</CardContent>

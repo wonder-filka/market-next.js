@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select"
 import { verifyUser } from "../_actions"
 import { toast } from "sonner"
+import { VerificationStatus } from "../../../../../../prisma/generated/prisma"
 
 const documentTypes = [
   { value: "passport", label: "Passport" },
@@ -38,14 +39,14 @@ const VerificationSchema = z.object({
 type VerificationFormValues = z.infer<typeof VerificationSchema>
 
 interface VerificationFormProps {
-  isVerifed: boolean,
+  verificationStatus: VerificationStatus,
   userId: string
 }
 
-export function VerificationForm({ isVerifed, userId }: VerificationFormProps) {
+export function VerificationForm({ verificationStatus, userId }: VerificationFormProps) {
   const t = useI18n()
   const [pending, startTransition] = useTransition()
-  const [isVerifedUser, setIsVerifedUser] = useState(isVerifed)
+  const [isVerifedUser, setIsVerifedUser] = useState(verificationStatus)
   const form = useForm<VerificationFormValues>({
     resolver: zodResolver(VerificationSchema),
     defaultValues: {
@@ -64,12 +65,12 @@ export function VerificationForm({ isVerifed, userId }: VerificationFormProps) {
           style: { color: 'white', backgroundColor: 'red' },
         })
       } else {
-        setIsVerifedUser(true)
+        setIsVerifedUser("PENDING")
       }
     })
   }
 
-  if (isVerifedUser) {
+  if (isVerifedUser === "VERIFIED") {
     return (
       <Card>
         <CardHeader>
@@ -81,6 +82,20 @@ export function VerificationForm({ isVerifed, userId }: VerificationFormProps) {
       </Card>
     )
   }
+
+  if (isVerifedUser === "PENDING") {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("verificationTitle")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-orange-600">{t("verificationPending")}</div>
+        </CardContent>
+      </Card>
+    )
+  }
+
 
   return (
     <Card>

@@ -47,7 +47,7 @@ export async function getUserBasicSettings(userId: string) {
 				lastName: true,
 				email: true,
 				phone: true,
-				isVerifed: true,
+				verificationStatus: true,
 			},
 		});
 		if (!result) {
@@ -105,10 +105,10 @@ export const verifyUser = async (
 
 		return prisma.user.update({
 			where: { id: userId },
-			data: { isVerifed: true },
+			data: { verificationStatus: "PENDING" },
 			select: {
 				id: true,
-				isVerifed: true,
+				verificationStatus: true,
 				firstName: true,
 				lastName: true,
 				email: true,

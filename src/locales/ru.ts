@@ -31,7 +31,8 @@ export default {
 		"Пройдите быструю регистрацию и начните торговать или учиться уже сегодня",
 
 	incorrectCredentials: "Неверный email или пароль",
-
+	forgotPass: "Забыли пароль?",
+	forgotPassDescription: "Восстановите свой пароль с помощью Email",
 	"sidebar.quotes": "Торговать",
 	"sidebar.accounts": "Счета",
 	"sidebar.portfolio": "Портфель",
@@ -181,6 +182,7 @@ export default {
 	driver_license: "Водительские права",
 	selectADocument: "Выберите документ",
 	alreadyVerified: "Ваш аккаунт уже подтверждён. Спасибо!",
+	verificationPending: "Ваша верификация в процессе проверки",
 	fileTooLarge: "Файл слишком большой. Максимальный размер — 10 МБ.",
 	basicSettingsUpdated: "Настройки успешно сохранены.",
 	passwordUpdated: "Пароль успешно обновлён.",
@@ -278,7 +280,7 @@ export default {
 	confirm: "Подтвердить",
 	currentRate: "Текущий курс",
 	willBeCredited: "Будет зачислено",
-	admin: "Админка",
+	admin: "Сделки",
 	chat: "Диалоги",
 	demoAccountsTitle: "Демо-cчет",
 	openDemoAccount: "Открыть демо-счет",

@@ -30,7 +30,8 @@ export default {
 	success: "You have successfully registered!",
 	registerFormDescription: "Register now to start trading or learning today",
 	incorrectCredentials: "Incorrect email or password",
-
+	forgotPass: "Forgot your password?",
+	forgotPassDescription: "Recover your password using email",
 	"sidebar.quotes": "Trade",
 	"sidebar.accounts": "Accounts",
 	"sidebar.portfolio": "Portfolio",
@@ -180,6 +181,7 @@ export default {
 	id_card: "ID Card",
 	driver_license: "Driver License",
 	alreadyVerified: "Your account has already been verified. Thank you!",
+	verificationPending: "Your verification is pending review",
 	fileTooLarge: "The file is too large. Maximum size is 10MB.",
 	basicSettingsUpdated: "Settings have been successfully saved.",
 	passwordUpdated: "Your password has been successfully updated.",

@@ -10,12 +10,12 @@ import { useI18n } from "@/locales/client";
 import { Input } from "@/components/ui/input";
 import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { login } from "../_actions";
+
 import { FormErrorMessage } from "@/components/custom/form-error-message";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
-export const LoginForm = () => {
+export const ForgotForm = () => {
     const [pending, startTransition] = useTransition();
     const t = useI18n();
 
@@ -23,26 +23,14 @@ export const LoginForm = () => {
         resolver: zodResolver(LoginSchema),
         defaultValues: {
             email: '',
-            password: '',
+      
         },
     });
 
     const onSubmit: SubmitHandler<z.infer<typeof LoginSchema>> = async data => {
         startTransition(async () => {
-            const result = await login(data);
-            if (result?.message === 'incorrectCredentials') {
-                form.setError('email', {
-                    type: 'manual',
-                    message: "incorrectCredentials",
-                });
-            } else if (result?.message) {
-               form.setError('email', {
-                    type: 'manual',
-                    message: "manualError",
-                });
-            } else {
-                redirect("/account");
-            }
+            const result = await 
+           
         });
     };
 
@@ -65,27 +53,8 @@ export const LoginForm = () => {
                         </FormItem>
                     )}
                 />
-                <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>{t("password")}</FormLabel>
-                            <FormControl>
-                                <Input disabled={pending} type="password" placeholder={t("password")} {...field} />
-                            </FormControl>
-                            <FormErrorMessage
-                                error={form.formState.errors.password?.message}
-                                t={t}
-                            />
-                        </FormItem>
-                    )}
-                />
-                <div className="flex justify-end">
-                    <Link className="text-primary font-bold" href="/forgot">{t("forgotPass")}</Link>
-                </div>
                 <Button disabled={pending} type="submit" className="w-full mt-8">
-                    {t("login")}
+                    {t("")}
                 </Button>
             </form>
         </Form>

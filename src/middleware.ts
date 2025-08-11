@@ -51,6 +51,8 @@ export async function middleware(request: NextRequest) {
 		"/en/admin",
 		"/ru/wallets_ad",
 		"/en/wallets_ad",
+		"/ru/verification",
+		"/en/verification",
 		"/ru/chat",
 		"/en/chat",
 		// These need to specifically check for startsWith for dynamic segments

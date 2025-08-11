@@ -94,6 +94,15 @@ export function AppSidebarAdmin({ userId, ...props }: React.ComponentProps<typeo
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+                    <SidebarMenuItem >
+                <SidebarMenuButton asChild 
+             >
+                  <Link href="/verification" >
+                    <Wallet />
+                    <span className="">Верификация</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup >
       </SidebarContent>
