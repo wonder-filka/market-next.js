@@ -512,4 +512,69 @@ export default {
 	},
 	message: "Message",
 	submit: "Submit",
+	wallet: {
+		networkLabel: "Network: Ethereum (EVM)",
+		selectPlaceholder: "Select currency",
+		addressLabel: "Deposit address:",
+		qrGenerating: "Generating QR…",
+		qrUri: `URI: ethereum:`,
+		qrText: `Text:`,
+		errorGeneric: "Failed to get address",
+		errorNetwork: "Network error",
+		options: {
+			USDT: "USDT (ERC-20)",
+			ETH: "ETH",
+			BTC: "BTC (WBTC & others on EVM)",
+		},
+		badge: {
+			usdt: "ERC-20 / EVM",
+			eth: "Ethereum / L2",
+			btc: "WBTC / ERC-20",
+		},
+		help: {
+			usdt: {
+				title: "USDT (ERC-20 on EVM)",
+				bullets: [
+					"Send USDT on EVM networks (Ethereum, Arbitrum, Optimism, Polygon, BSC, Avalanche C-Chain).",
+					"Make sure the network and the USDT contract match the chosen network.",
+					"Do NOT send USDT TRC-20 (Tron), Solana USDT or Omni — different networks.",
+				],
+			},
+			eth: {
+				title: "ETH (EVM)",
+				bullets: [
+					"Send ETH on networks where the native coin is ETH (Ethereum, Arbitrum, Optimism).",
+					"On BSC/Polygon/AVAX the native coin is different (BNB/MATIC/AVAX). ETH may arrive as a token — check network & contract.",
+					"The address is the same across EVM networks, but balances are separate per network.",
+				],
+			},
+			btc: {
+				title: "BTC as a token on EVM (WBTC, etc.)",
+				bullets: [
+					"Do NOT send native BTC (Bitcoin network) to a 0x address.",
+					"You may send WBTC/renBTC or similar EVM tokens — verify token contract and network.",
+					"If you need native BTC, you need a Bitcoin address (bc1…, 1…, 3…) — please contact support.",
+				],
+			},
+		},
+	},
+	depositPage: {
+		tabs: {
+			card: "Top up by card",
+			crypto: "Crypto",
+		},
+		card: {
+			amountRub: {
+				label: "Amount in RUB",
+				placeholder: "Enter amount in RUB",
+			},
+			creditedPrefix: "Will be credited:",
+			button: "Top up",
+			message:
+				"To deposit by card, please contact the operator. Due to sanctions, direct transfers are not possible.",
+			errors: {
+				min: "Enter an amount in RUB (min 10,000).",
+			},
+		},
+	},
 } as const;

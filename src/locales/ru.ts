@@ -514,4 +514,69 @@ export default {
 	},
 	message: "Сообщение",
 	submit: "Отправить",
+	wallet: {
+		networkLabel: "Сеть: Ethereum (EVM)",
+		selectPlaceholder: "Выберите валюту",
+		addressLabel: "Адрес для пополнения:",
+		qrGenerating: "Генерируем QR…",
+		qrUri: `URI: ethereum:`,
+		qrText: `Текст:`,
+		errorGeneric: "Не удалось получить адрес",
+		errorNetwork: "Ошибка сети",
+		options: {
+			USDT: "USDT (ERC-20)",
+			ETH: "ETH",
+			BTC: "BTC (WBTC и др. в EVM)",
+		},
+		badge: {
+			usdt: "ERC-20 / EVM",
+			eth: "Ethereum / L2",
+			btc: "WBTC / ERC-20",
+		},
+		help: {
+			usdt: {
+				title: "USDT (ERC-20 в EVM)",
+				bullets: [
+					"Отправляйте USDT в EVM-сети (Ethereum, Arbitrum, Optimism, Polygon, BSC, Avalanche C-Chain).",
+					"Убедитесь, что выбрана правильная сеть и контракт USDT этой сети.",
+					"НЕ отправляйте USDT TRC-20 (Tron), Solana USDT или Omni — это другие сети.",
+				],
+			},
+			eth: {
+				title: "ETH (EVM)",
+				bullets: [
+					"Отправляйте ETH в сетях, где нативная монета — ETH (Ethereum, Arbitrum, Optimism).",
+					"В BSC/Polygon/AVAX нативная монета другая (BNB/MATIC/AVAX). ETH там может прийти как токен — проверяйте сеть и контракт.",
+					"Адрес один и тот же для всех EVM-сетей, но балансы по сетям раздельные.",
+				],
+			},
+			btc: {
+				title: "BTC как токен в EVM (WBTC и др.)",
+				bullets: [
+					"Нативный BTC (сеть Bitcoin) НЕ отправлять на 0x-адрес.",
+					"Можно отправлять WBTC/renBTC и аналогичные токены в выбранной EVM-сети — проверьте контракт токена и сеть.",
+					"Если нужен нативный BTC — требуется отдельный BTC-адрес (bc1…, 1…, 3…) — для этого обратитесь в службу поддержки.",
+				],
+			},
+		},
+	},
+	depositPage: {
+		tabs: {
+			card: "Пополнить картой",
+			crypto: "Криптовалюта",
+		},
+		card: {
+			amountRub: {
+				label: "Сумма в RUB",
+				placeholder: "Введите сумму в RUB",
+			},
+			creditedPrefix: "Будет зачислено:",
+			button: "Пополнить",
+			message:
+				"Для пополнения картой обратитесь к оператору. В связи с санкциями, прямой перевод невозможен.",
+			errors: {
+				min: "Введите сумму в RUB (не меньше 10 000).",
+			},
+		},
+	},
 } as const;

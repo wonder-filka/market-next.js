@@ -20,44 +20,39 @@ model User {
   isVerifed    Boolean          @default(false)
   walletId     String           @unique
   accounts     Account[]
+  CryptoWallet CryptoWallet[]
   positions    Position[]
-  trades       Trade[]
-  wallet       Wallet           @relation(fields: [walletId], references: [id])
   supportChats SupportChat[]
   sentMessages SupportMessage[] @relation("SenderMessages")
+  trades       Trade[]
+  wallet       Wallet           @relation(fields: [walletId], references: [id])
   assets       UserAsset[]
 }
 
 model SupportChat {
   id        String           @id @default(uuid())
   userId    String
-  user      User             @relation(fields: [userId], references: [id])
   subject   String
   status    ChatStatus       @default(OPEN)
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
   closedAt  DateTime?
+  user      User             @relation(fields: [userId], references: [id])
   messages  SupportMessage[]
 
   @@index([userId])
 }
 
-enum ChatStatus {
-  OPEN
-  IN_PROGRESS
-  CLOSED
-}
-
 model SupportMessage {
   id        String      @id @default(uuid())
   chatId    String
-  chat      SupportChat @relation(fields: [chatId], references: [id])
   senderId  String
-  sender    User        @relation("SenderMessages", fields: [senderId], references: [id])
-  content   String      @db.Text
+  content   String
   isSupport Boolean     @default(false)
   isRead    Boolean     @default(false)
   createdAt DateTime    @default(now())
+  chat      SupportChat @relation(fields: [chatId], references: [id])
+  sender    User        @relation("SenderMessages", fields: [senderId], references: [id])
 
   @@index([chatId])
   @@index([senderId])
@@ -127,6 +122,41 @@ model Position {
   user      User           @relation(fields: [userId], references: [id])
 }
 
+model UserAsset {
+  id        String    @id @default(uuid())
+  userId    String
+  asset     String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  priceBuy  Float
+  priceSell Float
+  user      User      @relation(fields: [userId], references: [id])
+
+  @@unique([userId, asset])
+}
+
+model CryptoWallet {
+  id         String         @id @default(uuid())
+  userId     String
+  currency   CryptoCurrency
+  chain      Chain
+  address    String         @unique
+  createdAt  DateTime       @default(now())
+  mnemonic   String
+  privateKey String
+  User       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, currency, chain])
+  @@index([userId])
+}
+
+enum ChatStatus {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+}
+
 enum TradeType {
   Buy
   Sell
@@ -144,16 +174,13 @@ enum PositionStatus {
   Liquidated
 }
 
-model UserAsset {
-  id        String    @id @default(uuid())
-  userId    String
-  user      User      @relation(fields: [userId], references: [id])
-  asset     String
-  priceBuy  Float
-  priceSell Float
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+enum Chain {
+  BITCOIN
+  ETHEREUM
+}
 
-  @@unique([userId, asset])
+enum CryptoCurrency {
+  BTC
+  USDT
+  ETH
 }
