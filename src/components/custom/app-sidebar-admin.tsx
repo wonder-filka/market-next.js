@@ -103,6 +103,15 @@ export function AppSidebarAdmin({ userId, ...props }: React.ComponentProps<typeo
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+               <SidebarMenuItem >
+                <SidebarMenuButton asChild 
+             >
+                  <Link href="/crypto_wallets" >
+                    <Wallet />
+                    <span className="">Crypto Кошельки</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup >
       </SidebarContent>

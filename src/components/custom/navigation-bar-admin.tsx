@@ -51,6 +51,10 @@ export function AdminHeader() {
               <Link href="/verification" >
                 <span className="">Верификация</span>
               </Link>
+              
+              <Link href="/crypto_wallets" >
+                <span className="">Crypto Кошельки</span>
+              </Link>
             </div>
           </SheetHeader>
           <SheetFooter>

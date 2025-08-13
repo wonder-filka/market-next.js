@@ -517,48 +517,68 @@ export default {
 	message: "Сообщение",
 	submit: "Отправить",
 	wallet: {
-		networkLabel: "Сеть: Ethereum (EVM)",
+		networkLabel: "Выбранная сеть:",
+		selectNetwork: "Выберите сеть",
 		selectPlaceholder: "Выберите валюту",
 		addressLabel: "Адрес для пополнения:",
 		qrGenerating: "Генерируем QR…",
-		qrUri: `URI: ethereum:`,
-		qrText: `Текст:`,
+		qrUri: "URI:",
+		qrText: "Текст:",
 		errorGeneric: "Не удалось получить адрес",
 		errorNetwork: "Ошибка сети",
+		errorIncompatible: "Эта валюта недоступна в выбранной сети",
 		options: {
-			USDT: "USDT (ERC-20)",
+			USDT: "USDT",
 			ETH: "ETH",
 			BTC: "BTC (WBTC и др. в EVM)",
+			TRX: "TRX",
 		},
 		badge: {
-			usdt: "ERC-20 / EVM",
-			eth: "Ethereum / L2",
-			btc: "WBTC / ERC-20",
+			usdt: "USDT",
+			eth: "ETH",
+			btc: "BTC",
+			trx: "TRX",
 		},
 		help: {
 			usdt: {
-				title: "USDT (ERC-20 в EVM)",
-				bullets: [
-					"Отправляйте USDT в EVM-сети (Ethereum, Arbitrum, Optimism, Polygon, BSC, Avalanche C-Chain).",
-					"Убедитесь, что выбрана правильная сеть и контракт USDT этой сети.",
-					"НЕ отправляйте USDT TRC-20 (Tron), Solana USDT или Omni — это другие сети.",
-				],
+				title: "Пополнение USDT (ERC-20)",
+				bullets: {
+					0: "Это USDT стандарта ERC-20 на EVM-сетях (Ethereum и совместимые).",
+					1: "Для отправки USDT на этот адрес у отправителя должен быть ETH для оплаты комиссии.",
+					2: "Отправляйте только USDT (ERC-20). Переводы из других сетей будут потеряны.",
+				},
+			},
+			usdt_tron: {
+				title: "Пополнение USDT (TRC-20)",
+				bullets: {
+					0: "Это USDT стандарта TRC-20 в сети TRON.",
+					1: "Для комиссий нужны TRX на кошельке отправителя.",
+					2: "Отправляйте только USDT (TRC-20). Переводы из EVM/других сетей будут потеряны.",
+				},
 			},
 			eth: {
-				title: "ETH (EVM)",
-				bullets: [
-					"Отправляйте ETH в сетях, где нативная монета — ETH (Ethereum, Arbitrum, Optimism).",
-					"В BSC/Polygon/AVAX нативная монета другая (BNB/MATIC/AVAX). ETH там может прийти как токен — проверяйте сеть и контракт.",
-					"Адрес один и тот же для всех EVM-сетей, но балансы по сетям раздельные.",
-				],
+				title: "Пополнение ETH",
+				bullets: {
+					0: "ETH — нативная валюта сети Ethereum.",
+					1: "Комиссия списывается в ETH.",
+					2: "Отправляйте только из EVM-сетей на адрес формата 0x…",
+				},
 			},
 			btc: {
-				title: "BTC как токен в EVM (WBTC и др.)",
-				bullets: [
-					"Нативный BTC (сеть Bitcoin) НЕ отправлять на 0x-адрес.",
-					"Можно отправлять WBTC/renBTC и аналогичные токены в выбранной EVM-сети — проверьте контракт токена и сеть.",
-					"Если нужен нативный BTC — требуется отдельный BTC-адрес (bc1…, 1…, 3…) — для этого обратитесь в службу поддержки.",
-				],
+				title: "Пополнение BTC (через EVM)",
+				bullets: {
+					0: "Это EVM-адрес. На него можно получать только токены-репрезентации BTC в EVM (например, WBTC).",
+					1: "Для отправки таких токенов у отправителя должен быть ETH для оплаты комиссии.",
+					2: "Не отправляйте нативный Bitcoin (L1) на этот адрес.",
+				},
+			},
+			trx: {
+				title: "Пополнение TRX",
+				bullets: {
+					0: "TRX — нативная валюта сети TRON.",
+					1: "Комиссия оплачивается в TRX.",
+					2: "Отправляйте только из сети TRON на адрес формата T…",
+				},
 			},
 		},
 	},

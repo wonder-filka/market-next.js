@@ -177,12 +177,14 @@ enum PositionStatus {
 enum Chain {
   BITCOIN
   ETHEREUM
+  TRON
 }
 
 enum CryptoCurrency {
   BTC
   USDT
   ETH
+  TRX
 }
 
 enum VerificationStatus {

@@ -55,6 +55,8 @@ export async function middleware(request: NextRequest) {
 		"/en/verification",
 		"/ru/chat",
 		"/en/chat",
+		"/ru/crypto_wallets",
+		"/en/crypto_wallets",
 		// These need to specifically check for startsWith for dynamic segments
 		"/ru/chat/", // Catches /ru/chat/ and /ru/chat/:chatId
 		"/en/chat/", // Catches /en/chat/ and /en/chat/:chatId <-- **THIS WAS MISSED AND IS NOW ADDED**

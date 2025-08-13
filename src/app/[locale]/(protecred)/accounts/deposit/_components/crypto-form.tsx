@@ -6,33 +6,53 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
 import QRCode from 'qrcode';
-import { Copy, CopyCheck } from 'lucide-react';
+import { Copy, CopyCheck, LoaderCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/locales/client';
 import Image from 'next/image';
 
 type CryptoFormProps = { userId: string };
-type Currency = 'USDT' | 'ETH' | 'BTC';
-
+type Network = 'EVM' | 'TRON';
+type Currency = 'USDT' | 'USDT_TRON' | 'ETH' | 'BTC' | 'TRX';
+type ApiCurrency = 'USDT' | 'ETH' | 'BTC' | 'TRX';
+type CurrencyUI = '' | Currency;
 export function CryptoForm({ userId }: CryptoFormProps) {
   const t = useI18n();
-
-  const [currency, setCurrency] = useState<Currency>();
+  const [network, setNetwork] = useState<Network>('TRON');
+  const [currency, setCurrency] = useState<CurrencyUI>('');
   const [address, setAddress] = useState<string | null>(null);
   const [qr, setQr] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [copied, setCopied] = useState(false);
 
-  async function fetchAddress(nextCurrency: Currency) {
+  async function fetchAddress(nextNetwork: Network, nextCurrency: Currency) {
     setError(null);
     setAddress(null);
     setQr(null);
+
+    const apiCurrency: ApiCurrency =
+      nextNetwork === 'TRON' && nextCurrency === 'USDT_TRON'
+        ? 'USDT'
+        : (nextCurrency as ApiCurrency);
+
+
+    // простая валидация соответствия сети и валюты
+    if (nextNetwork === 'TRON' && !['USDT_TRON', 'TRX'].includes(nextCurrency)) {
+      setError(t('wallet.errorIncompatible')); // добавь ключ перевода вроде "Выбранная сеть не поддерживает эту валюту"
+      return;
+    }
+    if (nextNetwork === 'EVM' && nextCurrency === 'TRX') {
+      setError(t('wallet.errorIncompatible'));
+      return;
+    }
+
     try {
-      const r = await fetch('/api/wallets/evm', {
+      const path = nextNetwork === 'TRON' ? '/api/wallets/tron' : '/api/wallets/evm';
+      const r = await fetch(path, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, currency: nextCurrency }),
+        body: JSON.stringify({ userId, currency: apiCurrency }),
       });
       const data = await r.json();
       if (!r.ok || 'message' in data) {
@@ -45,51 +65,37 @@ export function CryptoForm({ userId }: CryptoFormProps) {
     }
   }
 
-  // QR: кодируем ТОЛЬКО адрес
   useEffect(() => {
     if (!address) return;
+    // Для QR просто кодируем сам адрес.
+    // (При желании можно сделать tron:<addr> для Tron и ethereum:<addr> для EVM)
     QRCode.toDataURL(address)
       .then(setQr)
       .catch(() => setQr(null));
   }, [address]);
 
-  const badge =
-    currency === 'USDT' ? t('wallet.badge.usdt')
-    : currency === 'ETH' ? t('wallet.badge.eth')
-    : currency === 'BTC' ? t('wallet.badge.btc')
-    : '';
 
   const helpTitle =
     currency === 'USDT' ? t('wallet.help.usdt.title')
-    : currency === 'ETH' ? t('wallet.help.eth.title')
-    : currency === 'BTC' ? t('wallet.help.btc.title')
-    : '';
+      : currency === 'USDT_TRON' ? t('wallet.help.usdt_tron.title')
+        : currency === 'ETH' ? t('wallet.help.eth.title')
+          : currency === 'BTC' ? t('wallet.help.btc.title')
+            : currency === 'TRX' ? t('wallet.help.trx.title') // добавь этот ключ
+              : '';
 
-  // Буллеты как отдельные ключи без переменных
   const helpBullets = (() => {
-    if (currency === 'USDT') {
-      return [
-        t('wallet.help.usdt.bullets.0'),
-        t('wallet.help.usdt.bullets.1'),
-        t('wallet.help.usdt.bullets.2'),
-      ];
-    }
-    if (currency === 'ETH') {
-      return [
-        t('wallet.help.eth.bullets.0'),
-        t('wallet.help.eth.bullets.1'),
-        t('wallet.help.eth.bullets.2'),
-      ];
-    }
-    if (currency === 'BTC') {
-      return [
-        t('wallet.help.btc.bullets.0'),
-        t('wallet.help.btc.bullets.1'),
-        t('wallet.help.btc.bullets.2'),
-      ];
-    }
+    if (currency === 'USDT') return [t('wallet.help.usdt.bullets.0'), t('wallet.help.usdt.bullets.1'), t('wallet.help.usdt.bullets.2')];
+    if (currency === 'USDT_TRON') return [t('wallet.help.usdt_tron.bullets.0'), t('wallet.help.usdt_tron.bullets.1'), t('wallet.help.usdt_tron.bullets.2')];
+    if (currency === 'ETH') return [t('wallet.help.eth.bullets.0'), t('wallet.help.eth.bullets.1'), t('wallet.help.eth.bullets.2')];
+    if (currency === 'BTC') return [t('wallet.help.btc.bullets.0'), t('wallet.help.btc.bullets.1'), t('wallet.help.btc.bullets.2')];
+    if (currency === 'TRX') return [t('wallet.help.trx.bullets.0'), t('wallet.help.trx.bullets.1'), t('wallet.help.trx.bullets.2')];
     return [];
   })();
+
+  async function onSelect(nextCurrency: Currency) {
+    setCurrency(nextCurrency);
+    startTransition(() => fetchAddress(network, nextCurrency));
+  }
 
   async function copyAddress() {
     if (!address) return;
@@ -97,31 +103,67 @@ export function CryptoForm({ userId }: CryptoFormProps) {
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   }
+  if (isPending) return <div className='w-full min-h-[90vh] flex justify-center items-center space-x-2'>
+    <LoaderCircle size={25} className='text-gray-500 animate-spin' />
+  </div>
 
   return (
     <Card>
-      <CardContent className="py-6 space-y-4">
+      <CardContent className=" space-y-4">
         <div className="flex items-center justify-between">
-          <div className="text-sm text-muted-foreground">{t('wallet.networkLabel')}</div>
-          {!!badge && <span className="text-xs rounded-full border px-2 py-0.5">{badge}</span>}
+          <div className="text-sm text-muted-foreground">
+            {t('wallet.networkLabel')}
+          </div>
+          {/* {!!badge && <span className="text-xs rounded-full border px-2 py-0.5">{badge}</span>} */}
         </div>
 
+        {/* Выбор сети */}
+        <div className="flex items-center gap-3">
+          <Select
+            value={network}
+            onValueChange={(v) => {
+              const n = v as Network;
+              setNetwork(n);
+              setCurrency('');
+              setAddress(null);
+              setQr(null);
+              setError(null);
+              console.log(currency)
+            }}
+          >
+            <SelectTrigger className="w-full" disabled={isPending}>
+              <SelectValue placeholder={t('wallet.selectNetwork')} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="TRON">TRON (TRC-20)</SelectItem>
+              <SelectItem value="EVM">Ethereum (ERC-20)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Выбор валюты */}
         <div className="flex items-center gap-3">
           <Select
             value={currency}
-            onValueChange={(v) => {
-              const next = v as Currency;
-              setCurrency(next);
-              startTransition(() => fetchAddress(next));
-            }}
+            onValueChange={(v) => onSelect(v as Currency)}
           >
             <SelectTrigger className="w-full" disabled={isPending}>
               <SelectValue placeholder={t('wallet.selectPlaceholder')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="USDT">{t('wallet.options.USDT')}</SelectItem>
-              <SelectItem value="ETH">{t('wallet.options.ETH')}</SelectItem>
-              <SelectItem value="BTC">{t('wallet.options.BTC')}</SelectItem>
+              {/* Для EVM доступны USDT/ETH/BTC; для TRON — USDT/TRX */}
+              {network === 'TRON' ? (
+                <>
+                  <SelectItem value="USDT_TRON">{t('wallet.options.USDT')}</SelectItem>
+                  <SelectItem value="TRX">TRX</SelectItem>
+                </>
+              ) : (
+                <>
+                  <SelectItem value="USDT">{t('wallet.options.USDT')}</SelectItem>
+                  <SelectItem value="ETH">{t('wallet.options.ETH')}</SelectItem>
+                  <SelectItem value="BTC">{t('wallet.options.BTC')}</SelectItem>
+                </>
+              )}
             </SelectContent>
           </Select>
         </div>
@@ -146,13 +188,12 @@ export function CryptoForm({ userId }: CryptoFormProps) {
                 ) : (
                   <div className="text-xs text-muted-foreground">{t('wallet.qrGenerating')}</div>
                 )}
-                {/* подписи без переменных + адрес рядом */}
                 <div className="text-[10px] text-center text-muted-foreground mt-1">
                   {t('wallet.qrText')} {address}
                 </div>
-                <div className="text-[10px] text-center text-muted-foreground">
+                {/* <div className="text-[10px] text-center text-muted-foreground">
                   {t('wallet.qrUri')}{address}
-                </div>
+                </div> */}
               </div>
 
               {!!helpTitle && (
