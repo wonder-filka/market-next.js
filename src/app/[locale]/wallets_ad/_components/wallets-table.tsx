@@ -17,7 +17,7 @@ type WalletWithUserAndAccounts = Wallet & {
 	user: (User & { accounts: Account[] }) | null;
 };
 
-export const WalletsTable = ({ wallets, safeRates }: { wallets: WalletWithUserAndAccounts[], safeRates: Record<string, number>; }) => {
+export const WalletsTable = ({ wallets }: { wallets: WalletWithUserAndAccounts[] }) => {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 	const [globalFilter, setGlobalFilter] = useState('')
 	const [topUpDialogOpen, setTopUpDialogOpen] = useState(false)
@@ -159,7 +159,6 @@ export const WalletsTable = ({ wallets, safeRates }: { wallets: WalletWithUserAn
 							open={accountsDialogOpen}
 							onOpenChange={setAccountsDialogOpen}
 							wallet={selectedWallet}
-							safeRates={safeRates}
 						/>
 					</>
 				}

@@ -284,8 +284,7 @@ function DocsPreview({ docs }: { docs: Doc[] }) {
             <div className="text-[10px] text-muted-foreground mb-1">{humanizeType(d.documentType)}</div>
             {isImage ? (
               <a href={d.url} target="_blank" rel="noreferrer">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={d.url} alt={d.filename} className="h-16 w-24 object-cover rounded" />
+                <Image src={d.url} alt={d.filename} width={64} height={64} className="object-cover rounded" />
               </a>
             ) : isPdf ? (
               <a href={d.url} target="_blank" rel="noreferrer" className="block text-xs underline text-blue-700">

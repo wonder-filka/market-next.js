@@ -13,16 +13,14 @@ import { useI18n } from '@/locales/client';
 
 type CardFormProps = {
   safeRates: Record<string, number>;
-  userId: string;
 };
 
 type FormSchema = { amountRub: number };
 
-export function CardForm({ userId, safeRates }: CardFormProps) {
+export function CardForm({ safeRates }: CardFormProps) {
   const t = useI18n();
   const [isShowMessage, setIsShowMessage] = useState(false);
 
-  // zod-схема с переводимым текстом
   const formSchema = useMemo(
     () =>
       z.object({
@@ -43,8 +41,9 @@ export function CardForm({ userId, safeRates }: CardFormProps) {
     return (+amountRub / rubRate).toFixed(2);
   }, [amountRub, rubRate]);
 
-  const onSubmit = () => setIsShowMessage(true);
-
+  const onSubmit = () => {
+    setIsShowMessage(true);
+  }
   return (
     <Card className="flex justify-center min-h-[200px]">
       <CardContent>

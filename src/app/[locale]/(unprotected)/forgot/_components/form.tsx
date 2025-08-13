@@ -12,8 +12,6 @@ import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/
 import { Button } from "@/components/ui/button";
 
 import { FormErrorMessage } from "@/components/custom/form-error-message";
-import { redirect } from "next/navigation";
-import Link from "next/link";
 
 export const ForgotForm = () => {
     const [pending, startTransition] = useTransition();
@@ -23,14 +21,13 @@ export const ForgotForm = () => {
         resolver: zodResolver(LoginSchema),
         defaultValues: {
             email: '',
-      
+
         },
     });
 
     const onSubmit: SubmitHandler<z.infer<typeof LoginSchema>> = async data => {
         startTransition(async () => {
-            const result = await 
-           
+          console.log(data)
         });
     };
 
@@ -54,7 +51,7 @@ export const ForgotForm = () => {
                     )}
                 />
                 <Button disabled={pending} type="submit" className="w-full mt-8">
-                    {t("")}
+                    Save
                 </Button>
             </form>
         </Form>

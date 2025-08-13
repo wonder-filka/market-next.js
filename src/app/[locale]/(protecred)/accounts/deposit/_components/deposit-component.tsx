@@ -31,7 +31,7 @@ export default function DepositComponent({ safeRates, userId }: DepositPageProps
         </TabsList>
 
         <TabsContent value="card" className="md:min-w-md">
-          <CardForm userId={userId} safeRates={safeRates} />
+          <CardForm safeRates={safeRates} />
         </TabsContent>
 
         <TabsContent value="crypto" className="md:min-w-md">

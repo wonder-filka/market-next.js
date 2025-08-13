@@ -9,6 +9,7 @@ import QRCode from 'qrcode';
 import { Copy, CopyCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/locales/client';
+import Image from 'next/image';
 
 type CryptoFormProps = { userId: string };
 type Currency = 'USDT' | 'ETH' | 'BTC';
@@ -96,7 +97,7 @@ export function CryptoForm({ userId }: CryptoFormProps) {
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   }
-
+console.log(qr)
   return (
     <Card>
       <CardContent className="py-6 space-y-4">
@@ -141,7 +142,7 @@ export function CryptoForm({ userId }: CryptoFormProps) {
 
               <div className="flex flex-col mt-4 w-full justify-center items-center">
                 {qr ? (
-                  <img src={qr} alt="QR" className="w-40 h-40 border rounded" />
+                  <Image src={qr} width={140} height={140} alt="QR" className="border rounded" />
                 ) : (
                   <div className="text-xs text-muted-foreground">{t('wallet.qrGenerating')}</div>
                 )}

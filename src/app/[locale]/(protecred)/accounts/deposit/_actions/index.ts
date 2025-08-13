@@ -18,38 +18,3 @@ export async function getUserWallets(userId: string) {
 		return { message: "error get wallets" };
 	}
 }
-
-type Currency = "BTC" | "USDT";
-
-export async function getOrCreateWallet(userId: string, currency: Currency) {
-	try {
-		const existing = await prisma.cryptoWallet.findUnique({
-			where: { userId_currency: { userId, currency } },
-		});
-		if (existing) return existing;
-
-		let generated: { address: string; privateKey: string };
-		let chain: "BITCOIN" | "ETHEREUM";
-
-		if (currency === "BTC") {
-			generated = await createBitcoinWallet();
-			chain = "BITCOIN";
-		} else {
-			generated = await createUsdtErc20Wallet();
-			chain = "ETHEREUM";
-		}
-
-		return await prisma.cryptoWallet.create({
-			data: {
-				userId,
-				currency,
-				chain,
-				address: generated.address,
-				privateKeyEncrypted: generated.privateKey,
-			},
-		});
-	} catch (error) {
-		console.error(`getOrCreateWallet(${currency}) error:`, error);
-		return { message: `Ошибка при создании кошелька ${currency}` };
-	}
-}

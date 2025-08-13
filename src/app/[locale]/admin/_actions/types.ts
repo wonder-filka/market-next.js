@@ -1,3 +1,5 @@
+import { VerificationStatus } from "../../../../../prisma/generated/prisma";
+
 export interface PositionWithRelations {
   id: string;
   asset: string;
@@ -57,10 +59,4 @@ export interface PositionWithRelations {
       updatedAt: Date;
     }>;
   };
-}
-
-enum VerificationStatus {
-  UNVERIFIED, // не верифицировано
-  VERIFIED, // верифицировано
-  PENDING // в процессе верификации
 }
