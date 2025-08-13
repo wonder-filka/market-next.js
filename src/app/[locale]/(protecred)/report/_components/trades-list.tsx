@@ -140,7 +140,7 @@ export function PositionsTableReport({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredTrades.map((trade) => (
+            {filteredTrades.length > 0 ? filteredTrades.map((trade) => (
               <TableRow key={trade.id}>
                 <TableCell>{trade.account.mt5Id}</TableCell>
                 <TableCell>  {new Date(trade.startDate).toLocaleString()} – {trade.endDate ? new Date(trade.endDate).toLocaleString() : null}</TableCell>
@@ -155,7 +155,13 @@ export function PositionsTableReport({
                   </Badge>
                 </TableCell>
               </TableRow>
-            ))}
+            )) : <TableRow>
+              <TableCell colSpan={12}>
+                <div className="p-12 w-full flex justify-center items-center text-muted-foreground">
+                  {t("noGainersData")}
+                </div>
+              </TableCell>
+            </TableRow>}
           </TableBody>
         </Table>
       </CardContent>
