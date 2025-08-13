@@ -32,6 +32,12 @@ type ListUsersParams = {
 	order?: "asc" | "desc";
 };
 
+const UPLOAD_DIR =
+	process.env.UPLOAD_DIR || path.join(process.cwd(), "uploads");
+
+const makeVerificationUrl = (filename: string) =>
+	`/api/verification/${encodeURIComponent(filename)}`;
+
 type ListUsersResult =
 	| { items: AdminUserWithDocs[]; total: number }
 	| { message: string };
@@ -83,20 +89,16 @@ export async function getUsersForVerificationAdminAll(
 			}),
 		]);
 
-		// 3) читаем директорию verification один раз, группируем файлы по userId
-		const dirPath = path.join(process.cwd(), "public", "verification");
-
 		let allFilenames: string[] = [];
 		try {
 			// могут быть тысячи файлов; если ожидается много — можно потом оптимизировать
-			allFilenames = await fs.readdir(dirPath);
+			allFilenames = await fs.readdir(UPLOAD_DIR);
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				console.error(err.message);
 			}
 			allFilenames = [];
 		}
-
 		// Группировка: userId = подстрока до первого "_"
 		const filesByUserId = new Map<string, string[]>();
 		for (const name of allFilenames) {
@@ -114,7 +116,7 @@ export async function getUsersForVerificationAdminAll(
 
 			const documents = await Promise.all(
 				filenames.map(async (filename) => {
-					const absolutePath = path.join(dirPath, filename);
+					const absolutePath = path.join(UPLOAD_DIR, filename);
 
 					// documentType = всё после userId_ до расширения
 					const withoutUserId = filename.replace(`${u.id}_`, "");
@@ -124,7 +126,7 @@ export async function getUsersForVerificationAdminAll(
 						const st = await fs.stat(absolutePath);
 						return {
 							filename,
-							url: `/verification/${filename}`,
+							url: makeVerificationUrl(filename),
 							absolutePath,
 							documentType,
 							uploadedAt: st.mtime?.toISOString(),
@@ -132,7 +134,7 @@ export async function getUsersForVerificationAdminAll(
 					} catch {
 						return {
 							filename,
-							url: `/verification/${filename}`,
+							url: makeVerificationUrl(filename),
 							absolutePath,
 							documentType,
 						};
@@ -172,13 +174,12 @@ export async function setVerificationStatus(
 
 		// если снимаем верификацию — удаляем все загруженные документы
 		if (status === "UNVERIFIED") {
-			const dirPath = path.join(process.cwd(), "public", "verification");
 			try {
-				const all = await fs.readdir(dirPath);
+				const all = await fs.readdir(UPLOAD_DIR);
 				const mine = all.filter((name) => name.startsWith(`${userId}_`));
 				await Promise.all(
 					mine.map(async (name) => {
-						const p = path.join(dirPath, name);
+						const p = path.join(UPLOAD_DIR, name);
 						try {
 							await fs.unlink(p);
 						} catch (e) {

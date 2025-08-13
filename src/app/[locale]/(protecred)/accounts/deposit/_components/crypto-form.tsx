@@ -36,7 +36,7 @@ export function CryptoForm({ userId }: CryptoFormProps) {
       });
       const data = await r.json();
       if (!r.ok || 'message' in data) {
-        setError(data?.message ?? t('wallet.errorGeneric'));
+        setError(t('wallet.errorGeneric'));
         return;
       }
       setAddress(String(data.address));
@@ -97,7 +97,7 @@ export function CryptoForm({ userId }: CryptoFormProps) {
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   }
-console.log(qr)
+
   return (
     <Card>
       <CardContent className="py-6 space-y-4">

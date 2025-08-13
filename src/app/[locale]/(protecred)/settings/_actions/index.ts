@@ -2,7 +2,6 @@
 
 import { prisma } from "@/lib/db";
 import { UpdateUserBasicSettingsInput } from "@/lib/types";
-import { writeFile } from "fs/promises";
 import path from "path";
 import { promises as fs } from "fs";
 import bcrypt from "bcryptjs";
@@ -60,6 +59,9 @@ export async function getUserBasicSettings(userId: string) {
 	}
 }
 
+const UPLOAD_DIR =
+	process.env.UPLOAD_DIR || path.join(process.cwd(), "uploads");
+
 /**
  * Handles user verification: saves the uploaded document and updates verification status.
  * @param params - The verification data.
@@ -77,32 +79,29 @@ export const verifyUser = async (
 		let fileBuffer: Buffer;
 		let fileExt = "jpg";
 
-		if (file instanceof Buffer) {
-			fileBuffer = file;
+		if (Buffer.isBuffer(file)) {
+			fileBuffer = file as Buffer;
 		} else {
 			fileBuffer = Buffer.from(await file.arrayBuffer());
-
-			// Расширенная проверка типа
-			const mimeType = file.type;
-			const match = mimeType.match(/\/(jpeg|jpg|png|webp|heic|heif|pdf)$/);
-
+			const mimeType = (file as File).type || "";
+			const match = mimeType.match(/\/(jpeg|jpg|png|webp|heic|heif|pdf)$/i);
 			if (match) {
-				const ext = match[1];
-				fileExt = ext === "jpeg" ? "jpg" : ext; // нормализуем .jpeg → .jpg
+				const ext = match[1].toLowerCase();
+				fileExt = ext === "jpeg" ? "jpg" : ext;
 			} else {
 				throw new Error("Unsupported file type");
 			}
 		}
 
-		const fileName = `${userId}_${documentType}.${fileExt}`;
-		console.log("fileName", fileName);
+		const safeDocType =
+			(documentType || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 50) || "doc";
 
-		const dirPath = path.join(process.cwd(), "public", "verification");
-		await fs.mkdir(dirPath, { recursive: true });
+		const fileName = `${userId}_${safeDocType}.${fileExt}`;
 
-		const filePath = path.join(dirPath, fileName);
-		await writeFile(filePath, fileBuffer);
+		await fs.mkdir(UPLOAD_DIR, { recursive: true });
 
+		const filePath = path.join(UPLOAD_DIR, fileName);
+		await fs.writeFile(filePath, fileBuffer);
 		return prisma.user.update({
 			where: { id: userId },
 			data: { verificationStatus: "PENDING" },

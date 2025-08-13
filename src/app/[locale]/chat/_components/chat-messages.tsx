@@ -83,7 +83,6 @@ export function ChatMessages({ chatId, currentUserId, data }: ChatMessagesProps)
 
         return () => {
             if (chatId) {
-                console.log(`Socket.IO: Leaving chat room: chat-${chatId}`);
                 socket.emit('leave-chat', chatId);
                 socket.off('new-message', onNewMessage);
                 socket.off('messages-read', onMessagesRead);

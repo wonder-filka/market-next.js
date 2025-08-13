@@ -27,7 +27,6 @@ export function NewsListBlock() {
         )
 
         const items = await Promise.all(itemRequests)
-        console.log(items)
         const formatted: HackerNewsItem[] = items.map(item => ({
           id: item.id,
           title: item.title,

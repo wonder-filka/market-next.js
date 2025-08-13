@@ -270,31 +270,69 @@ function StatusChanger({
     </>
   );
 }
+function humanizeType(s: string) {
+  return s
+    .split(/[_\-]+/) // разбиваем по _ или -
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1)) // каждое слово с заглавной буквы
+    .join(' '); // соединяем пробелами
+}
 
 function DocsPreview({ docs }: { docs: Doc[] }) {
   if (!docs?.length) return <div className="text-xs text-muted-foreground">Документов нет</div>;
+
   const items = docs.slice(0, 3);
+
   return (
     <div className="flex items-center gap-2">
       {items.map((d) => {
-        const isPdf = d.filename.toLowerCase().endsWith('.pdf');
-        const isImage = /\.(png|jpe?g|webp|heic|heif)$/i.test(d.filename);
+        const lower = d.filename.toLowerCase();
+        const isPdf = lower.endsWith('.pdf');
+        const isHeic = /\.(heic|heif)$/i.test(lower);
+        const isRasterImage = /\.(png|jpe?g|webp)$/i.test(lower);
+
         return (
-          <div key={d.filename} className="border rounded p-1">
-            <div className="text-[10px] text-muted-foreground mb-1">{humanizeType(d.documentType)}</div>
-            {isImage ? (
+          <div key={d.filename} className="border rounded p-1 w-[80px]">
+            <div className="text-[10px] text-muted-foreground mb-1">
+              {humanizeType(d.documentType)}
+            </div>
+
+            {isRasterImage ? (
+              // обычные картинки — через next/image, НО без оптимизатора
               <a href={d.url} target="_blank" rel="noreferrer">
-                <Image src={d.url} alt={d.filename} width={64} height={64} className="object-cover rounded" />
+                <Image
+                  src={d.url}
+                  alt={d.filename}
+                  width={64}
+                  height={64}
+                  sizes="64px"
+                  unoptimized
+                  className="object-cover rounded w-[64px] h-[64px]"
+                />
+              </a>
+            ) : isHeic ? (
+              // HEIC/HEIF — лучше как ссылка (не все браузеры умеют показывать)
+              <a href={d.url} target="_blank" rel="noreferrer" className="block">
+                <div className="w-[64px] h-[64px] grid place-items-center rounded bg-muted text-[10px]">
+                  HEIC
+                </div>
               </a>
             ) : isPdf ? (
-              <a href={d.url} target="_blank" rel="noreferrer" className="block text-xs underline text-blue-700">
+              // PDF — ссылка-ярлык
+              <a
+                href={d.url}
+                target="_blank"
+                rel="noreferrer"
+                className="block text-xs underline text-blue-700"
+              >
                 PDF
               </a>
             ) : (
+              // прочие — просто файл
               <a href={d.url} target="_blank" rel="noreferrer" className="block text-xs underline">
                 Файл
               </a>
             )}
+
             {d.uploadedAt && (
               <div className="text-[10px] text-muted-foreground mt-1">
                 {format(new Date(d.uploadedAt), 'dd.MM.yyyy, HH:mm')}
@@ -308,11 +346,4 @@ function DocsPreview({ docs }: { docs: Doc[] }) {
       )}
     </div>
   );
-}
-
-function humanizeType(s: string) {
-  return s
-    .split(/[_\-]+/)
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
 }

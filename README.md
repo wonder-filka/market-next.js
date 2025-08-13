@@ -1,1 +1,8 @@
 # tema
+
+DATABASE_URL=""
+SESSION_SECRET=""
+ADMIN_ID=
+NEXT_PUBLIC_NEST_API_BASE=
+INTERNAL_API_BASE_URL=http://backend:3001
+UPLOAD_DIR=/data/verification

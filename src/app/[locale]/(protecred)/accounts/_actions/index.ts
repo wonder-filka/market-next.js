@@ -28,7 +28,6 @@ export async function createAccount(
 				freeMargin: 0,
 			},
 		});
-		console.log("✅ Account created:", account);
 		revalidatePath("/accounts");
 		return account;
 	} catch (error) {

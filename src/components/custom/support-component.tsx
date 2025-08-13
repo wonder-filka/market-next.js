@@ -62,7 +62,6 @@ export const SupportComponent = ({ userId }: SupportComponentProps) => {
 
 		const onMessagesRead = (data: { chatId: string }) => {
 			if (currentChat && data.chatId === currentChat.id) {
-				console.log('Socket.IO: Messages marked as read for this chat by other party.');
 				setCurrentChat(prevChat => {
 					if (!prevChat) return prevChat;
 					return {

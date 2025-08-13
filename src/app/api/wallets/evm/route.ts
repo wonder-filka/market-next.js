@@ -9,7 +9,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: 'userId is required' }, { status: 400 });
     }
 
-    const base = process.env.NEXT_PUBLIC_NEST_API_BASE!;
+    const base = process.env.INTERNAL_API_BASE_URL!;
     const r = await fetch(`${base}/users/${userId}/wallets/evm`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
