@@ -62,7 +62,15 @@ export function ProtectedHeader({ data, userId }: UserBasicSettingsProps) {
                     </SheetHeader>
                     <SheetFooter>
                         <SheetClose asChild className="text-start">
-                            {userId && <SupportComponent userId={userId} />}
+                            {userId &&
+                                <SupportComponent
+                                    userId={userId}
+                                    firstName={data.firstName}
+                                    lastName={data.lastName}
+                                    email={data.email}
+                                    phone={data.phone}
+
+                                />}
                         </SheetClose>
 
                         <LangToggle />

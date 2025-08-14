@@ -32,6 +32,11 @@ export default {
 	incorrectCredentials: "Incorrect email or password",
 	forgotPass: "Forgot your password?",
 	forgotPassDescription: "Recover your password using email",
+	contactsBlockProtect: {
+		feedbackTitle: "Contact us",
+		feedbackSuccess: "Your message has been sent. We will reply to your email.",
+	},
+	tooShortMessage: "Message is too short",
 	"sidebar.quotes": "Trade",
 	"sidebar.accounts": "Accounts",
 	"sidebar.portfolio": "Portfolio",

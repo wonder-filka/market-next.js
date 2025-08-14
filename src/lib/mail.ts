@@ -63,7 +63,7 @@ export async function sendPasswordResetCode(
   code: string,
   locale: "en" | "ru" 
 ): Promise<boolean> {
-  const from = process.env.SMTP_FROM || 'No Reply <no-reply@example.com>';
+  const from = process.env.SMTP_FROM || '2TradeIn <support@2trade.in>';
   const { subject, html, text } = buildTemplates(code, locale);
 
   try {
@@ -78,6 +78,100 @@ export async function sendPasswordResetCode(
     return true;
   } catch (err) {
     console.error('sendPasswordResetCode error:', err);
+    return false;
+  }
+}
+
+
+// lib/mail.ts (добавь ниже существующего кода)
+export async function sendSupportEmail(opts: {
+  fromEmail: string;
+  message: string;
+  locale: 'ru' | 'en';
+  subject?: string;
+  // необязательно, но удобно передавать метаданные
+  meta?: { name?: string; userId?: string; phone?: string };
+}): Promise<boolean> {
+  const supportTo = process.env.SUPPORT_INBOX || process.env.SMTP_FROM;
+  if (!supportTo) {
+    console.error('sendSupportEmail error: SUPPORT_INBOX or SMTP_FROM is required');
+    return false;
+  }
+
+  const dict = {
+    ru: {
+      subject: 'Новое сообщение в поддержку',
+      intro: 'Поступило новое сообщение с формы обратной связи.',
+      from: 'Отправитель',
+      email: 'Email',
+      phone: 'Телефон',
+      userId: 'ID пользователя',
+      message: 'Сообщение',
+    },
+    en: {
+      subject: 'New support message',
+      intro: 'A new message has been submitted via the feedback form.',
+      from: 'Sender',
+      email: 'Email',
+      phone: 'Phone',
+      userId: 'User ID',
+      message: 'Message',
+    },
+  } as const;
+
+  const t = dict[opts.locale] ?? dict.ru;
+  const subject = opts.subject || t.subject;
+
+  const safe = (s?: string) =>
+    String(s ?? '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;');
+
+  const html = `
+  <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; color:#0f172a; max-width:640px; margin:0 auto;">
+    <h2 style="font-weight:600; margin:0 0 12px">${t.subject}</h2>
+    <p style="margin:0 0 16px">${t.intro}</p>
+
+    <table style="border-collapse:collapse; width:100%; margin-bottom:12px">
+      <tbody>
+        ${opts.meta?.name ? `<tr><td style="padding:6px 8px; color:#475569">${t.from}:</td><td style="padding:6px 8px"><b>${safe(opts.meta.name)}</b></td></tr>` : ''}
+        <tr><td style="padding:6px 8px; color:#475569">${t.email}:</td><td style="padding:6px 8px"><b>${safe(opts.fromEmail)}</b></td></tr>
+        ${opts.meta?.phone ? `<tr><td style="padding:6px 8px; color:#475569">${t.phone}:</td><td style="padding:6px 8px">${safe(opts.meta.phone)}</td></tr>` : ''}
+        ${opts.meta?.userId ? `<tr><td style="padding:6px 8px; color:#475569">${t.userId}:</td><td style="padding:6px 8px"><code>${safe(opts.meta.userId)}</code></td></tr>` : ''}
+      </tbody>
+    </table>
+
+    <div style="border:1px solid #e2e8f0; border-radius:12px; padding:12px 16px; background:#f8fafc;">
+      <div style="font-weight:600; margin-bottom:6px">${t.message}:</div>
+      <div style="white-space:pre-wrap; line-height:1.5">${safe(opts.message)}</div>
+    </div>
+  </div>`.trim();
+
+  const text =
+`${t.subject}
+
+${t.intro}
+${t.from}: ${opts.meta?.name ?? '-'}
+${t.email}: ${opts.fromEmail}
+${t.phone}: ${opts.meta?.phone ?? '-'}
+${t.userId}: ${opts.meta?.userId ?? '-'}
+
+${t.message}:
+${opts.message}`;
+
+  try {
+    await getTransporter().sendMail({
+      from: process.env.SMTP_FROM || 'No Reply <no-reply@example.com>',
+      to: supportTo,
+      subject,
+      html,
+      text,
+      replyTo: opts.fromEmail, 
+    });
+    return true;
+  } catch (err) {
+    console.error('sendSupportEmail error:', err);
     return false;
   }
 }

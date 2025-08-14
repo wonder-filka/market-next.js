@@ -10,12 +10,17 @@ import { Textarea } from "../ui/textarea";
 import { socket } from "@/socket";
 import { toast } from "sonner";
 import { AdminChatDetail, ChatMessage } from "@/app/[locale]/chat/_actions/types";
+import { sendMessToTelegramAction } from "@/app/[locale]/(protecred)/_actions/send-mess-to-telegram";
 
 interface SupportComponentProps {
 	userId: string;
+	firstName: string;
+	lastName: string;
+	email: string;
+	phone: string;
 }
 
-export const SupportComponent = ({ userId }: SupportComponentProps) => {
+export const SupportComponent = ({ userId, firstName, lastName, email, phone }: SupportComponentProps) => {
 	const t = useI18n();
 	const [currentChat, setCurrentChat] = useState<AdminChatDetail | null>(null);
 	const [newMessageContent, setNewMessageContent] = useState("");
@@ -129,7 +134,13 @@ export const SupportComponent = ({ userId }: SupportComponentProps) => {
 				content: originalMessageContent,
 				isSupport: false,
 			});
-
+			await sendMessToTelegramAction({
+				message: originalMessageContent,
+				firstName,
+				lastName,
+				email,
+				phone,
+			}).catch((e) => console.error(e));
 			toast.success(t('support.messageSent'));
 		} catch (error) {
 			console.error("Ошибка при отправке сообщения:", error);

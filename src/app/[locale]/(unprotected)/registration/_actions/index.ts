@@ -6,6 +6,7 @@ import { RegistrationSchema } from "@/lib/schemas";
 import { createSession } from "@/lib/session";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
+import { notifyNewUser } from "@/lib/telegram";
 
 export async function signup(data: z.infer<typeof RegistrationSchema>) {
 	try {
@@ -44,6 +45,15 @@ export async function signup(data: z.infer<typeof RegistrationSchema>) {
 		if (!user) {
 			return { message: "signupFailed" };
 		}
+		notifyNewUser({
+			id: user.id,
+			firstName: user.firstName,
+			lastName: user.lastName,
+			email: user.email,
+			phone: user.phone,
+			currency: parsed.data.currency,
+			createdAt: user.createdAt,
+		}).catch((e) => console.error("Telegram notify failed:", e));
 		await createSession(user.id);
 	} catch (error) {
 		console.error(error);

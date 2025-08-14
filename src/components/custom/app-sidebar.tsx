@@ -20,8 +20,9 @@ import { deleteSession } from "@/lib/session"
 import { redirect } from "next/navigation"
 import { sidebarItems } from "@/lib/constants"
 import { SupportComponent } from "./support-component"
+import { UpdateUserBasicSettingsInput } from "@/lib/types"
 
-export function AppSidebar({ userId, ...props }: React.ComponentProps<typeof Sidebar> & { userId: string | null }) {
+export function AppSidebar({ userId, data, ...props }: React.ComponentProps<typeof Sidebar> & { userId: string | null, data: UpdateUserBasicSettingsInput }) {
   const t = useI18n();
   const [pending, startTransition] = useTransition()
 
@@ -71,7 +72,14 @@ export function AppSidebar({ userId, ...props }: React.ComponentProps<typeof Sid
       <SidebarFooter hidden={false}>
         <SidebarMenu >
           <SidebarMenuItem>
-            {userId && <SupportComponent userId={userId} />}
+            {userId && <SupportComponent
+              userId={userId}
+              firstName={data.firstName}
+              lastName={data.lastName}
+              email={data.email}
+              phone={data.phone}
+
+            />}
           </SidebarMenuItem>
           <SidebarSeparator />
           <SidebarMenuItem>

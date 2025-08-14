@@ -17,12 +17,12 @@ export default async function Layout({
   if (!userId) return
   const userBasicSettings = await getUserBasicSettings(userId)
   if ("message" in userBasicSettings) return
-  	 const adminId = process.env.ADMIN_ID;
+  const adminId = process.env.ADMIN_ID;
   return (
     <SidebarProvider defaultOpen={true}>
       {
-        userId !== adminId ? <AppSidebar className="hidden md:flex"  userId={userId} />
-          : <AppSidebarAdmin className="hidden md:flex" userId={userId} />
+        userId !== adminId ? <AppSidebar className="hidden md:flex" data={userBasicSettings} userId={userId} />
+          : <AppSidebarAdmin className="hidden md:flex" />
       }
 
       <SidebarInset>

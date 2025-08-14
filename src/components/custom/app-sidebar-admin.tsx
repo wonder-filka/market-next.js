@@ -19,10 +19,8 @@ import { useTransition } from "react"
 import { deleteSession } from "@/lib/session"
 import { redirect } from "next/navigation"
 import { sidebarItemsAdmin } from "@/lib/constants"
-import { SupportComponent } from "./support-component"
 
-
-export function AppSidebarAdmin({ userId, ...props }: React.ComponentProps<typeof Sidebar>  & { userId: string | null }) {
+export function AppSidebarAdmin({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const t = useI18n();
   const [pending, startTransition] = useTransition()
 
@@ -117,9 +115,6 @@ export function AppSidebarAdmin({ userId, ...props }: React.ComponentProps<typeo
       </SidebarContent>
       <SidebarFooter hidden={false}>
         <SidebarMenu >
-          <SidebarMenuItem>
-             {userId && <SupportComponent userId={userId} />} 
-          </SidebarMenuItem>
           <SidebarSeparator />
           <SidebarMenuItem>
             <SidebarMenuButton asChild onClick={logout} disabled={pending}  >

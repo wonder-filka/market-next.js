@@ -128,7 +128,6 @@ export function CryptoForm({ userId }: CryptoFormProps) {
               setAddress(null);
               setQr(null);
               setError(null);
-              console.log(currency)
             }}
           >
             <SelectTrigger className="w-full" disabled={isPending}>

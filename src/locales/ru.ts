@@ -41,6 +41,11 @@ export default {
 	"sidebar.support": "Поддержка",
 	"sidebar.logout": "Выйти",
 	"sidebar.cabinet": "Личный кабинет",
+	contactsBlockProtect: {
+		feedbackTitle: "Напишите нам",
+		feedbackSuccess: "Сообщение отправлено. Мы ответим на ваш email.",
+	},
+	tooShortMessage: "Сообщение слишком короткое",
 	back: "Назад",
 	enterCode: "Введите код из письма",
 	sendCode: "Отправить код",

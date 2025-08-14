@@ -17,7 +17,7 @@ export default async function Layout({
 
   return (
     <SidebarProvider defaultOpen={true}>
-      <AppSidebarAdmin className="hidden md:flex" userId={userId} />
+      <AppSidebarAdmin className="hidden md:flex"  />
       <SidebarInset>
         <AdminHeader />
         <main className="flex-1 p-4 pt-0">{children}</main>
