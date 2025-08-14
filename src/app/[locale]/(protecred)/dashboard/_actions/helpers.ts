@@ -1,17 +1,20 @@
-
 import { LiveQuote } from "@/lib/types";
 import { UserAsset } from "../../../../../../prisma/generated/prisma";
 
 export function onQuotesUpdate(
 	newQuotes: LiveQuote[],
 	userAssets: UserAsset[],
-	setLiveQuotes:  (liveQuotes: LiveQuote[]) => void
+	setLiveQuotes: (liveQuotes: LiveQuote[]) => void
 ) {
+	const randomDiff = +(Math.random() * 0.05).toFixed(2);
 	// Преобразуем userAssets в Map для быстрого поиска
 	const assetMap = new Map(
 		userAssets.map((a) => [
 			a.asset,
-			{ priceBuy: a.priceBuy, priceSell: a.priceSell },
+			{
+				priceBuy: (a.priceBuy + randomDiff).toFixed(3),
+				priceSell: (a.priceSell + randomDiff).toFixed(3),
+			},
 		])
 	);
 
@@ -46,9 +49,8 @@ export function onQuotesUpdate(
 	setLiveQuotes(mergedQuotes);
 }
 
-
 export function getPercent(q: { price: number; history: { price: number }[] }) {
-  const previous = q.history[q.history.length - 2]?.price ?? q.price;
-  const current = q.price;
-  return previous !== 0 ? ((current - previous) / previous) * 100 : 0;
+	const previous = q.history[q.history.length - 2]?.price ?? q.price;
+	const current = q.price;
+	return previous !== 0 ? ((current - previous) / previous) * 100 : 0;
 }

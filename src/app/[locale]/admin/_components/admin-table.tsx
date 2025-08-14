@@ -298,7 +298,9 @@ export const AdminTable = ({ data, userAssets }: { data: PositionWithRelations[]
 	) {
 		const found = userAssets?.find(a => a.asset === asset && a.userId === userId)
 		if (!found) return null
-		return type === "Buy" ? found.priceBuy : found.priceSell
+			const randomDiff = +(Math.random() * 0.05).toFixed(2);
+		return type === "Buy" ? (found.priceBuy + randomDiff).toFixed(3)
+		 : (found.priceSell + randomDiff).toFixed(3)
 	}
 
 	const table = useReactTable({
