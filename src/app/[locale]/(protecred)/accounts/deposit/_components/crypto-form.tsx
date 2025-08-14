@@ -103,7 +103,7 @@ export function CryptoForm({ userId }: CryptoFormProps) {
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   }
-  if (isPending) return <div className='w-full min-h-[90vh] flex justify-center items-center space-x-2'>
+  if (isPending) return <div className='w-full min-h-[200px] flex justify-center items-center space-x-2'>
     <LoaderCircle size={25} className='text-gray-500 animate-spin' />
   </div>
 
