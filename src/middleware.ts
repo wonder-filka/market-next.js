@@ -16,6 +16,8 @@ const protectedRoutes = [
 	"/ru/accounts",
 	"/en/accounts/deposit",
 	"/ru/accounts/deposit",
+	"/en/accounts/withdraw",
+	"/ru/accounts/withdraw",
 	"/en/portfolio",
 	"/ru/portfolio",
 	"/en/settings",

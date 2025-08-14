@@ -108,8 +108,8 @@ export function CryptoForm({ userId }: CryptoFormProps) {
   </div>
 
   return (
-    <Card>
-      <CardContent className=" space-y-4">
+    <Card className='p-0 rounded-2xl border bg-background'>
+      <CardContent className="space-y-4  p-4 sm:p-6">
         <div className="flex items-center justify-between">
           <div className="text-sm text-muted-foreground">
             {t('wallet.networkLabel')}

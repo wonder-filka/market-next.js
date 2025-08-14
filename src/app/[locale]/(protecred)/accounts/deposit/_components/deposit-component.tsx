@@ -20,11 +20,11 @@ export default function DepositComponent({ safeRates, userId }: DepositPageProps
     <div className="w-full max-w-3xl mx-auto">
       <Tabs defaultValue="card" className="flex flex-col md:flex-row">
         <TabsList className="flex flex-col h-full w-full">
-          <TabsTrigger value="card" className="w-full text-wrap min-h-14">
+          <TabsTrigger value="card" className="w-full text-wrap min-h-14 rounded-2xl">
             <CreditCard className="h-5 w-5" />
             <span className="ml-2">{t('depositPage.tabs.card')}</span>
           </TabsTrigger>
-          <TabsTrigger value="crypto" className="w-full text-wrap min-h-14">
+          <TabsTrigger value="crypto" className="w-full text-wrap min-h-14 rounded-2xl">
             <Bitcoin className="h-5 w-5" />
             <span className="ml-2">{t('depositPage.tabs.crypto')}</span>
           </TabsTrigger>

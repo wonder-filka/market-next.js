@@ -45,8 +45,8 @@ export function CardForm({ safeRates }: CardFormProps) {
     setIsShowMessage(true);
   }
   return (
-    <Card className="flex justify-center min-h-[200px]">
-      <CardContent>
+    <Card className="flex justify-center bg-background min-h-[200px] p-0 rounded-2xl border">
+      <CardContent className="space-y-4  p-4 sm:p-6">
         {isShowMessage ? (
           <div>{t('depositPage.card.message')}</div>
         ) : (

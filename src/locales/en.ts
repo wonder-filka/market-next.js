@@ -612,4 +612,31 @@ export default {
 			},
 		},
 	},
+	withdraw: {
+		title: "Withdraw funds",
+		availableLabel: "Available to withdraw",
+		availableShort: "Available",
+		toCardTab: "To card (Visa/Mastercard)",
+		toCryptoTab: "To crypto wallet",
+
+		amount: "Withdrawal amount",
+		amountCrypto: "Withdrawal amount",
+		requestSubmitted: "Request submitted. We will process it shortly.",
+		requestFailed: "Failed to submit request. Please try again later.",
+
+		card: {
+			help: "Withdraw to a Visa / Mastercard bank card",
+			brand: "Card network",
+			holder: "Cardholder name",
+			number: "Card number",
+		},
+		crypto: {
+			help: "Withdraw in crypto: BTC / ETH / USDT (ERC-20, TRC-20)",
+			coin: "Coin",
+			network: "Network",
+			address: "Wallet address",
+		},
+		submitCard: "Withdraw to card",
+		submitCrypto: "Withdraw to crypto",
+	},
 } as const;

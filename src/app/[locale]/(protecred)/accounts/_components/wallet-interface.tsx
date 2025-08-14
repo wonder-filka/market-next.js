@@ -44,7 +44,7 @@ const router = useRouter()
             </p>
           </div>
           <div className="flex flex-col gap-8 md:flex-row ">
-            <Button variant="outline" className="flex items-center gap-2">
+            <Button variant="outline" className="flex items-center gap-2" onClick={() => router.push('/accounts/withdraw')}>
               <Download className="h-4 w-4" />
               {t("withdrawFunds")}
             </Button>

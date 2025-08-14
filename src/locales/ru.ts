@@ -613,4 +613,31 @@ export default {
 			},
 		},
 	},
+	withdraw: {
+		title: "Вывод средств",
+		availableLabel: "Доступно к выводу",
+		availableShort: "Доступно",
+		toCardTab: "На карту (Visa/Mastercard)",
+		toCryptoTab: "На криптокошелёк",
+
+		amount: "Сумма к выводу",
+		amountCrypto: "Сумма к выводу",
+		requestSubmitted: "Заявка отправлена. Мы обработаем её в ближайшее время.",
+		requestFailed: "Не удалось отправить заявку. Попробуйте позже.",
+
+		card: {
+			help: "Вывод на банковскую карту Visa / Mastercard",
+			brand: "Платёжная система",
+			holder: "Имя на карте",
+			number: "Номер карты",
+		},
+		crypto: {
+			help: "Вывод в криптовалюте: BTC / ETH / USDT (ERC-20, TRC-20)",
+			coin: "Монета",
+			network: "Сеть",
+			address: "Адрес кошелька",
+		},
+		submitCard: "Вывести на карту",
+		submitCrypto: "Вывести на криптокошелёк",
+	},
 } as const;
