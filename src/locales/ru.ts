@@ -29,7 +29,7 @@ export default {
 	success: "Вы успешно зарегистрированы!",
 	registerFormDescription:
 		"Пройдите быструю регистрацию и начните торговать или учиться уже сегодня",
-
+	emailNotFound: "Такой email не найден",
 	incorrectCredentials: "Неверный email или пароль",
 	forgotPass: "Забыли пароль?",
 	forgotPassDescription: "Восстановите свой пароль с помощью Email",
@@ -41,7 +41,14 @@ export default {
 	"sidebar.support": "Поддержка",
 	"sidebar.logout": "Выйти",
 	"sidebar.cabinet": "Личный кабинет",
-
+	back: "Назад",
+	enterCode: "Введите код из письма",
+	sendCode: "Отправить код",
+	passwordChangedSuccess: "Ваш пароль успешно изменен",
+	invalidCode: "Неверный код",
+	rateLimited: "Слишком много попыток. Попробуйте позже.",
+	emailSendFailed: "Не удалось отправить письмо. Повторите позже.",
+	savePassword: "Сохранить пароль",
 	accountsTitle: "Ваши торговые счета",
 	account: "Счет",
 	openAccount: "Открыть счет",

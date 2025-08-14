@@ -9,23 +9,24 @@ datasource db {
 }
 
 model User {
-  id                 String             @id @default(uuid())
-  email              String             @unique
-  phone              String             @unique
+  id                 String              @id @default(uuid())
+  email              String              @unique
+  phone              String              @unique
   firstName          String
   lastName           String
   passwordHash       String
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
-  walletId           String             @unique
-  verificationStatus VerificationStatus @default(UNVERIFIED)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  walletId           String              @unique
+  verificationStatus VerificationStatus  @default(UNVERIFIED)
   accounts           Account[]
   CryptoWallet       CryptoWallet[]
+  PasswordResetCode  PasswordResetCode[]
   positions          Position[]
   supportChats       SupportChat[]
-  sentMessages       SupportMessage[]   @relation("SenderMessages")
+  sentMessages       SupportMessage[]    @relation("SenderMessages")
   trades             Trade[]
-  wallet             Wallet             @relation(fields: [walletId], references: [id])
+  wallet             Wallet              @relation(fields: [walletId], references: [id])
   assets             UserAsset[]
 }
 
@@ -148,6 +149,19 @@ model CryptoWallet {
   User       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, currency, chain])
+  @@index([userId])
+}
+
+model PasswordResetCode {
+  id        String    @id @default(uuid())
+  userId    String
+  codeHash  String
+  createdAt DateTime  @default(now())
+  expiresAt DateTime
+  usedAt    DateTime?
+  attempts  Int       @default(0)
+  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
 }
 

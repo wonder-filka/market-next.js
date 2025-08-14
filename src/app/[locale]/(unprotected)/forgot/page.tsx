@@ -1,5 +1,6 @@
 
 import { getI18n } from "@/locales/server";
+import { ForgotForm } from "./_components/form";
 
 
 export default async function Page() {
@@ -11,9 +12,8 @@ export default async function Page() {
 					<h1 className='text-3xl font-bold'>{t('forgotPass')}</h1>
 					<p className='text-balance text-muted-foreground'>{t('forgotPassDescription')}</p>
 				</div>
-		
+				<ForgotForm />
 			</div>
-
 		</div>
 	)
 
